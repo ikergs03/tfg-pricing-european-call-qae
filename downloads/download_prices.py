@@ -111,24 +111,24 @@ if all_data:
         print(f"Completitud: {(price_df.notna().sum().sum() / (price_df.shape[0] * price_df.shape[1]) * 100):.1f}%")
         
         # Guardar parquet en carpeta data/
-        price_df.to_parquet("data/prices.parquet")
-        print(f"\n✔ Archivo creado: data/prices.parquet")
+        price_df.to_parquet("../data/prices.parquet")
+        print(f"\n✔ Archivo creado: ../data/prices.parquet")
         
         # Guardar también CSV para inspeccionar
-        price_df.to_csv("data/prices.csv")
-        print(f"✔ Archivo creado: data/prices.csv")
+        price_df.to_csv("../data/prices.csv")
+        print(f"✔ Archivo creado: ../data/prices.csv")
         
     except Exception as e:
         print(f"✗ Error al crear DataFrame: {e}")
         # Fallback: guardar como dict
-        pd.Series(all_data).to_csv("data/prices_series.csv")
-        print(f"✔ Archivo alternativo creado: data/prices_series.csv")
+        pd.Series(all_data).to_csv("../data/prices_series.csv")
+        print(f"✔ Archivo alternativo creado: ../data/prices_series.csv")
     
     # Guardar lista de tickers que fallaron
     if failed_tickers:
-        with open("data/failed_tickers.txt", "w") as f:
+        with open("../data/failed_tickers.txt", "w") as f:
             for ticker, error in failed_tickers:
                 f.write(f"{ticker}: {error}\n")
-        print(f"✔ Archivo creado: data/failed_tickers.txt")
+        print(f"✔ Archivo creado: ../data/failed_tickers.txt")
 else:
     print("\n✗ ERROR: No se descargó ningún dato válido")
