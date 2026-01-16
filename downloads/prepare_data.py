@@ -1,59 +1,36 @@
-import numpy as np
+# prepare_data.py (CORREGIDO)
+
 import pandas as pd
+import numpy as np
 
 # ===============================
-# 1. Cargar precios
+# 1. Load prices
 # ===============================
 prices = pd.read_parquet("../data/prices.parquet")
-
-# 🔴 LIMPIEZA CRÍTICA
-if isinstance(prices.columns, pd.MultiIndex):
-    prices.columns = prices.columns.get_level_values(-1)
-
-prices.columns.name = None
-prices.index.name = None
+prices = prices.dropna(axis=0, how="any")
 
 # ===============================
-# 2. Retornos logarítmicos
+# 2. Returns
 # ===============================
-returns = np.log(prices / prices.shift(1)).dropna()
+returns = prices.pct_change().dropna()
 returns.to_csv("../data/returns.csv")
 
-print(f"returns.csv creado con shape {returns.shape}")
+T, N = returns.shape
+print("Returns shape:", returns.shape)
 
 # ===============================
-# 3. Construcción de features (P=6)
+# 3. Features (P = 1, PER DAY)
 # ===============================
-window_vol = 30
-window_mom1 = 14
-window_mom2 = 60
+# shape: (N assets, T observations, P=1)
+features = np.zeros((N, T, 1))
 
-features = []
+for i in range(N):
+    features[i, :, 0] = returns.iloc[:, i].values
 
-for ticker in returns.columns:
-    r = returns[ticker]
-    
-    f1 = r.values
-    f2 = r.rolling(window_vol).std().fillna(method='bfill').fillna(method='ffill').values
-    f3 = r.rolling(window_mom1).mean().fillna(method='bfill').fillna(method='ffill').values
-    f4 = r.rolling(window_mom2).mean().fillna(method='bfill').fillna(method='ffill').values
-    f5 = -r.rolling(7).mean().fillna(method='bfill').fillna(method='ffill').values
-    # Cambio: usa returns en lugar de prices para f6
-    f6 = r.rolling(30).mean().fillna(method='bfill').fillna(method='ffill').values
-    
-    X = np.column_stack([f1, f2, f3, f4, f5, f6])
-    
-    # estandarización
-    X = (X - np.nanmean(X, axis=0)) / np.nanstd(X, axis=0)
-    
-    features.append(X)
-
-# Alinear longitud temporal
-min_T = min(f.shape[0] for f in features)
-features = np.array([f[-min_T:] for f in features])
+# Normalization PER ASSET (paper)
+features -= features.mean(axis=1, keepdims=True)
+features /= features.std(axis=1, keepdims=True)
 
 np.save("../data/features.npy", features)
 
-print(f"features.npy creado con shape {features.shape}")
-
-
+print("✓ features.npy:", features.shape)

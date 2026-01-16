@@ -1,1 +1,1 @@
-NKLA: DataFrame vacío o con pocos datos
+NKLA: DataFrame vacío o insuficiente

@@ -1,6 +1,29 @@
 \chapter{Análisis y Metodología}
 \label{cap:analisis_metodologia}
 
-
 \section{Figuras}
+
 \label{sec:figuras}
+
+Esta sección describe las figuras generadas para el análisis de la estructura de dependencia entre activos y los pasos metodológicos usados para construirlas. El objetivo es comparar el ordenamiento clásico de la matriz de correlaciones (HRP tradicional) con el ordenamiento cuántico (QHRP) construido a partir de matrices de densidad promedio.
+
+\subsection{Datos y preprocesado}
+Se parte de la serie de retornos históricos y de un conjunto de características financieras precomputadas para cada activo. Los retornos se cargan desde \texttt{returns.csv} y se convierten a valores numéricos, eliminando columnas con valores faltantes. Posteriormente se limpia la matriz eliminando activos con varianza casi nula, ya que podrían producir correlaciones inestables o no definidas. Este filtrado garantiza que el cálculo de correlaciones sea robusto y que la matriz resultante sea positiva semidefinida en la práctica.
+
+En paralelo, se cargan las características financieras almacenadas en \texttt{features.npy}. Estas características se utilizan para construir, para cada activo, una matriz de densidad promedio sobre una ventana temporal fija (aprox. tres años de días de mercado). Esta ventana temporal se selecciona para equilibrar estabilidad estadística y capacidad de capturar cambios recientes del mercado.
+
+\subsection{Procedimiento clásico (HRP)}
+Con los retornos limpios se construye la matriz de correlaciones $C$. A partir de $C$ se define una matriz de distancias clásica mediante
+$$
+d_{ij}=\sqrt{\tfrac{1}{2}(1-\rho_{ij})},
+$$
+lo que asegura simetría y distancia nula en la diagonal. Se aplica posteriormente un clustering jerárquico (método \emph{single linkage}) para obtener el ordenamiento de hojas (\emph{leaf ordering}) que reordena la matriz de correlaciones de forma que los activos con mayor similitud queden próximos. Este ordenamiento corresponde al esquema HRP clásico.
+
+\subsection{Procedimiento cuántico (QHRP)}
+Para el enfoque cuántico, cada activo se representa por una matriz de densidad promedio construida a partir de sus características financieras. Se utiliza el parámetro $\alpha = 2$ (fijo en el experimento) para controlar la contribución relativa de las características en la construcción de la densidad. La distancia entre activos se calcula mediante una función de distancia cuántica definida sobre matrices de densidad, generando una matriz de distancias $D^{(q)}$.
+
+Se aplica el mismo procedimiento de clustering jerárquico sobre $D^{(q)}$ para obtener un nuevo ordenamiento de hojas que define la estructura jerárquica basada en la información cuántica. Este ordenamiento corresponde al esquema QHRP.
+\subsection{Visualización y comparación}
+Se generan dos figuras principales para comparar ambos enfoques:
+
+En conjunto, estas figuras ilustran el impacto del procedimiento cuantico sobre la organizacion de la informacion y justifican su inclusion como alternativa al ordenamiento clasico en la construccion de carteras jerarquicas.
