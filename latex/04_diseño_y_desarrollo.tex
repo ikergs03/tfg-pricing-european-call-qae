@@ -1,13 +1,165 @@
 \chapter{Diseño y Desarrollo}
-\label{cap:diseno_desarrollo}
+\label{sec:diseno_desarrollo}
 
-% NOTA: Esta es una plantilla. Reemplaza el contenido con tu propia introducción.
-% Puedes usar \section, \subsection, figuras, tablas, ecuaciones, código, etc.
+En este capítulo se describe la implementación técnica del sistema desarrollado, así como la estructura del código empleada para la ejecución de los distintos experimentos. Cada sección del capítulo corresponde a un bloque funcional independiente, permitiendo una descripción clara y modular del proceso de desarrollo.
 
-\section{Extracción de Datos}
-\label{sec:extraccion_datos}
+\section{Implementación del análisis jerárquico cuántico}
+\label{sec:implementacion_analisis}
+En esta sección se detalla el diseño y desarrollo del código utilizado para la preparación de los datos, la construcción de las características económicas, la implementación del modelo cuántico y la generación de las visualizaciones analizadas en el capítulo anterior.
 
-En esta sección se presenta el contexto general del trabajo. Aquí debes explicar el área de investigación o el problema que abordas. Por ejemplo:
+\subsection{Arquitectura general del sistema}
+\label{sec:arquitectura_sistema}
 
-El análisis de portafolios financieros es un área fundamental en la gestión de inversiones. Con el crecimiento de los mercados y la complejidad de los instrumentos financieros, es necesario disponer de herramientas computacionales eficientes que permitan optimizar las decisiones de inversión.
+El sistema se ha diseñado siguiendo una estructura modular con el objetivo de facilitar la mantenibilidad, la escalabilidad y la reproducibilidad de los experimentos. El flujo general del proceso se divide en tres bloques principales:
 
+\begin{itemize}
+    \item Preparación y preprocesamiento de datos.
+    \item Implementación del modelo de análisis.
+    \item Generación de resultados y visualizaciones.
+\end{itemize}
+
+Cada uno de estos bloques se implementa mediante scripts y cuadernos de trabajo independientes, permitiendo ejecutar y modificar cada etapa sin afectar al resto del sistema.
+
+\subsection{Preparación y almacenamiento de datos}
+\label{sec:preparacion_almacenamiento}
+Los datos financieros empleados corresponden a precios de cierre y volúmenes de negociación, almacenados en formato \texttt{parquet}. Este formato se seleccionó por su eficiencia en lectura y escritura, así como por su adecuada integración con estructuras de datos tabulares.
+
+Durante la carga de los datos se realiza un proceso de limpieza consistente en la eliminación de observaciones incompletas y la sincronización temporal entre precios y volúmenes, garantizando la coherencia temporal de las series utilizadas.
+
+A partir de los precios se calculan los retornos diarios, los cuales constituyen la base para la construcción posterior de las características económicas.
+
+\subsection{Construcción del tensor de características}
+\label{sec:construccion_tensor}
+
+Las características se almacenan en un tensor tridimensional con dimensiones:
+
+\[
+(N, T, P),
+\]
+
+donde $N$ representa el número de activos, $T$ el número de observaciones temporales y $P=6$ el número de características consideradas.
+
+Para cada activo se calculan ventanas móviles asociadas a volatilidad, momentum, reversión y volumen medio, siguiendo un enfoque iterativo sobre el eje temporal. Esta estructura permite una representación homogénea de todos los activos y facilita su posterior procesamiento.
+
+\subsection{Estandarización y control numérico}
+\label{sec:estandarizacion_control}
+
+Con el objetivo de garantizar estabilidad numérica durante las etapas posteriores del análisis, las características se estandarizan de forma independiente para cada activo y cada variable. Este procedimiento evita la dominancia de determinadas magnitudes y preserva la dinámica relativa de cada serie temporal.
+
+La estandarización se implementa teniendo en cuenta posibles situaciones de división por cero, asegurando un comportamiento robusto del sistema ante condiciones de mercado heterogéneas.
+
+\subsection{Implementación del modelo cuántico}
+\label{sec:implementacion_modelo_cuantico}
+
+El modelo cuántico se implementa mediante circuitos parametrizados que permiten el mapeo de características clásicas al espacio cuántico. Cada observación multivariante se transforma en un estado cuántico simulado, a partir del cual se construyen matrices densidad individuales.
+
+Para cada activo, dichas matrices se agregan mediante un promedio temporal, obteniendo una matriz densidad representativa del comportamiento global del activo. Todas las operaciones cuánticas se realizan mediante simuladores clásicos, garantizando un entorno reproducible y controlado.
+
+\subsection{Cálculo de distancias y estructura jerárquica}
+\label{sec:calculo_distancias_estructura}
+
+Una vez obtenidas las matrices densidad promedio, se calcula la distancia de Frobenius entre todos los pares de activos. Estas distancias se almacenan en una matriz simétrica que constituye la base del análisis jerárquico posterior.
+
+El orden de los activos se determina mediante técnicas de clustering jerárquico, extrayendo la disposición final a partir de las hojas del dendrograma. Este orden se utiliza para reorganizar las matrices y facilitar su interpretación visual.
+
+\subsection{Generación de visualizaciones}
+\label{sec:generacion_visualizaciones}
+
+Las visualizaciones se generan mediante mapas de calor que representan las matrices de distancia cuántica antes y después del ordenamiento jerárquico. Para mejorar la interpretabilidad de las figuras, se aplica un escalado robusto de la escala de colores basado en percentiles, reduciendo la influencia de valores extremos sin modificar los valores originales.
+
+Este enfoque permite obtener representaciones gráficas claras y comparables, facilitando el análisis cualitativo de la estructura del mercado.
+
+\subsection{Reproducibilidad del experimento}
+\label{sec:reproducibilidad_experimento}
+
+La separación entre datos, procesamiento y visualización, junto con la estructura modular del código, garantiza la reproducibilidad del experimento. El diseño adoptado permite además la extensión del sistema a nuevos conjuntos de datos o configuraciones experimentales sin modificar la lógica central del modelo.
+
+
+\section{Descarga y preparación de datos financieros}
+\label{sec:descarga_preparacion_datos}
+
+En esta sección se describe el desarrollo de los scripts encargados de la obtención, limpieza y transformación de los datos financieros utilizados en el estudio. Este bloque constituye la base del sistema, ya que garantiza la consistencia temporal y la calidad de la información empleada en los análisis posteriores.
+
+\subsection{Descarga de datos de mercado}
+\label{sec:descarga_datos_mercado}
+
+La descarga de datos se implementa mediante el script \texttt{download\_prices.py}, el cual utiliza la librería \texttt{yfinance} para obtener información histórica de mercado.
+
+El conjunto de activos incluye instrumentos representativos de distintas clases financieras, tales como:
+
+\begin{itemize}
+    \item Índices y fondos cotizados (ETFs).
+    \item Renta fija y materias primas.
+    \item Acciones de gran capitalización.
+    \item Criptomonedas.
+\end{itemize}
+
+En total se emplean más de 170 activos, reproduciendo el universo considerado en el trabajo de referencia.
+
+El período temporal seleccionado abarca desde enero de 2005 hasta enero de 2025, permitiendo analizar múltiples ciclos de mercado y garantizando una base de datos suficientemente extensa.
+
+\subsection{Gestión de errores y robustez}
+\label{sec:gestion_errores_robustez}
+
+Durante la descarga, el sistema incorpora mecanismos de tolerancia a fallos con el objetivo de evitar interrupciones del proceso. Para cada activo se realizan múltiples intentos de descarga, incluyendo pausas temporales entre solicitudes con el fin de respetar las limitaciones del proveedor de datos.
+
+Los activos que no pueden descargarse correctamente se registran en un archivo independiente, permitiendo su posterior inspección sin afectar al resto del conjunto de datos.
+
+\subsection{Almacenamiento y consolidación}
+\label{sec:almacenamiento_consolidacion}
+
+Una vez completada la descarga, los precios ajustados y los volúmenes de negociación se consolidan en estructuras tabulares, donde cada columna representa un activo y cada fila una fecha de negociación.
+
+Los datos se almacenan tanto en formato \texttt{CSV} como en formato \texttt{Parquet}, seleccionándose este último como formato principal debido a su mayor eficiencia en lectura, compresión y compatibilidad con procesos posteriores.
+
+\subsection{Carga y sincronización de datos}
+\label{sec:carga_sincronizacion_datos}
+
+El preprocesamiento inicial se realiza mediante el script \texttt{prepare\_data.py}. En esta etapa se cargan los precios y volúmenes previamente descargados, eliminando observaciones incompletas y garantizando la alineación temporal entre ambas magnitudes.
+
+Este paso asegura que todas las series utilizadas comparten exactamente el mismo índice temporal, evitando inconsistencias durante el cálculo de características.
+
+\subsection{Cálculo de retornos}
+\label{sec:calculo_retornos}
+
+A partir de los precios de cierre ajustados se calculan los retornos diarios, los cuales se utilizan tanto como variable de análisis directa como para la construcción de características derivadas.
+
+Los retornos se almacenan de forma independiente para facilitar su reutilización en otros experimentos y validaciones.
+
+\subsection{Construcción de características económicas}
+\label{sec:construccion_caracteristicas_economicas}
+
+Para cada activo se construye un conjunto de seis características que describen distintos aspectos de su comportamiento financiero:
+
+\begin{itemize}
+    \item Retorno diario.
+    \item Volatilidad histórica anualizada.
+    \item Momentum a 14 días.
+    \item Momentum a 60 días.
+    \item Reversión a corto plazo.
+    \item Volumen relativo normalizado.
+\end{itemize}
+
+Estas características se calculan mediante ventanas móviles, permitiendo capturar dinámicas de corto, medio y largo plazo.
+
+El conjunto completo se organiza en un tensor tridimensional con dimensiones:
+
+\[
+(N, T, P),
+\]
+
+donde $N$ es el número de activos, $T$ el número de observaciones temporales y $P=6$ el número de características por activo.
+
+\subsection{Normalización por activo}
+\label{sec:normalizacion_activo}
+
+Con el objetivo de evitar que determinados activos dominen el análisis debido a diferencias estructurales de escala, las características se estandarizan de forma independiente para cada activo y cada variable.
+
+Este procedimiento preserva la dinámica relativa de cada serie temporal y sigue el enfoque adoptado en el trabajo de referencia.
+
+\subsection{Persistencia de los datos}
+\label{sec:persistencia_datos}
+
+Finalmente, el tensor de características se almacena en formato binario (\texttt{.npy}), permitiendo una carga eficiente durante la ejecución de los modelos de análisis.
+
+Este diseño desacopla completamente la etapa de preparación de datos del análisis posterior, facilitando la reproducibilidad y reduciendo el coste computacional de los experimentos.
