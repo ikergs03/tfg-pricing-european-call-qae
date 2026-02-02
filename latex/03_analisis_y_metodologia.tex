@@ -8,7 +8,7 @@ En esta sección se presenta el marco metodológico empleado para analizar la es
 Cada activo financiero se representa mediante un conjunto de características económicas que describen distintos aspectos de su comportamiento dinámico. Para cada activo $i$ se construye una matriz de observaciones:
 
 \[
-\mathbf{X}_i \in \mathbb{R}^{T \times P},
+X_i \in \mathbb{R}^{T \times P},
 \]
 
 donde $T$ denota el número de observaciones temporales y $P$ el número de características consideradas. En este trabajo se emplean seis características por activo, diseñadas para capturar información relacionada con retornos, volatilidad, momentum, reversión y volumen negociado.
@@ -58,18 +58,40 @@ El orden de los activos se extrae de las hojas del dendrograma y se utiliza para
 \section{Visualización de la estructura del mercado}
 \label{sec:visualizacion_estructura}
 
-Para analizar visualmente la estructura resultante, se representan las matrices de distancia cuántica antes y después del ordenamiento jerárquico mediante mapas de calor.
+\subsection{Comparación visual de métricas de similitud}
 
-La Figura 3.1 muestra la matriz de distancia cuántica sin ordenar, en la cual no se observa una estructura aparente debido a la disposición arbitraria de los activos. Por el contrario, la Figura 3.2 presenta la misma matriz tras el ordenamiento jerárquico, donde emergen agrupaciones coherentes que reflejan similitudes estructurales entre activos.
+La Figura~\ref{FIG:CORR_MATRICES} presenta una comparación visual de tres métricas de similitud empleadas en el contexto del algoritmo HRP, todas ellas representadas sin aplicar ningún tipo de ordenamiento jerárquico. El objetivo de esta figura es analizar el comportamiento inicial de cada métrica y evidenciar que, en ausencia del proceso de clustering, la estructura jerárquica no es observable.
 
-Con el objetivo de mejorar la interpretabilidad visual, se emplea un escalado robusto de la escala de colores basado en percentiles, el cual reduce la influencia de valores extremos sin modificar la información subyacente.
+El panel izquierdo muestra la matriz de correlación clásica de retornos. Esta representación corresponde al enfoque tradicional utilizado en HRP, donde la similitud entre activos se mide exclusivamente mediante correlaciones lineales. La ausencia de estructura visible en la matriz refleja la disposición arbitraria de los activos y pone de manifiesto la dificultad de extraer relaciones jerárquicas sin un ordenamiento previo.
 
-\begin{figure}[Ejemplo de uso de figure]{FIG:EJEMPLO}{Matriz de distancia cuántica sin ordenar. La disposición arbitraria de los activos impide identificar patrones estructurales.}
-        \image{13cm}{}{fig3-corr-matrices}
+El panel central presenta una matriz de distancias obtenida a partir de un kernel clásico aplicado a representaciones multivariantes de los activos. Esta métrica introduce información adicional respecto a la correlación clásica al incorporar características no lineales. Sin embargo, al igual que en el caso anterior, la falta de ordenamiento impide la identificación visual de agrupaciones coherentes.
+
+El panel derecho muestra la matriz de distancias cuánticas empleada en el enfoque QHRP. En este caso, la similitud entre activos se define mediante la distancia de Frobenius entre matrices densidad promedio. Al igual que en los dos paneles anteriores, la estructura jerárquica no es directamente observable debido a la disposición arbitraria de los activos.
+
+En conjunto, esta figura ilustra que ninguna de las métricas consideradas revela por sí misma una estructura jerárquica clara sin la aplicación del procedimiento de ordenamiento propio del algoritmo HRP. Su propósito es, por tanto, establecer una referencia visual previa al clustering jerárquico.
+
+\begin{figure}[Ejemplo de uso de figure]{FIG:CORR_MATRICES}
+{Matriz de distancia cuántica sin ordenar. La disposición arbitraria de los activos impide identificar patrones estructurales.}
+    \image{13cm}{}{fig3-corr-matrices}
 \end{figure}
 
-\begin{figure}[Ejemplo de uso de figure]{FIG:EJEMPLO}{Matriz de distancia cuántica tras el ordenamiento jerárquico. El reordenamiento revela agrupaciones coherentes de activos, evidenciando la estructura latente del mercado capturada por la representación cuántica.}
-        \image{13cm}{}{fig4-quantum-distance}
+
+
+\subsection{Efecto del ordenamiento jerárquico en la métrica cuántica}
+
+La Figura~\ref{FIG:QHRP_ORDERED} ilustra explícitamente el efecto del ordenamiento jerárquico aplicado a la matriz de distancias cuánticas, permitiendo evaluar la compatibilidad de dicha métrica con el algoritmo HRP.
+
+El panel izquierdo muestra la matriz de distancias cuánticas sin aplicar ningún tipo de ordenamiento, siendo equivalente al panel derecho de la Figura~\ref{FIG:CORR_MATRICES}. En esta representación, los activos se encuentran dispuestos de forma arbitraria, lo que impide identificar relaciones jerárquicas o agrupaciones coherentes.
+
+El panel derecho presenta la misma matriz de distancias cuánticas tras aplicar el orden obtenido a partir del dendrograma jerárquico construido mediante clustering. Como resultado del reordenamiento, emerge una estructura aproximadamente cuasi-diagonal, caracterizada por la aparición de bloques a lo largo de la diagonal principal.
+
+Esta estructura cuasi-diagonal es una propiedad fundamental del algoritmo HRP y constituye una verificación visual de que la métrica cuántica induce una jerarquía coherente entre activos. La figura no pretende ofrecer una interpretación económica directa de los bloques observados, sino demostrar que la distancia cuántica puede sustituir a la correlación clásica dentro del procedimiento HRP sin romper su estructura jerárquica.
+
+Las diferencias visuales respecto a las figuras presentadas en el trabajo original son esperables, ya que dependen del período temporal considerado, del conjunto de activos y de detalles de implementación. El criterio relevante es la aparición de estructura tras el ordenamiento jerárquico, y no la similitud visual exacta.
+
+\begin{figure}[Ejemplo de uso de figure]{FIG:QHRP_ORDERED}
+{Matriz de distancia cuántica tras el ordenamiento jerárquico. El reordenamiento revela agrupaciones coherentes de activos, evidenciando la estructura latente del mercado capturada por la representación cuántica.}
+    \image{13cm}{}{fig4-quantum-distance}
 \end{figure}
 
-El contraste entre ambas representaciones permite apreciar el valor del ordenamiento jerárquico como herramienta de análisis estructural, facilitando la interpretación cualitativa de las relaciones complejas entre activos financieros.
+
