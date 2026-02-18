@@ -69,10 +69,12 @@ for idx, ticker in enumerate(tickers, 1):
             
             if df is not None and not df.empty and len(df) > 1:
                 if isinstance(df, pd.DataFrame):
-                    if 'Adj Close' in df.columns:
-                        price_series = df['Adj Close']
-                    elif 'Close' in df.columns:
+                    # Use CLOSE prices (NOT Adj Close) — matches the author's
+                    # fetch_stock_data: price_data.xs('Close', level=0, axis=1)
+                    if 'Close' in df.columns:
                         price_series = df['Close']
+                    elif 'Adj Close' in df.columns:
+                        price_series = df['Adj Close']
                     else:
                         price_series = df.iloc[:, 0]
 
