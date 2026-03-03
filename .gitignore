@@ -3,6 +3,10 @@ qhrp-env/
 __pycache__/
 .ipynb_checkpoints/
 
+repos/
+
+src/results/cache/
+
 
 latex/*.acn
 latex/*.aux
