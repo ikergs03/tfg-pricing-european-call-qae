@@ -1,71 +1,71 @@
 # prepare_data.py
 #
-# EXACT replication of the author's fetch_stock_data pipeline from
-# quantum_hrp.py — no filtering, no custom features.
+# Replicación exacta del pipeline fetch_stock_data del autor en
+# quantum_hrp.py — sin filtrado ni features personalizadas.
 #
-# Pipeline (from quantum_hrp.py lines 249-310):
-#   1. Load prices (all tickers, including crypto/RIVN/LCID etc.)
-#   2. dropna(axis=1, how='all')   — drop tickers with zero data
-#   3. dropna(how='all')           — drop fully-NaN rows
-#   4. pct_change().dropna()       — returns, drop rows with ANY NaN
+# Pipeline (de quantum_hrp.py líneas 249-310):
+#   1. Cargar precios (todos los tickers, incluyendo crypto/RIVN/LCID etc.)
+#   2. dropna(axis=1, how='all')   — eliminar tickers sin datos
+#   3. dropna(how='all')           — eliminar filas completamente NaN
+#   4. pct_change().dropna()       — retornos, eliminar filas con CUALQUIER NaN
 #   5. compute_financial_features(returns, t, window=5):
-#        f1 = current return
-#        f2 = rolling mean  (window=5)
-#        f3 = rolling std   (window=5, ddof=1)
-#        f4 = cumulative return (window=5)
-#        f5 = skewness      (window=5, scipy.stats.skew)
-#        f6 = kurtosis      (window=5, scipy.stats.kurtosis, Fisher/excess)
+#        f1 = retorno actual
+#        f2 = media móvil  (ventana=5)
+#        f3 = desv. estándar móvil  (ventana=5, ddof=1)
+#        f4 = retorno acumulado (ventana=5)
+#        f5 = asimetría      (ventana=5, scipy.stats.skew)
+#        f6 = curtosis      (ventana=5, scipy.stats.kurtosis, Fisher/exceso)
 
 import pandas as pd
 import numpy as np
 from scipy import stats
 
 # ===============================
-# 1. Load raw prices
+# 1. Cargar precios brutos
 # ===============================
 prices_raw = pd.read_parquet("../data/prices.parquet")
 
-# Flatten MultiIndex columns from yfinance (e.g. ('SPY','SPY') → 'SPY')
+# Aplanar columnas MultiIndex de yfinance (ej. ('SPY','SPY') → 'SPY')
 if isinstance(prices_raw.columns, pd.MultiIndex):
     prices_raw.columns = prices_raw.columns.get_level_values(0)
 elif isinstance(prices_raw.columns[0], tuple):
     prices_raw.columns = [c[0] if isinstance(c, tuple) else c for c in prices_raw.columns]
 
-print(f"Raw prices: {prices_raw.shape}  ({prices_raw.index.min().date()} → {prices_raw.index.max().date()})")
-print(f"Raw NaN rate: {prices_raw.isna().sum().sum() / prices_raw.size * 100:.1f}%")
+print(f"Precios brutos: {prices_raw.shape}  ({prices_raw.index.min().date()} → {prices_raw.index.max().date()})")
+print(f"Tasa de NaN bruta: {prices_raw.isna().sum().sum() / prices_raw.size * 100:.1f}%")
 
 # ===============================
-# 2. Author's exact NaN handling (quantum_hrp.py lines 269-280)
+# 2. Manejo exacto de NaN del autor (quantum_hrp.py líneas 269-280)
 # ===============================
-# Drop tickers (columns) that are entirely NaN
+# Eliminar tickers (columnas) completamente NaN
 prices = prices_raw.dropna(axis=1, how='all')
-print(f"After dropna(axis=1, how='all'): {prices.shape}")
+print(f"Tras dropna(axis=1, how='all'): {prices.shape}")
 
-# Drop rows with all NaNs
+# Eliminar filas con todos NaN
 prices = prices.dropna(how='all')
-print(f"After dropna(how='all'): {prices.shape}")
+print(f"Tras dropna(how='all'): {prices.shape}")
 
 # ===============================
-# 3. Compute daily returns — author's exact approach
+# 3. Calcular retornos diarios — enfoque exacto del autor
 # ===============================
-# NOTE: pct_change() on a DataFrame with NaN holes produces NaN returns
-# at NaN→valid and valid→NaN transitions. Then dropna() (how='any')
-# removes ALL rows where ANY ticker has a NaN return.
-# With RIVN (first valid 2021-11-10), this truncates to ~1147 days.
+# NOTA: pct_change() en un DataFrame con huecos NaN produce retornos NaN
+# en las transiciones NaN→válido y válido→NaN. Luego dropna() (how='any')
+# elimina TODAS las filas donde CUALQUIER ticker tenga un retorno NaN.
+# Con RIVN (primer dato válido 2021-11-10), esto trunca a ~1147 días.
 asset_returns = prices.pct_change().dropna()
 
-# Flatten column names (ensure simple strings)
+# Aplanar nombres de columnas (asegurar strings simples)
 asset_returns.columns = [c[0] if isinstance(c, tuple) else c for c in asset_returns.columns]
 
 T, N = asset_returns.shape
-print(f"\nReturns: {asset_returns.shape}  (T={T}, N={N})")
-print(f"Date range: {asset_returns.index.min().date()} → {asset_returns.index.max().date()}")
+print(f"\nRetornos: {asset_returns.shape}  (T={T}, N={N})")
+print(f"Rango de fechas: {asset_returns.index.min().date()} → {asset_returns.index.max().date()}")
 
 asset_returns.to_csv("../data/returns.csv")
-print("✓ returns.csv saved")
+print("✓ returns.csv guardado")
 
 # ===============================
-# 4. Features — author's compute_financial_features(returns, t, window=5)
+# 4. Características — compute_financial_features del autor (returns, t, window=5)
 # ===============================
 P = 6
 WINDOW = 5
@@ -78,35 +78,35 @@ for i in range(N):
     asset_series = asset_returns_np[:, i]
 
     if (i + 1) % 20 == 0 or i == 0 or i == N - 1:
-        print(f"[{i+1:3d}/{N}] Computing features for {ticker}")
+        print(f"[{i+1:3d}/{N}] Calculando características para {ticker}")
 
     for t in range(T):
         ret = asset_series[t]
         start = max(0, t - WINDOW + 1)
         window_returns = asset_series[start:t+1]
 
-        f1 = ret                                        # current return
-        f2 = np.mean(window_returns)                    # rolling mean
-        f3 = np.std(window_returns, ddof=1)             # rolling std
-        f4 = np.prod(1 + window_returns) - 1            # cumulative return
-        f5 = stats.skew(window_returns)                 # skewness
-        f6 = stats.kurtosis(window_returns)             # excess kurtosis
+        f1 = ret                                        # retorno actual
+        f2 = np.mean(window_returns)                    # media móvil
+        f3 = np.std(window_returns, ddof=1)             # desv. estándar móvil
+        f4 = np.prod(1 + window_returns) - 1            # retorno acumulado
+        f5 = stats.skew(window_returns)                 # asimetría
+        f6 = stats.kurtosis(window_returns)             # curtosis (exceso)
 
         features[i, t, :] = np.array([f1, f2, f3, f4, f5, f6])
 
 # ===============================
-# 5. Save
+# 5. Guardar
 # ===============================
 np.save("../data/features.npy", features)
 
-# Also save the ticker list for reference
+# Guardar también la lista de tickers como referencia
 pd.Series(asset_returns.columns.tolist()).to_csv("../data/tickers.csv", index=False, header=["ticker"])
 
-print(f"\n✓ features.npy saved — shape {features.shape}")
-print(f"  NaN count in features: {np.isnan(features).sum()}")
-print(f"  Inf count in features: {np.isinf(features).sum()}")
-print(f"✓ tickers.csv saved — {N} tickers")
+print(f"\n✓ features.npy guardado — shape {features.shape}")
+print(f"  Cantidad de NaN en features: {np.isnan(features).sum()}")
+print(f"  Cantidad de Inf en features: {np.isinf(features).sum()}")
+print(f"✓ tickers.csv guardado — {N} tickers")
 
 print(f"\n✓ features.npy: {features.shape}")
-print(f"✓ Dimensions: (N_assets={N}, T={T}, P=6)")
-print(f"✓ tickers.csv: {N} tickers saved")
+print(f"✓ Dimensiones: (N_activos={N}, T={T}, P=6)")
+print(f"✓ tickers.csv: {N} tickers guardados")

@@ -40,7 +40,7 @@ tickers = [
 start_date = '2005-01-01'  # Desde 2005
 end_date = '2025-01-01'     # Hasta 2025
 # VENTANA WALK-FORWARD:
-# - Training: 756 días (approx. 3 años)
+# - Entrenamiento: 756 días (aprox. 3 años)
 # - Test: 21 días (aprox. 1 mes)
 
 print(f"Descargando datos de {len(tickers)} tickers...")
@@ -58,7 +58,7 @@ for idx, ticker in enumerate(tickers, 1):
         try:
             print(f"[{idx:3d}/{len(tickers)}] Descargando {ticker:12s} (intento {attempt+1}/{max_retries})", end='', flush=True)
             
-            # Descargar con timeout
+            # Descargar con límite de tiempo
             df = yf.download(
                 ticker,
                 start=start_date,
@@ -69,8 +69,6 @@ for idx, ticker in enumerate(tickers, 1):
             
             if df is not None and not df.empty and len(df) > 1:
                 if isinstance(df, pd.DataFrame):
-                    # Use CLOSE prices (NOT Adj Close) — matches the author's
-                    # fetch_stock_data: price_data.xs('Close', level=0, axis=1)
                     if 'Close' in df.columns:
                         price_series = df['Close']
                     elif 'Adj Close' in df.columns:
