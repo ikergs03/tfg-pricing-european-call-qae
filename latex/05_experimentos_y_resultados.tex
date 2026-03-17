@@ -1,14 +1,288 @@
 \chapter{Experimentos y Resultados}
 \label{cap:experimentos_resultados}
 
-% NOTA: Esta es una plantilla. Reemplaza el contenido con tu propia introducción.
-% Puedes usar \section, \subsection, figuras, tablas, ecuaciones, código, etc.
-
 \section{Experimentos}
 \label{sec:experimentos}
-En esta sección se presenta el contexto general del trabajo. Aquí debes explicar el área de investigación o el problema que abordas. Por ejemplo:
+En este capítulo se evalúa el comportamiento fuera de muestra de las estrategias construidas con la metodología del Capítulo~\ref{sec:analisis_metodologia}. El objetivo no es solo comparar rentabilidad ajustada por riesgo, sino también analizar el coste computacional de cada enfoque para estudiar el compromiso entre calidad de solución y tiempo de ejecución.
+
+\subsection{Diseño experimental}
+La evaluación se realiza mediante un esquema \textit{walk-forward} con ventanas deslizantes:
+
+\begin{itemize}
+	\item Ventana de entrenamiento: 756 días de mercado (aprox. 3 años).
+	\item Ventana de test: 21 días (aprox. 1 mes).
+	\item Número de ventanas evaluadas: 18.
+\end{itemize}
+
+En cada ventana, los pesos se estiman con datos de entrenamiento y se evalúan exclusivamente en el bloque temporal posterior. Este protocolo evita fuga de información y reproduce un uso operativo realista.
+
+\subsection{Métodos comparados}
+Se comparan cinco estrategias:
+
+\begin{itemize}
+	\item \textbf{HRP Cuántico (QHRP):} ordenación jerárquica a partir de distancias entre matrices densidad.
+	\item \textbf{HRP Clásico:} ordenación jerárquica basada en distancia de correlación.
+	\item \textbf{HRP Kernel:} ordenación jerárquica basada en distancia MMD gaussiana.
+	\item \textbf{Markowitz (varianza inversa):} asignación proporcional al inverso de la varianza diagonal.
+	\item \textbf{Pesos Iguales (1/N):} cartera equiponderada como línea base.
+\end{itemize}
+
+\subsection{Métricas de evaluación}
+Para cada método y cada ventana se computan:
+
+\begin{itemize}
+	\item \textbf{Sharpe ratio anualizado}, como medida principal de rendimiento ajustado por riesgo.
+	\item \textbf{PSR (Probabilistic Sharpe Ratio)}, para cuantificar la probabilidad de superar un Sharpe objetivo.
+	\item \textbf{MinTRL}, reportado para las variantes HRP como indicador de robustez estadística de la señal.
+\end{itemize}
+
+Adicionalmente, se agregan todos los retornos fuera de muestra por método para obtener un Sharpe global acumulado.
 
 
 \section{Resultados}
 \label{sec:resultados}
-El análisis de portafolios financieros es un área fundamental en la gestión de inversiones. Con
+
+\subsection{Lectura de tablas y figuras}
+Las salidas se presentan en tres niveles complementarios:
+
+\begin{itemize}
+	\item \textbf{Tabla 1:} resume estadísticas por ventana (media y dispersión de Sharpe/PSR).
+	\item \textbf{Tabla 2:} resume el Sharpe agregado fuera de muestra para todo el horizonte.
+	\item \textbf{Tabla 3:} resume coste computacional por etapa y por método.
+\end{itemize}
+
+Las figuras asociadas (histogramas y barras) permiten interpretar la distribución de resultados, no solo su media.
+
+\begin{table}[Rendimiento walk-forward]{TB:WALKFORWARD}{Rendimiento walk-forward por ventana (18 ventanas).}
+\begin{tabular}{lccc}
+\hline
+\textbf{Método} & \textbf{Sharpe medio} & \textbf{Sharpe desv.} & \textbf{PSR medio} \\
+\hline
+HRP Cuántico & 1.5016 & 3.7837 & 0.6191 \\
+HRP Clásico & 1.2754 & 3.9986 & 0.5976 \\
+HRP Kernel & 1.2928 & 3.7140 & 0.6054 \\
+Markowitz & 1.3449 & 3.7788 & 0.6089 \\
+Pesos Iguales & 1.5076 & 3.9906 & 0.6113 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[Sharpe agregado OOS]{TB:SHARPEAGREGADO}{Sharpe agregado fuera de muestra (18 ventanas).}
+\begin{tabular}{lc}
+\hline
+\textbf{Método} & \textbf{Sharpe OOS agregado} \\
+\hline
+HRP Cuántico & 1.4441 \\
+HRP Clásico & 1.2378 \\
+HRP Kernel & 1.1803 \\
+Markowitz & 1.2518 \\
+Pesos Iguales & 1.3193 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[Coste computacional]{TB:COSTECOMPUTACIONAL}{Coste computacional medio por ventana ($N=169$, $P=6$).}
+\begin{tabular}{lcc}
+\hline
+\textbf{Etapa / Método} & \textbf{Media (s)} & \textbf{Desv. (s)} \\
+\hline
+Matrices densidad (cuántico) & 1903.279 & 290.486 \\
+Distancia Frobenius (cuántico) & 6.284 & 19.258 \\
+Ordenación cuántica (Ward) & 0.004 & 0.005 \\
+Ordenación clásica (correlación) & 0.069 & 0.015 \\
+Ordenación kernel (MMD) & 510.007 & 119.269 \\
+Covarianza y pesos & 1.536 & 0.290 \\
+\hline
+TOTAL HRP Cuántico & 1909.566 & 291.434 \\
+TOTAL HRP Clásico & 0.069 & 0.015 \\
+TOTAL HRP Kernel & 510.007 & 119.269 \\
+\hline
+\end{tabular}
+\end{table}
+
+La Tabla~\ref{TB:WALKFORWARD} permite comparar estabilidad y dispersión por ventana, mientras que la Tabla~\ref{TB:SHARPEAGREGADO} resume el rendimiento acumulado fuera de muestra. La Tabla~\ref{TB:COSTECOMPUTACIONAL} cuantifica el coste de cada enfoque y hace explícito el compromiso rendimiento--coste.
+
+\begin{figure}[Distribución Sharpe y PSR]{FIG:TABLE1_HISTS}
+{Histogramas de Sharpe y PSR por ventana para las estrategias comparadas. Permiten observar estabilidad, dispersión y sensibilidad de cada método.}
+	\image{14cm}{}{table1-sharpe-histograms}
+\end{figure}
+
+\begin{figure}[Sharpe agregado]{FIG:TABLE2_AGG}
+{Comparación del Sharpe fuera de muestra agregado por método. Esta figura resume el rendimiento global acumulado sobre las ventanas evaluadas.}
+	\image{11cm}{}{table2-aggregated-sharpe}
+\end{figure}
+
+\subsection{Relación entre estructura visual y desempeño}
+La comparación de matrices ordenadas y no ordenadas del Capítulo~\ref{sec:analisis_metodologia} ayuda a interpretar por qué en algunos casos el panel derecho ofrece mejor desempeño que el izquierdo. El panel ordenado concentra activos similares en bloques cuasi-diagonales, lo que favorece particiones más coherentes en la bisección recursiva de HRP. En consecuencia, se reduce la mezcla de activos poco afines dentro de subcarteras y mejora la asignación de riesgo.
+
+Esta relación no es determinista: una imagen más ``limpia'' no garantiza siempre mejor Sharpe, pero sí indica que el método de distancia está capturando estructura jerárquica relevante.
+
+\subsection{Validación por permutación de activos (\textit{shuffled})}
+Como comprobación de robustez, se realizó un experimento adicional permutando aleatoriamente el orden de los activos en la entrada. Esta prueba no cambia la información financiera subyacente, pero sí altera la disposición visual inicial de las matrices.
+
+El resultado esperado es doble:
+
+\begin{itemize}
+	\item En matrices \textbf{sin ordenar}, la apariencia visual cambia al cambiar el orden de filas y columnas.
+	\item En matrices \textbf{ordenadas} mediante HRP/QHRP, la estructura de bloques debe mantenerse esencialmente equivalente, ya que el clustering depende de distancias y no del índice original de cada activo.
+\end{itemize}
+
+\begin{figure}[Validación shuffled en correlación]{FIG:SHUFFLED_CORR}
+{Test de permutación para matrices de correlación. Al permutar activos, los paneles sin ordenar cambian, mientras que los paneles ordenados conservan la estructura jerárquica esperada.}
+	\image{13cm}{}{fig3-shuffled}
+\end{figure}
+
+\begin{figure}[Validación shuffled en distancia cuántica]{FIG:SHUFFLED_QDIST}
+{Test de permutación para matrices de distancia cuántica. La permutación afecta la representación no ordenada, pero la ordenación jerárquica recupera patrones de bloques coherentes.}
+	\image{13cm}{}{fig4-shuffled}
+\end{figure}
+
+Esta validación refuerza que la mejora observada al pasar del panel izquierdo (sin ordenar) al derecho (ordenado) no es un artefacto del orden inicial de columnas, sino una consecuencia del procedimiento jerárquico de ordenación.
+
+\subsection{Cinco desordenaciones distintas: resultado cuantitativo}
+Para reforzar la validación por permutación, se repitió el experimento con cinco semillas distintas. La Tabla~\ref{TB:FIVEPERMS} resume las métricas obtenidas:
+
+\begin{itemize}
+	\item \textbf{gain\_classical}: incremento de estructura de bloques tras ordenar por HRP clásico respecto a la matriz sin ordenar.
+	\item \textbf{gain\_quantum}: incremento de estructura de bloques tras ordenar por QHRP respecto a la matriz sin ordenar.
+	\item \textbf{sim\_\*\_vs\_ref}: similitud estructural frente a la referencia original ordenada.
+\end{itemize}
+
+\begin{table}[Cinco permutaciones de activos]{TB:FIVEPERMS}{Resultados del test con cinco desordenaciones distintas de activos.}
+\begin{tabular}{cccccc}
+\hline
+\textbf{perm} & \textbf{seed} & \textbf{gain\_classical} & \textbf{gain\_quantum} & \textbf{sim\_classical} & \textbf{sim\_quantum} \\
+\hline
+1 & 11 & 0.1402 & 0.0234 & 1.0000 & 1.0000 \\
+2 & 22 & 0.1479 & 0.0314 & 1.0000 & 1.0000 \\
+3 & 33 & 0.1421 & 0.0253 & 1.0000 & 1.0000 \\
+4 & 44 & 0.1448 & 0.0280 & 1.0000 & 1.0000 \\
+5 & 55 & 0.1472 & 0.0307 & 1.0000 & 1.0000 \\
+\hline
+\textbf{Media} & -- & \textbf{0.1444} & \textbf{0.0278} & \textbf{1.0000} & \textbf{1.0000} \\
+\hline
+\end{tabular}
+\end{table}
+
+Estos resultados confirman dos conclusiones importantes. Primero, la estabilidad es máxima: la similitud estructural es 1.0 en las cinco corridas tanto para HRP clásico como para QHRP, lo que indica invarianza del ordenamiento respecto al índice inicial de los activos. Segundo, ambas ordenaciones mejoran la estructura respecto al caso sin ordenar (\textit{gain} positivo en todos los casos), aunque la métrica de \textit{blockiness} definida sobre correlación favorece de forma natural al ordenamiento clásico, al estar alineada con su criterio de construcción.
+
+La interpretación correcta, por tanto, no es que una permutación concreta ``gane'' por azar, sino que la reorganización jerárquica es robusta a desordenaciones de entrada y produce patrones consistentes en las cinco pruebas.
+
+\subsection{Comparativa entre enfoques clásico, kernel y cuántico}
+El enfoque clásico ofrece un coste muy bajo y buena robustez operativa, pero se basa en correlación lineal. El enfoque kernel introduce no linealidad sin recurrir a simulación cuántica, actuando como alternativa intermedia. El enfoque cuántico extiende la representación a un espacio de Hilbert de dimensión $2^P$, permitiendo modelar relaciones de mayor complejidad entre características.
+
+Desde el punto de vista empírico, la comparación debe hacerse en dos ejes:
+
+\begin{itemize}
+	\item \textbf{Calidad financiera:} Sharpe, PSR y estabilidad por ventana.
+	\item \textbf{Coste computacional:} tiempo total por ventana y escalabilidad con el número de características.
+\end{itemize}
+
+\subsection{Comparación con el paper original}
+Para evaluar el grado de reproducibilidad, se comparan los resultados de este trabajo con los reportados por el paper original de QHRP en tres dimensiones: (i) ranking relativo entre métodos, (ii) magnitud de Sharpe fuera de muestra y (iii) comportamiento visual de las matrices ordenadas.
+
+En este trabajo, el ranking por Sharpe agregado fuera de muestra (Tabla~\ref{TB:SHARPEAGREGADO}) es:
+
+\begin{center}
+QHRP (1.4441) $>$ Pesos Iguales (1.3193) $>$ Markowitz (1.2518) $>$ HRP Clásico (1.2378) $>$ HRP Kernel (1.1803).
+\end{center}
+
+En términos de reproducibilidad, el criterio principal no es la coincidencia exacta en valores absolutos, sino la consistencia cualitativa: que QHRP mantenga un desempeño competitivo frente al HRP clásico y que la ordenación cuántica siga revelando estructura jerárquica coherente en las matrices reordenadas.
+
+\begin{table}[Comparación con paper original (Tabla 1)]{TB:COMPARACIONPAPER_T1}{Comparación de métricas por ventana con la Tabla 1 del paper original.}
+\begin{tabular}{lccc}
+\hline
+\textbf{Método} & \textbf{Sharpe medio (este/paper)} & \textbf{Desv. Sharpe (este/paper)} & \textbf{PSR medio (este/paper)} \\
+\hline
+QHRP & 1.5016 / 1.4658 & 3.7837 / 3.7234 & 0.6191 / 0.6172 \\
+HRP Clásico & 1.2754 / 1.2190 & 3.9986 / 3.8598 & 0.5976 / 0.5970 \\
+HRP Kernel & 1.2928 / 1.2944 & 3.7140 / 3.6671 & 0.6054 / 0.6055 \\
+Markowitz & 1.3449 / 1.3474 & 3.7788 / 3.7785 & 0.6089 / 0.6093 \\
+Pesos Iguales & 1.5076 / 1.3565 & 3.9906 / 3.9065 & 0.6113 / 0.6043 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[Comparación con paper original (Tabla 2)]{TB:COMPARACIONPAPER_T2}{Comparación de Sharpe agregado fuera de muestra con la Tabla 2 del paper original.}
+\begin{tabular}{lcc}
+\hline
+\textbf{Método} & \textbf{Este trabajo} & \textbf{Paper original} \\
+\hline
+QHRP & 1.4441 & 1.3975 \\
+HRP Clásico & 1.2378 & 1.1378 \\
+HRP Kernel & 1.1803 & 1.2186 \\
+Markowitz & 1.2518 & 1.2557 \\
+Pesos Iguales & 1.3193 & 1.1983 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[Comparación visual Fig. 3 (paper)]{FIG:COMP_PAPER_FIG3_PAPER}{Figura de correlaciones reordenadas reportada en el paper original.}
+	\image{12.5cm}{}{paper-fig3}
+\end{figure}
+
+\begin{figure}[Comparación visual Fig. 3 (este trabajo)]{FIG:COMP_PAPER_FIG3_THIS}{Figura de correlaciones reordenadas obtenida en este trabajo con el mismo esquema metodológico.}
+	\image{12.5cm}{}{fig3-corr-matrices}
+\end{figure}
+
+\begin{figure}[Comparación visual Fig. 4 (paper)]{FIG:COMP_PAPER_FIG4_PAPER}{Figura de distancias cuánticas reportada en el paper original.}
+	\image{12.5cm}{}{paper-fig4}
+\end{figure}
+
+\begin{figure}[Comparación visual Fig. 4 (este trabajo)]{FIG:COMP_PAPER_FIG4_THIS}{Figura de distancias cuánticas obtenida en este trabajo.}
+	\image{12.5cm}{}{fig4-best-match}
+\end{figure}
+
+En comparación directa con el paper, los resultados son globalmente consistentes en que QHRP se mantiene en primera posición por Sharpe agregado. No obstante, aparecen diferencias en el bloque intermedio del ranking: en este trabajo, Pesos Iguales y HRP Clásico superan a HRP Kernel en Sharpe agregado, mientras que en el paper HRP Kernel queda por encima de ambos. En términos de magnitud, la diferencia de QHRP respecto al paper es moderada (+0.0466 en Sharpe agregado), lo que sugiere una reproducción razonable con variaciones esperables por muestra, preprocesado y detalles de implementación.
+
+La comparación con el paper también se extiende al plano visual. Al contrastar las Figuras~\ref{FIG:COMP_PAPER_FIG3_PAPER} y~\ref{FIG:COMP_PAPER_FIG3_THIS}, así como las Figuras~\ref{FIG:COMP_PAPER_FIG4_PAPER} y~\ref{FIG:COMP_PAPER_FIG4_THIS}, el patrón cualitativo principal se conserva: al pasar de la matriz sin ordenar a la ordenada aparecen bloques cuasi-diagonales y una estructura jerárquica más interpretable. En cambio, la forma exacta, tamaño y contraste de los bloques no coincide de manera punto a punto con el paper, lo cual es esperable y no invalida la reproducción.
+
+Para evaluar esta parte visual, el criterio adoptado en este trabajo es estructural (no pixel a pixel):
+
+\begin{itemize}
+	\item \textbf{Compatibilidad jerárquica:} la ordenación debe inducir agrupaciones estables y coherentes.
+	\item \textbf{Separación visual de clústeres:} deben apreciarse bloques de alta similitud interna y menor similitud entre bloques.
+	\item \textbf{Consistencia con métricas:} la mejora estructural observada en las imágenes debe estar alineada con resultados cuantitativos competitivos en Sharpe/PSR.
+\end{itemize}
+
+Bajo estos criterios, las imágenes obtenidas en este trabajo son comparables a las del paper en términos metodológicos, aunque presenten diferencias estéticas o de granularidad local.
+
+Las diferencias entre este trabajo y el paper pueden explicarse, de forma no excluyente, por:
+
+\begin{itemize}
+	\item \textbf{Universo de activos y periodo temporal:} pequeñas variaciones en tickers o fechas cambian la estructura de correlaciones y volatilidades.
+	\item \textbf{Preprocesado de datos:} política de \texttt{dropna}, alineamiento temporal y normalización afectan de forma directa a covarianzas y distancias.
+	\item \textbf{Definición de características:} cambios en la ingeniería de \textit{features} (momentos estadísticos frente a transformaciones previas) alteran la geometría en el espacio de estados.
+	\item \textbf{Parámetros del modelo:} elección de $\alpha$ en el mapeo cuántico, factor de escala en Frobenius y $\sigma$ del kernel MMD.
+	\item \textbf{Detalles de implementación HRP:} método de enlace jerárquico y tratamiento de empates/orden de hojas en el dendrograma.
+	\item \textbf{Simulación cuántica vs ejecución nativa:} en este trabajo se usa simulación clásica de circuitos, lo que puede introducir diferencias numéricas y de coste respecto a otros entornos.
+\end{itemize}
+
+Por tanto, si los valores absolutos difieren pero se conserva el patrón cualitativo (QHRP competitivo y estructura cuasi-diagonal tras ordenación), la reproducción puede considerarse satisfactoria desde el punto de vista metodológico.
+
+\subsection{Coste computacional y escalabilidad}
+La Figura~\ref{FIG:TIME_COST} muestra que el coste del método cuántico está dominado por la simulación de circuitos para construir matrices densidad promedio. En la configuración evaluada ($N=169$, $P=6$), el tiempo medio por ventana es aproximadamente:
+
+\begin{itemize}
+	\item HRP Cuántico: \(\sim 1910\,\mathrm{s}\)
+	\item HRP Kernel: \(\sim 510\,\mathrm{s}\)
+	\item HRP Clásico: \(\sim 0.07\,\mathrm{s}\)
+\end{itemize}
+
+Esto implica una razón aproximada cuántico/clásico de \(\sim 2.8\times 10^4\). El resultado no invalida el enfoque cuántico, pero sí obliga a explicitar el contexto: en este trabajo se usa simulación clásica de circuitos. En hardware cuántico nativo, el perfil temporal esperado puede ser distinto.
+
+\begin{figure}[Coste computacional]{FIG:TIME_COST}
+{Comparativa de tiempo por método y por ventana. Se observa que la etapa dominante del enfoque cuántico es la construcción de matrices densidad, mientras que el enfoque clásico tiene coste prácticamente despreciable en la misma escala.}
+	\image{15cm}{}{tabla3-tiempos-computacionales}
+\end{figure}
+
+Además, el crecimiento con el número de características debe interpretarse de forma distinta según el método:
+
+\begin{itemize}
+	\item \textbf{Clásico:} depende principalmente de estimar correlaciones/covarianzas y clustering sobre \(N\).
+	\item \textbf{Kernel:} aumenta con las comparaciones MMD entre series multivariantes.
+	\item \textbf{Cuántico:} la dimensión de estado crece como \(2^P\), por lo que el coste de simulación se vuelve el factor crítico al aumentar \(P\).
+\end{itemize}
+
+\subsection{Síntesis}
+Los resultados muestran que no existe un método universalmente dominante: la elección depende del equilibrio deseado entre expresividad del modelo y coste computacional. El enfoque cuántico aporta una representación más rica de dependencias no lineales; el clásico aporta eficiencia extrema; y el kernel se sitúa como compromiso intermedio. Esta lectura conjunta (rendimiento + coste) es la base para la discusión final del capítulo de conclusiones.
