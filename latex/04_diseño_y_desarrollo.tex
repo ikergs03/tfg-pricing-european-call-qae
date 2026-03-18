@@ -51,6 +51,46 @@ El modelo cuántico se implementa mediante circuitos parametrizados. Cada observ
 
 Para cada activo, dichas matrices se agregan mediante un promedio temporal, obteniendo una matriz densidad representativa del comportamiento global del activo. Todas las operaciones se realizan mediante simuladores de estado (\texttt{statevector\_simulator}), garantizando un entorno reproducible.
 
+\subsection{Circuito cuántico reproducido del paper}
+\label{sec:circuito_reproducido_paper}
+
+Como parte de la validación metodológica, se reproduce de forma explícita el circuito de referencia utilizado en el paper para el caso de seis qubits. La secuencia implementada incluye: (i) compuertas Hadamard en todos los qubits, (ii) rotaciones \texttt{RY} y \texttt{RX} parametrizadas por las características, (iii) compuertas de entrelazamiento tipo \texttt{CNOT} por pares y (iv) medición final en base computacional.
+
+Esta representación se incorpora para dejar trazabilidad del diseño del ansatz y facilitar la comparación entre la formulación teórica y su implementación práctica. En el repositorio, la construcción de esta figura está disponible en el notebook de la Figura 1.
+
+\begin{figure}[Circuito cuántico reproducido del paper]{FIG:CIRCUITO_PAPER_QHRP}
+{Circuito cuántico de 6 qubits reproducido a partir del paper. Se muestran compuertas de inicialización, codificación parametrizada, entrelazamiento y medición final.}
+    \image{16cm}{}{fig1-circuito-paper-qhrp}
+\end{figure}
+
+\subsection{Reproducibilidad: entorno, versiones y trazabilidad}
+\label{sec:reproducibilidad_entorno}
+
+Con el objetivo de facilitar la réplica de los resultados, el proyecto mantiene dos ficheros de dependencias:
+\begin{itemize}
+    \item \texttt{requirements\_paper\_qiskit.txt}: entorno compatible con la versión usada para reproducir el pipeline del paper.
+    \item \texttt{requirements\_act\_qiskit.txt}: entorno actualizado para pruebas recientes y extensiones.
+\end{itemize}
+
+En particular, se documentan explícitamente las librerías clave de cálculo científico,
+de visualización y de computación cuántica utilizadas en los experimentos.
+
+Para cálculo científico se emplean \texttt{numpy}, \texttt{scipy} y \texttt{pandas};
+para visualización, \texttt{matplotlib} y \texttt{seaborn};
+y para computación cuántica, \texttt{qiskit} y módulos asociados.
+
+Para ejecutar el código en backend real de IBM, es necesario instalar 
+\texttt{qiskit-ibm-runtime} y proporcionar credenciales válidas de IBM Quantum.
+
+La trazabilidad experimental se apoya en la separación entre:
+\begin{itemize}
+    \item Notebook principal de resultados y figuras metodológicas.
+    \item Notebook independiente para prueba en hardware real (sin alterar el flujo principal).
+    \item Módulo específico de hardware cuántico, separado del módulo de simulación.
+\end{itemize}
+
+Esta organización permite distinguir con claridad resultados en simulación ideal, resultados en ejecución hardware y resultados de comparación con el paper, reduciendo ambiguedades en la interpretación.
+
 \subsection{Cálculo de distancias y estructura jerárquica}
 \label{sec:calculo_distancias_estructura}
 

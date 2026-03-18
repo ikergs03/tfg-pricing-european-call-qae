@@ -37,6 +37,17 @@ Posteriormente, para cada activo se construye una matriz densidad promedio defin
 
 Esta formulación permite capturar la distribución completa de las observaciones del activo en el espacio de Hilbert, proporcionando una representación más informativa que los estadísticos clásicos de segundo orden.
 
+\section{Justificación del ansatz cuántico}
+\label{sec:justificacion_ansatz}
+
+El circuito utilizado en este trabajo puede interpretarse como un \textbf{ansatz de codificación} (feature map) diseñado para equilibrar expresividad y coste computacional. En lugar de optimizar una arquitectura arbitraria, se emplea una estructura fija y repetible de puertas de un qubit (H, T, RY, RX) y puertas de dos qubits (iSWAP) sobre pares predefinidos.
+
+La justificación de este ansatz es doble. Por un lado, las rotaciones parametrizadas por las características financieras introducen dependencia no lineal respecto a los datos de entrada. Por otro, las puertas de entrelazamiento mezclan la información entre qubits y permiten modelar interacciones entre características que no aparecen en representaciones lineales clásicas.
+
+Además, el diseño mantiene una profundidad moderada para ser compatible con escenarios NISQ y con simulación reproducible. El parámetro de escala $\alpha$ controla la sensibilidad del embedding: valores bajos reducen contraste entre activos y valores altos pueden amplificar ruido; por ello se fija una configuración estable y coherente entre experimentos.
+
+En consecuencia, el ansatz no se presenta como la arquitectura óptima universal, sino como una aproximación razonable y trazable para trasladar el problema financiero a un espacio cuántico de dimensión $2^P$ manteniendo interpretabilidad metodológica.
+
 \section{Métrica de distancia cuántica}
 \label{sec:metrica_distancia_cuantica}
 La similitud entre activos se cuantifica mediante la distancia de Frobenius entre sus matrices densidad promedio. Para dos activos $i$ y $j$, dicha distancia se define como:

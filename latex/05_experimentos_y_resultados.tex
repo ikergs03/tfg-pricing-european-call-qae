@@ -192,7 +192,7 @@ En términos de reproducibilidad, el criterio principal no es la coincidencia ex
 \begin{table}[Comparación con paper original (Tabla 1)]{TB:COMPARACIONPAPER_T1}{Comparación de métricas por ventana con la Tabla 1 del paper original.}
 \begin{tabular}{lccc}
 \hline
-\textbf{Método} & \textbf{Sharpe medio (este/paper)} & \textbf{Desv. Sharpe (este/paper)} & \textbf{PSR medio (este/paper)} \\
+\textbf{Método} & \textbf{Sharpe (est./pap.)} & \textbf{Desv. (est./pap.)} & \textbf{PSR (est./pap.)} \\
 \hline
 QHRP & 1.5016 / 1.4658 & 3.7837 / 3.7234 & 0.6191 / 0.6172 \\
 HRP Clásico & 1.2754 / 1.2190 & 3.9986 / 3.8598 & 0.5976 / 0.5970 \\
@@ -233,16 +233,24 @@ Pesos Iguales & 1.3193 & 1.1983 \\
 	\image{12.5cm}{}{fig4-best-match}
 \end{figure}
 
-En comparación directa con el paper, los resultados son globalmente consistentes en que QHRP se mantiene en primera posición por Sharpe agregado. No obstante, aparecen diferencias en el bloque intermedio del ranking: en este trabajo, Pesos Iguales y HRP Clásico superan a HRP Kernel en Sharpe agregado, mientras que en el paper HRP Kernel queda por encima de ambos. En términos de magnitud, la diferencia de QHRP respecto al paper es moderada (+0.0466 en Sharpe agregado), lo que sugiere una reproducción razonable con variaciones esperables por muestra, preprocesado y detalles de implementación.
+En comparación directa con el paper, los resultados son consistentes: QHRP mantiene la primera posición en Sharpe agregado. Sin embargo, aparecen diferencias en el ranking intermedio.
 
-La comparación con el paper también se extiende al plano visual. Al contrastar las Figuras~\ref{FIG:COMP_PAPER_FIG3_PAPER} y~\ref{FIG:COMP_PAPER_FIG3_THIS}, así como las Figuras~\ref{FIG:COMP_PAPER_FIG4_PAPER} y~\ref{FIG:COMP_PAPER_FIG4_THIS}, el patrón cualitativo principal se conserva: al pasar de la matriz sin ordenar a la ordenada aparecen bloques cuasi-diagonales y una estructura jerárquica más interpretable. En cambio, la forma exacta, tamaño y contraste de los bloques no coincide de manera punto a punto con el paper, lo cual es esperable y no invalida la reproducción.
+En este trabajo, Pesos Iguales y HRP Clásico superan a HRP Kernel en Sharpe agregado. En el paper original, HRP Kernel queda por encima de ambos. La diferencia de QHRP respecto al paper es moderada (+0.0466 en Sharpe agregado). Esta variación es razonable dadas las diferencias en muestra, preprocesado e implementación.
 
-Para evaluar esta parte visual, el criterio adoptado en este trabajo es estructural (no pixel a pixel):
+Se realiza una comparación visual entre este trabajo y el paper.
+
+Para la Figura 3 se contrastan: la Figura~\ref{FIG:COMP_PAPER_FIG3_PAPER} (paper) frente a la Figura~\ref{FIG:COMP_PAPER_FIG3_THIS} (este trabajo). Para la Figura 4 se contrastan: la Figura~\ref{FIG:COMP_PAPER_FIG4_PAPER} (paper) frente a la Figura~\ref{FIG:COMP_PAPER_FIG4_THIS} (este trabajo).
+
+El patrón cualitativo principal se conserva: al pasar de la matriz sin ordenar a la ordenada aparecen bloques cuasi-diagonales y estructura jerárquica más clara.
+
+La forma exacta, tamaño y contraste de los bloques no coincide punto a punto con el paper. Esta discrepancia es esperable y no invalida la reproducción metodológica.
+
+Para evaluar esta parte visual, se adopta un criterio estructural:
 
 \begin{itemize}
-	\item \textbf{Compatibilidad jerárquica:} la ordenación debe inducir agrupaciones estables y coherentes.
-	\item \textbf{Separación visual de clústeres:} deben apreciarse bloques de alta similitud interna y menor similitud entre bloques.
-	\item \textbf{Consistencia con métricas:} la mejora estructural observada en las imágenes debe estar alineada con resultados cuantitativos competitivos en Sharpe/PSR.
+	\item \textbf{Compatibilidad jerárquica:} agrupaciones estables y coherentes en la ordenación.
+	\item \textbf{Separación visual:} bloques de alta similitud interna y menor similitud entre bloques.
+	\item \textbf{Consistencia:} alineación entre estructura visual y resultados cuantitativos (Sharpe/PSR).
 \end{itemize}
 
 Bajo estos criterios, las imágenes obtenidas en este trabajo son comparables a las del paper en términos metodológicos, aunque presenten diferencias estéticas o de granularidad local.
