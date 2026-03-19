@@ -65,7 +65,7 @@ def quantum_feature_map_density(x, x_min, x_max, alpha=2.0):
     theta = np.zeros(n)
     for i in range(n):
         if x_max[i] > x_min[i]:
-            theta[i] = alpha * pi * (x[i] - x_min[i]) / (x_max[i] - x_min[i])
+            theta[i] = alpha * pi * (x[i] - x_min[i]) / (x_max[i] - x_min[i]) #revisar esto
         else:
             theta[i] = 0
     qc = QuantumCircuit(n)
