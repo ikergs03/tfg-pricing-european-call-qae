@@ -22,6 +22,7 @@ import math
 import numpy as np
 
 from qiskit import QuantumCircuit, transpile
+from qiskit.quantum_info import DensityMatrix, Statevector
 from scipy.cluster.hierarchy import linkage, leaves_list
 from scipy.spatial.distance import squareform
 
@@ -279,9 +280,69 @@ def compute_asset_distributions_hardware(
     return out
 
 
+def average_density_matrix(
+    asset_data: np.ndarray,
+    alpha: float = 2.0,
+    entanglement_pairs: Optional[Sequence[Tuple[int, int]]] = None,
+) -> np.ndarray:
+    """Compute average density matrix for one asset in ideal simulation.
+
+    asset_data shape: (T, P)
+    Returns a (2^P, 2^P) complex matrix.
+    """
+    t_steps, p_features = asset_data.shape
+    x_min = np.min(asset_data, axis=0)
+    x_max = np.max(asset_data, axis=0)
+
+    rho_acc = np.zeros((2**p_features, 2**p_features), dtype=complex)
+    for t in range(t_steps):
+        qc = build_feature_map_circuit(
+            asset_data[t],
+            x_min=x_min,
+            x_max=x_max,
+            alpha=alpha,
+            entanglement_pairs=entanglement_pairs,
+            with_measurements=False,
+        )
+        sv = Statevector.from_instruction(qc)
+        rho_acc += DensityMatrix(sv).data
+
+    return rho_acc / max(t_steps, 1)
+
+
+def trace_distance(rho_a: np.ndarray, rho_b: np.ndarray) -> float:
+    """Compute the trace distance between two density matrices."""
+    delta = rho_a - rho_b
+    eigvals = np.linalg.eigvalsh(delta)
+    return float(0.5 * np.sum(np.abs(eigvals)))
+
+
+def compute_distance_matrix(rho_list: Sequence[np.ndarray]) -> np.ndarray:
+    """Build NxN trace-distance matrix from per-asset density matrices."""
+    n_assets = len(rho_list)
+    d = np.zeros((n_assets, n_assets), dtype=float)
+
+    for i in range(n_assets):
+        for j in range(i + 1, n_assets):
+            val = trace_distance(rho_list[i], rho_list[j])
+            d[i, j] = val
+            d[j, i] = val
+
+    return d
+
+
+def quantum_ordering(D: np.ndarray, method: str = "ward") -> np.ndarray:
+    """Get hierarchical ordering from a symmetric distance matrix."""
+    condensed = squareform(D)
+    z = linkage(condensed, method=method)
+    return leaves_list(z)
+
+
 def get_ibm_backend(
     min_num_qubits: int = 6,
-    channel: str = "ibm_quantum",
+    channel: str = "ibm_quantum_platform",
+    account_name: Optional[str] = "labqcc-2025",
+    backend_name: Optional[str] = None,
 ):
     """Return an operational least-busy IBM backend with enough qubits."""
     if QiskitRuntimeService is None:
@@ -290,8 +351,25 @@ def get_ibm_backend(
             "Install it with: pip install qiskit-ibm-runtime"
         )
 
-    service = QiskitRuntimeService(channel=channel)
-    backend = service.least_busy(operational=True, simulator=False, min_num_qubits=min_num_qubits)
+    if account_name:
+        service = QiskitRuntimeService(name=account_name)
+    else:
+        service = QiskitRuntimeService(channel=channel)
+
+    if backend_name:
+        backend = service.backend(backend_name)
+        if backend.num_qubits < min_num_qubits:
+            raise ValueError(
+                f"Backend {backend.name} has {backend.num_qubits} qubits, "
+                f"but {min_num_qubits} are required"
+            )
+        return backend
+
+    backend = service.least_busy(
+        operational=True,
+        simulator=False,
+        min_num_qubits=min_num_qubits,
+    )
     return backend
 
 
@@ -306,5 +384,8 @@ __all__ = [
     "compute_distribution_distance_matrix",
     "quantum_ordering_from_distance",
     "compute_asset_distributions_hardware",
+    "average_density_matrix",
+    "compute_distance_matrix",
+    "quantum_ordering",
     "get_ibm_backend",
 ]
