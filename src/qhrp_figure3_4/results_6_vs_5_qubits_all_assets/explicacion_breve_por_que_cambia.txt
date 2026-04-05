@@ -1,0 +1,39 @@
+EXPLICACION BREVE: POR QUE CAMBIA (6 VS 5 QUBITS, VERSION SHUFFLED)
+
+1) CAMBIA EL ESPACIO CUANTICO
+- Con 6 qubits, el estado vive en dimension 2^6 = 64.
+- Con 5 qubits, vive en 2^5 = 32.
+- Al bajar dimension, cambia la geometria de los estados y sus distancias.
+
+2) SE ELIMINA UNA FEATURE (CURTOSIS)
+- El caso 5 qubits quita la feature indice 5 (curtosis).
+- Se pierde informacion sobre colas/extremos de la distribucion de retornos.
+- Eso modifica la codificacion angular y la matriz de distancias cuanticas.
+
+3) CAMBIA EL ENTRELAZAMIENTO EFECTIVO
+- En 6 qubits existe el par (0,5).
+- En 5 qubits ese par ya no existe.
+- Menos conectividad efectiva => cambia la separacion entre activos.
+
+4) POR ESO CAMBIA EL ORDEN JERARQUICO
+- QHRP ordena usando la matriz de distancias cuanticas.
+- Si esa matriz cambia, el dendrograma y el orden final tambien cambian.
+
+5) POR QUE LAS DISTANCIAS SIGUEN SIENDO PARECIDAS
+- La mayor parte de la informacion sigue en las features comunes.
+- Por eso la correlacion de distancias 6 vs 5 puede seguir alta.
+
+6) POR QUE EL RANKING PUEDE CAMBIAR MAS
+- El clustering jerarquico es sensible a variaciones pequenas,
+  sobre todo con muchos activos y distancias cercanas.
+- Pequenos cambios locales pueden alterar el orden de hojas.
+
+7) POR QUE EN FIG3 (3+3) HAY PANELES IGUALES
+- "Sin ordenar" y "HRP clasica" dependen solo de returns
+  (y de la misma permutacion shuffled), no del numero de qubits.
+- El panel que realmente refleja 6 vs 5 es el de "HRP cuantica".
+
+8) EFECTO SHUFFLED
+- Shuffled solo reordena el universo de entrada.
+- Las matrices sin ordenar cambian visualmente por permutacion.
+- Las matrices ordenadas recuperan la estructura de bloques.

@@ -1,0 +1,219 @@
+GUIA SIMPLE: COMO SE CALCULA THETA (LINEA POR LINEA)
+
+Objetivo de este archivo
+- Entender de forma muy simple como se calcula theta.
+- Ver donde se usa theta dentro del circuito cuantico.
+- Entender que cambia cuando pasas de 6 qubits a 5 qubits.
+
+==================================================
+1) DONDE ESTA EL CALCULO DE THETA
+==================================================
+
+Archivo 1 (simulacion ideal):
+- src/qhrp_figure3_4/src/quantum_hrp.py
+- Bloque principal: lineas aprox. 62-70 dentro de quantum_feature_map_density(...)
+
+Archivo 2 (pipeline hardware/simulacion compartido):
+- src/qhrp_figure3_4/src/quantum_hrp_hardware.py
+- Bloque principal: lineas aprox. 68-76 dentro de build_feature_map_circuit(...)
+
+En ambos archivos la idea matematica es la MISMA.
+
+==================================================
+2) QUE SIGNIFICA CADA VARIABLE (MUY DIRECTO)
+==================================================
+
+- x:
+  Vector de features de UN activo en UN instante t.
+  Si tienes 6 qubits, x tiene 6 numeros.
+
+- x_min:
+  Minimo historico de cada feature para ese activo.
+  Es un vector del mismo tamano que x.
+
+- x_max:
+  Maximo historico de cada feature para ese activo.
+  Tambien vector del mismo tamano.
+
+- alpha:
+  Factor de escala angular. En tu codigo suele ser 2.0.
+
+- theta:
+  Vector de angulos finales que se meten en las puertas Ry y Rx.
+  Tiene un angulo por qubit/feature.
+
+==================================================
+3) LINEA POR LINEA (SIMULACION) - quantum_hrp.py
+==================================================
+
+Referencia aproximada: lineas 62-70.
+
+L62: n = len(x)
+- Cuenta cuantas features tienes.
+- Si n=6, usaras 6 qubits.
+- Si n=5, usaras 5 qubits.
+
+L63: pi = math.pi
+- Guarda el valor de pi para usarlo en la formula angular.
+
+L64: theta = np.zeros(n)
+- Crea un vector theta inicial lleno de ceros.
+- Aun no hay angulos calculados.
+
+L65: for i in range(n):
+- Recorre feature por feature.
+- i es el indice de la feature actual.
+
+L66: if x_max[i] > x_min[i]:
+- Comprueba que el rango de esa feature no sea cero.
+- Si max y min fueran iguales, dividirias por cero.
+
+L67:
+theta[i] = alpha * pi * (x[i] - x_min[i]) / (x_max[i] - x_min[i])
+
+Explicacion simple:
+1) (x[i] - x_min[i])
+   Dice donde cae el valor actual respecto al minimo.
+
+2) (x_max[i] - x_min[i])
+   Es el ancho total del rango.
+
+3) Cociente = normalizacion en [0,1] (si x esta dentro del rango).
+
+4) Multiplicas por alpha*pi para convertir ese porcentaje en angulo.
+   Con alpha=2, el rango aproximado va de 0 a 2*pi.
+
+L69-L70: else: theta[i] = 0
+- Si no hay rango (max==min), no hay informacion para escalar.
+- Se fija angulo 0 para evitar error numerico.
+
+==================================================
+4) LA MISMA LOGICA EN HARDWARE - quantum_hrp_hardware.py
+==================================================
+
+Referencia aproximada: lineas 68-76.
+
+El bloque es equivalente:
+- n = len(x)
+- theta = np.zeros(n)
+- bucle por i
+- misma formula de normalizacion angular
+- mismo else con 0.0
+
+Diferencia conceptual:
+- En simulacion ideal luego sacas estado/density matrix exacta.
+- En hardware luego mides con shots y obtienes distribuciones de conteos.
+
+==================================================
+5) DONDE SE USA THETA DESPUES
+==================================================
+
+En ambos codigos, theta entra en rotaciones:
+
+1) Primera ronda:
+- qc.ry(theta[i], i)
+
+2) Segunda ronda:
+- qc.rx(theta[i], i)
+
+3) Tercera ronda:
+- qc.ry(theta[i], i)
+
+Entre rondas hay entrelazamiento (iswap) en pares definidos.
+
+Traduccion corta:
+- theta convierte datos financieros en angulos cuanticos.
+- Esos angulos deforman el estado cuantico de cada qubit.
+
+==================================================
+6) EJEMPLO NUMERICO MUY FACIL (UNA FEATURE)
+==================================================
+
+Supongamos:
+- alpha = 2.0
+- x[i] = 0.03
+- x_min[i] = -0.02
+- x_max[i] = 0.08
+
+Paso A: rango total
+- x_max - x_min = 0.10
+
+Paso B: distancia al minimo
+- x - x_min = 0.05
+
+Paso C: normalizacion
+- 0.05 / 0.10 = 0.5
+
+Paso D: pasar a angulo
+- theta = 2.0 * pi * 0.5 = pi
+
+Resultado:
+- El angulo para ese qubit es pi radianes.
+
+==================================================
+7) FLUJO COMPLETO (DESDE DATOS HASTA DISTANCIAS)
+==================================================
+
+Paso 1
+- Tienes retornos por activo y por dia.
+
+Paso 2
+- Construyes features por activo (normalmente 6 features en tu pipeline).
+
+Paso 3
+- Para cada activo, calculas x_min y x_max por feature en la ventana temporal.
+
+Paso 4
+- Para cada instante t, tomas x(t) y calculas theta(t).
+
+Paso 5
+- Construyes el circuito con esas theta y obtienes salida cuantica:
+  - simulacion ideal: density matrix
+  - hardware real: distribucion de medicion por shots
+
+Paso 6
+- Promedias temporalmente por activo.
+
+Paso 7
+- Calculas matriz de distancias entre activos.
+
+Paso 8
+- Haces clustering jerarquico para obtener orden QHRP.
+
+==================================================
+8) QUE CAMBIA SI PASAS DE 6 QUBITS A 5 QUBITS
+==================================================
+
+1) Numero de features usadas
+- 6 qubits => 6 features (f1..f6)
+- 5 qubits => 5 features (debes quitar una)
+
+2) Dimension del estado
+- 6 qubits => 2^6 = 64
+- 5 qubits => 2^5 = 32
+
+3) Pares de entrelazamiento
+- El par (0,5) solo existe si hay qubit 5 (o sea, con 6 qubits).
+- Con 5 qubits, ese par se ignora automaticamente por la condicion if i < n and j < n.
+
+4) Consecuencia practica
+- Menos qubits = menos informacion codificada, pero menor costo de ejecucion.
+- El experimento 6 vs 5 en simulacion sirve para medir cuanto se deforma la estructura de clustering.
+
+==================================================
+9) CHECKLIST PARA REVISAR SI LO ENTIENDES BIEN
+==================================================
+
+Si puedes contestar estas preguntas, vas bien:
+
+1) Por que existe el if x_max[i] > x_min[i]?
+2) Que representa alpha en la formula?
+3) Por que theta se usa en Ry y Rx varias veces?
+4) Que feature eliminas al pasar a 5 qubits y por que?
+5) Que metricas usas para comparar 6 vs 5 (distancia, orden, bloques)?
+
+Si quieres, el siguiente paso natural es validar una traza concreta de un activo:
+- escoger un activo,
+- escoger un dia t,
+- imprimir x, x_min, x_max, theta,
+- y verificar a mano los calculos.

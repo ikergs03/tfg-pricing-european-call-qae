@@ -1,0 +1,41 @@
+ANALISIS 6 VS 5 QUBITS (SIMULACION IDEAL) - TODOS LOS ACTIVOS
+Fecha UTC: 2026-04-05T22:05:41.581563+00:00
+
+Contexto del experimento
+- Universo: todos los activos tras limpieza (N=169)
+- Horizonte temporal: horizonte completo comun (1147 dias)
+- Tensor de entrada: (169, 1147, 6)
+- Regla 5 qubits: se elimina la feature indice 5 (curtosis)
+- Version de figuras: shuffled (seed=42)
+
+Escenario 6 qubits
+- Features usadas: retorno, media_movil, desv_std_movil, retorno_acumulado, asimetria, curtosis
+- Dimension Hilbert por estado: 64
+- Tiempo simulacion: 1104.71 s
+- Rango distancias (off-diagonal): [0.0044, 0.9683]
+- Contraste bloques sin ordenar: 0.0101
+- Contraste bloques ordenado: 0.1936
+- Mejora de estructura: +0.1835
+
+Escenario 5 qubits
+- Features usadas: retorno, media_movil, desv_std_movil, retorno_acumulado, asimetria
+- Dimension Hilbert por estado: 32
+- Tiempo simulacion: 924.44 s
+- Rango distancias (off-diagonal): [0.0041, 0.9601]
+- Contraste bloques sin ordenar: 0.0098
+- Contraste bloques ordenado: 0.1599
+- Mejora de estructura: +0.1501
+
+Comparativa 6 vs 5
+- Correlacion Pearson entre distancias: 0.9806
+- Correlacion Spearman entre distancias: 0.9813
+- Spearman entre rankings (orden de activos): -0.1273
+- Kendall tau entre rankings: -0.0416
+- Distorsion relativa Frobenius: 0.1069
+
+- Fig 3 shuffled (3+3 paneles) guardada en: /home/iker/TFG/src/qhrp_figure3_4/results_6_vs_5_qubits_all_assets/fig3_corr_6_vs_5_all_assets_shuffled_3x3.png
+- Fig 4 shuffled (distancias) guardada en: /home/iker/TFG/src/qhrp_figure3_4/results_6_vs_5_qubits_all_assets/fig4_distance_6_vs_5_all_assets_shuffled.png
+- Figura comparativa legacy shuffled (2x3) guardada en: /home/iker/TFG/src/qhrp_figure3_4/results_6_vs_5_qubits_all_assets/qubits_6_vs_5_all_assets_heatmaps_shuffled.png
+
+Primeros 25 activos (de 169):
+- SE, AGG, EFA, IGOV, ABBV, XLB, MBB, UNP, TJX, PG, SOL-USD, SLV, VNQ, MRNA, XLC, SNOW, LQD, BKR, FAN, MO, ICLN, VEA, CAT, CVX, AMD
