@@ -15,15 +15,13 @@ En computación clásica, la unidad básica de información es el \textbf{bit}, 
 
 Un qubit es un sistema cuántico de dos niveles. A diferencia de un bit clásico, que se encuentra necesariamente en el estado 0 o en el estado 1, un qubit puede existir en una \textbf{superposición lineal} de ambos estados base. Matemáticamente, el estado general de un qubit se escribe como:
 
-\begin{equation}
-\label{eq:qubit}
+\begin{equation}[eq:qubit]{Estado general de un qubit}
 \ket{\psi} = \alpha \ket{0} + \beta \ket{1},
 \end{equation}
 
 donde $\alpha$ y $\beta$ son números complejos denominados \textbf{amplitudes de probabilidad}, que satisfacen la condición de normalización:
 
-\begin{equation}
-\label{eq:normalizacion}
+\begin{equation}[eq:normalizacion]{Condición de normalización del qubit}
 |\alpha|^2 + |\beta|^2 = 1.
 \end{equation}
 
@@ -46,8 +44,7 @@ parametrizan la amplitud y la fase relativa del estado.}
 
 El estado de un qubit admite una representación geométrica intuitiva conocida como la \textbf{esfera de Bloch}. Dado que la fase global del estado no es observable, el estado de la ecuación~\eqref{eq:qubit} puede reescribirse utilizando dos parámetros angulares $\theta \in [0, \pi]$ y $\phi \in [0, 2\pi)$:
 
-\begin{equation}
-\label{eq:bloch}
+\begin{equation}[eq:bloch]{Parametrización del qubit en la esfera de Bloch}
 \ket{\psi} = \cos\frac{\theta}{2}\,\ket{0} + e^{i\phi}\sin\frac{\theta}{2}\,\ket{1}.
 \end{equation}
 
@@ -61,8 +58,7 @@ La esfera de Bloch constituye una herramienta conceptual fundamental para visual
 
 El estado de un qubit vive en un espacio vectorial complejo de dimensión 2, denominado \textbf{espacio de Hilbert} $\mathcal{H} = \mathbb{C}^2$. Cuando se consideran sistemas de múltiples qubits, el espacio de estados se construye mediante el \textbf{producto tensorial} de los espacios individuales:
 
-\begin{equation}
-\label{eq:producto_tensorial}
+\begin{equation}[eq:producto_tensorial]{Espacio de Hilbert de un sistema de n qubits}
 \mathcal{H}_n = \underbrace{\mathbb{C}^2 \otimes \mathbb{C}^2 \otimes \cdots \otimes \mathbb{C}^2}_{n \text{ veces}} = \mathbb{C}^{2^n}.
 \end{equation}
 
@@ -70,8 +66,7 @@ Esto significa que un sistema de $n$ qubits habita un espacio de dimensión $2^n
 
 El estado general de un sistema de $n$ qubits se escribe como:
 
-\begin{equation}
-\label{eq:estadonqubits}
+\begin{equation}[eq:estadonqubits]{Estado general de un sistema de n qubits}
 \ket{\psi} = \sum_{k=0}^{2^{n} - 1} {\alpha}_{k} \ket{k}, \quad \text{con} \quad \sum_{k=0}^{2^{n} - 1} |{\alpha}_{k}|^{2} = 1,
 \end{equation}
 
@@ -83,8 +78,7 @@ donde cada $\ket{k}$ denota un estado de la base computacional (por ejemplo, $\k
 
 El entrelazamiento es un fenómeno exclusivamente cuántico que surge cuando el estado de un sistema de múltiples qubits no puede descomponerse como producto de estados individuales. Un estado entrelazado clásico es el estado de Bell:
 
-\begin{equation}
-\label{eq:bell}
+\begin{equation}[eq:bell]{Estado de Bell Phi mas}
 \ket{\Phi^+} = \frac{1}{\sqrt{2}}\left(\ket{00} + \ket{11}\right).
 \end{equation}
 
@@ -110,8 +104,7 @@ Un ordenador cuántico procesa información mediante secuencias de operaciones s
 
 Las operaciones que se aplican a los qubits se denominan \textbf{puertas cuánticas} y son el equivalente cuántico de las puertas lógicas clásicas (AND, OR, NOT, etc.). Sin embargo, existe una diferencia fundamental: todas las puertas cuánticas son \textbf{transformaciones unitarias}, lo que implica que son \textbf{reversibles}. Formalmente, una puerta cuántica que actúa sobre $n$ qubits es una matriz unitaria $U \in \mathbb{C}^{2^n \times 2^n}$ que satisface:
 
-\begin{equation}
-\label{eq:unitaria}
+\begin{equation}[eq:unitaria]{Condición de unitariedad de una puerta cuántica}
 U U^\dagger = U^\dagger U = I,
 \end{equation}
 
@@ -125,20 +118,20 @@ Las puertas de un solo qubit transforman el estado de un qubit individual. Geom�
 
 \paragraph{Puerta Hadamard ($H$).} Crea una superposición equiprobable a partir de un estado base. Su acción sobre los estados base es:
 
-\begin{equation}
+\begin{equation}{Acción de la puerta Hadamard sobre la base computacional}
 H\ket{0} = \frac{1}{\sqrt{2}}(\ket{0} + \ket{1}), \quad
 H\ket{1} = \frac{1}{\sqrt{2}}(\ket{0} - \ket{1}).
 \end{equation}
 
 La matriz asociada es:
 
-\begin{equation}
+\begin{equation}{Matriz de la puerta Hadamard}
 H = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}.
 \end{equation}
 
 \paragraph{Puertas de rotación ($R_x$, $R_y$, $R_z$).} Realizan rotaciones de un ángulo $\theta$ alrededor de los ejes $x$, $y$ y $z$ de la esfera de Bloch, respectivamente. Sus matrices son:
 
-\begin{equation}
+\begin{equation}{Matrices de rotación Rx Ry y Rz}
 R_x(\theta) = \begin{pmatrix} \cos\frac{\theta}{2} & -i\sin\frac{\theta}{2} \\ -i\sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}, \quad
 R_y(\theta) = \begin{pmatrix} \cos\frac{\theta}{2} & -\sin\frac{\theta}{2} \\ \sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}, \quad
 R_z(\theta) = \begin{pmatrix} e^{-i\theta/2} & 0 \\ 0 & e^{i\theta/2} \end{pmatrix}.
@@ -148,7 +141,7 @@ Estas puertas parametrizadas son especialmente relevantes en los circuitos cuán
 
 \paragraph{Puerta de fase ($P$).} Aplica una fase relativa $\phi$ al estado $\ket{1}$ sin modificar $\ket{0}$:
 
-\begin{equation}
+\begin{equation}{Matriz de la puerta de fase}
 P(\phi) = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\phi} \end{pmatrix}.
 \end{equation}
 
@@ -169,7 +162,7 @@ Las puertas que actúan sobre dos o más qubits permiten generar entrelazamiento
 
 \paragraph{Puerta CNOT (Controlled-NOT).} Actúa sobre dos qubits: un qubit de \textit{control} y un qubit \textit{objetivo}. Invierte el estado del qubit objetivo si y solo si el qubit de control se encuentra en el estado $\ket{1}$:
 
-\begin{equation}
+\begin{equation}{Matriz de la puerta CNOT}
 \text{CNOT} = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{pmatrix}.
 \end{equation}
 
@@ -177,7 +170,7 @@ La puerta CNOT es esencial para crear entrelazamiento. Por ejemplo, aplicar una 
 
 \paragraph{Puerta CZ (Controlled-Z).} Aplica una fase de $-1$ al estado del qubit objetivo cuando el qubit de control está en $\ket{1}$:
 
-\begin{equation}
+\begin{equation}{Matriz de la puerta CZ}
 \text{CZ} = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & -1 \end{pmatrix}.
 \end{equation}
 
@@ -201,7 +194,7 @@ Al final de un circuito cuántico se realiza la \textbf{medición}, que constitu
 
 Para un qubit en el estado $\ket{\psi} = \alpha\ket{0} + \beta\ket{1}$, la probabilidad de obtener cada resultado viene dada por las amplitudes al cuadrado:
 
-\begin{equation}
+\begin{equation}{Probabilidades de medición de un qubit}
 P(0) = |\alpha|^2, \quad P(1) = |\beta|^2.
 \end{equation}
 

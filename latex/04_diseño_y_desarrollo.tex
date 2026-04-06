@@ -31,9 +31,9 @@ Durante la carga de los datos se realiza un proceso de limpieza consistente en l
 
 Las características se almacenan en un tensor tridimensional con dimensiones:
 
-\[
+\begin{equation}[eq:dimensiones_tensor]{Dimensiones del tensor de características}
 (N, T, P),
-\]
+\end{equation}
 
 donde $N$ representa el número de activos, $T$ el número de observaciones temporales y $P=6$ el número de características consideradas. 
 
@@ -62,6 +62,8 @@ Esta representación se incorpora para dejar trazabilidad del diseño del ansatz
 {Circuito cuántico de 6 qubits reproducido a partir del paper. Se muestran compuertas de inicialización, codificación parametrizada, entrelazamiento y medición final.}
     \image{16cm}{}{fig1-circuito-paper-qhrp}
 \end{figure}
+
+El circuito confirma que cada una de las 6 características del activo se codifica en un qubit y luego se mezcla mediante entrelazamiento. En términos prácticos, esto permite pasar de una representación clásica de 6 variables a una representación en un espacio de dimensión $2^6=64$, donde se pueden capturar interacciones entre características que no son evidentes con transformaciones lineales.
 
 \subsection{Reproducibilidad: entorno, versiones y trazabilidad}
 \label{sec:reproducibilidad_entorno}

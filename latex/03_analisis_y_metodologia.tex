@@ -7,9 +7,9 @@ En esta sección se presenta el marco metodológico empleado para analizar la es
 
 Cada activo financiero se representa mediante un conjunto de características económicas que describen distintos aspectos de su comportamiento dinámico. Para cada activo $i$ se construye una matriz de observaciones:
 
-\[
+\begin{equation}[eq:matriz_observaciones]{Matriz de observaciones del activo i}
 X_i \in \mathbb{R}^{T \times P},
-\]
+\end{equation}
 
 donde $T$ denota el número de observaciones temporales y $P$ el número de características consideradas. En este trabajo se emplean seis características por activo, diseñadas para capturar información relacionada con retornos, volatilidad, momentum, reversión y volumen negociado.
 
@@ -20,20 +20,20 @@ El uso de una representación multivariante permite superar las limitaciones del
 Con el fin de garantizar una contribución equilibrada de todas las variables, las características se estandarizan de forma independiente para cada activo. Este procedimiento evita que determinadas magnitudes, como la volatilidad o el volumen, dominen el proceso de modelado y asegura la comparabilidad entre activos.
 
 
-\section{Representación cuántica mediante matrices densidad}
+\section{Representación cuántica mediante matrices de densidad}
 \label{sec:representacion_cuantica}
 Para modelar relaciones no lineales entre activos, cada observación multivariante se embebe en un espacio cuántico mediante un mapeo de características cuántico. A partir de dicho mapeo, cada observación queda representada como un estado cuántico puro:
 
-\[
+\begin{equation}[eq:estado_cuantico_observacion]{Estado cuántico de una observación del activo i}
 \ket{\psi(\mathbf{x}_i^t)}.
-\]
+\end{equation}
 
-Posteriormente, para cada activo se construye una matriz densidad promedio definida como:
+Posteriormente, para cada activo se construye una matriz de densidad promedio definida como:
 
-\[
+\begin{equation}[eq:matriz_densidad_promedio]{Matriz de densidad promedio de un activo}
 \rho_i = \frac{1}{T} \sum_{t=1}^{T}
 \ket{\psi(\mathbf{x}_i^t)}\bra{\psi(\mathbf{x}_i^t)}.
-\]
+\end{equation}
 
 Esta formulación permite capturar la distribución completa de las observaciones del activo en el espacio de Hilbert, proporcionando una representación más informativa que los estadísticos clásicos de segundo orden.
 
@@ -50,12 +50,12 @@ En consecuencia, el ansatz no se presenta como la arquitectura óptima universal
 
 \section{Métrica de distancia cuántica}
 \label{sec:metrica_distancia_cuantica}
-La similitud entre activos se cuantifica mediante la distancia de Frobenius entre sus matrices densidad promedio. Para dos activos $i$ y $j$, dicha distancia se define como:
+La similitud entre activos se cuantifica mediante la distancia de Frobenius entre sus matrices de densidad promedio. Para dos activos $i$ y $j$, dicha distancia se define como:
 
-\[
+\begin{equation}[eq:distancia_frobenius_cuantica]{Distancia de Frobenius entre matrices de densidad}
 d_F(\rho_i, \rho_j) = \frac{1}{2}
 \sqrt{\mathrm{Tr}\left[(\rho_i - \rho_j)^2\right]}.
-\]
+\end{equation}
 
 Esta métrica proporciona una medida geométrica natural en el espacio de operadores cuánticos y permite comparar activos teniendo en cuenta la totalidad de su comportamiento multivariante.
 
