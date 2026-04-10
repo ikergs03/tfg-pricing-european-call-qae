@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
-"""Sensitivity analysis for QHRP simulation: 6 qubits vs 5 qubits.
+"""Analisis de sensibilidad QHRP en simulacion ideal: 6 qubits vs 5 qubits.
 
-This script is intentionally separate from notebooks so results are easier to
-reproduce and share.
+Este script se mantiene separado del notebook para facilitar reproducibilidad,
+trazabilidad y exportacion de resultados.
 
-Workflow:
-1) Load and clean returns + precomputed feature tensor.
-2) Select a pilot subset (default: 40 assets x 90 days) using liquidity.
-3) Run ideal simulation twice:
-   - 6 qubits (all 6 features).
-   - 5 qubits (drops one feature; default drops kurtosis).
-4) Compare distance matrices, ordering stability, and block structure.
-5) Save figures and summaries to an output folder.
+Flujo:
+1) Cargar y limpiar retornos + tensor de features precomputado.
+2) Ejecutar una prueba piloto con preseleccion de activos (por defecto 40x90):
+    primero se prioriza liquidez reciente y, si faltan activos, se completa por
+    volatilidad reciente.
+3) Ejecutar dos escenarios en simulacion ideal:
+    - 6 qubits (6 features).
+    - 5 qubits (se elimina una feature; por defecto curtosis).
+4) Comparar matrices de distancia, estabilidad del orden y estructura de bloques.
+5) Guardar figuras, resumen de texto y metricas en disco.
 """
 
 from __future__ import annotations
@@ -66,7 +68,7 @@ class ScenarioResult:
 
 
 def block_contrast(distance_matrix: np.ndarray, band: int = 4) -> float:
-    """Higher values indicate cleaner near-diagonal block structure."""
+    """Valores altos indican estructura de bloques mas limpia cerca de diagonal."""
     n = distance_matrix.shape[0]
     ii, jj = np.indices((n, n))
     off_diag = ii != jj
@@ -109,7 +111,7 @@ def load_and_align_returns_features(project_root: Path) -> tuple[pd.DataFrame, n
     surviving_idx = [original_columns.index(c) for c in returns.columns]
     features = features[surviving_idx]
 
-    # Keep the latest common horizon if there is any mismatch.
+    # Si returns y features no tienen el mismo largo temporal, usar el comun mas reciente.
     t_common = min(returns.shape[0], features.shape[1])
     returns = returns.tail(t_common)
     features = features[:, -t_common:, :]
@@ -124,6 +126,17 @@ def select_assets_pilot(
     target_assets: int,
     target_days: int,
 ) -> tuple[List[str], pd.DataFrame, np.ndarray, str]:
+    """Construye el subconjunto piloto (p.ej. 40x90) con preseleccion explicita.
+
+    Regla de preseleccion:
+    1) Ranking principal por liquidez reciente en la ventana objetivo,
+       usando mediana de volumen monetario diario (precio x volumen).
+    2) Si no hay suficientes activos por datos faltantes, completar con
+       ranking de mayor volatilidad reciente.
+
+    Devuelve activos seleccionados, returns y features ya alineados al piloto.
+    """
+    # Paso A: acotar horizonte temporal (90 dias por defecto).
     t_hw = min(target_days, returns.shape[0], features.shape[1])
     returns_recent = returns.tail(t_hw)
 
@@ -144,6 +157,7 @@ def select_assets_pilot(
     selected_assets: List[str] = []
 
     if common_cols:
+        # Paso B (criterio principal): seleccionar por liquidez reciente.
         returns_liq = returns_recent[common_cols]
         prices_recent = prices.reindex(returns_liq.index).reindex(columns=common_cols)
         volumes_recent = volumes.reindex(returns_liq.index).reindex(columns=common_cols)
@@ -154,12 +168,14 @@ def select_assets_pilot(
         selected_assets = liq_score.index[: min(target_assets, len(liq_score))].tolist()
 
     if len(selected_assets) < target_assets:
+        # Paso C (respaldo): completar por volatilidad reciente si faltan activos.
         missing = target_assets - len(selected_assets)
         vol_score = returns_recent.std(axis=0).sort_values(ascending=False)
         fallback = [a for a in vol_score.index if a not in selected_assets][:missing]
         selected_assets = selected_assets + fallback
         selection_note = "median_dollar_volume_90d + volatility_fallback"
 
+    # Paso D: fijar tamano final del piloto y alinear filas de features.
     selected_assets = selected_assets[: min(target_assets, len(selected_assets))]
 
     selected_idx = [returns.columns.get_loc(c) for c in selected_assets]
@@ -368,21 +384,21 @@ def build_summary_text(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="QHRP simulation sensitivity: 6 vs 5 qubits")
-    parser.add_argument("--assets", type=int, default=40, help="Number of assets in the pilot subset")
-    parser.add_argument("--days", type=int, default=90, help="Number of latest days in the pilot subset")
-    parser.add_argument("--alpha", type=float, default=2.0, help="Feature-map alpha")
+    parser = argparse.ArgumentParser(description="Sensibilidad QHRP en simulacion: 6 vs 5 qubits")
+    parser.add_argument("--assets", type=int, default=40, help="Numero de activos del subconjunto piloto")
+    parser.add_argument("--days", type=int, default=90, help="Numero de dias recientes del subconjunto piloto")
+    parser.add_argument("--alpha", type=float, default=2.0, help="Parametro alpha del feature map")
     parser.add_argument(
         "--drop-feature-index",
         type=int,
         default=5,
-        help="Feature index to drop for 5-qubit run (default: 5, i.e. kurtosis)",
+        help="Indice de feature a eliminar en 5 qubits (por defecto 5 = curtosis)",
     )
     parser.add_argument(
         "--out-dir",
         type=Path,
         default=SCRIPT_DIR / "results_6_vs_5_qubits",
-        help="Output directory for figures and reports",
+        help="Directorio de salida para figuras e informes",
     )
     return parser.parse_args()
 
@@ -392,9 +408,11 @@ def main() -> None:
     out_dir = args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    print("Loading and aligning data...")
+    print("Cargando y alineando datos...")
     returns, features = load_and_align_returns_features(PROJECT_ROOT)
 
+    # Esta es la prueba solicitada de preseleccion: 40 activos x 90 dias (por defecto).
+    # Se ejecuta 6q vs 5q exactamente sobre el mismo subconjunto para comparar de forma justa.
     selected_assets, returns_hw, features_hw, selection_note = select_assets_pilot(
         returns=returns,
         features=features,
@@ -403,7 +421,7 @@ def main() -> None:
         target_days=args.days,
     )
 
-    print(f"Selected subset -> assets={returns_hw.shape[1]}, days={returns_hw.shape[0]}, features={features_hw.shape[2]}")
+    print(f"Subconjunto seleccionado -> activos={returns_hw.shape[1]}, dias={returns_hw.shape[0]}, features={features_hw.shape[2]}")
 
     tensor_6q, names_6q, _ = scenario_features(features_hw, n_qubits=6, drop_feature_index=args.drop_feature_index)
     tensor_5q, names_5q, _ = scenario_features(features_hw, n_qubits=5, drop_feature_index=args.drop_feature_index)

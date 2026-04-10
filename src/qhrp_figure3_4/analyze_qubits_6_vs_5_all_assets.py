@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
-"""General 6q vs 5q QHRP simulation using all available assets.
+"""Comparativa QHRP 6q vs 5q en simulacion ideal usando todos los activos.
 
-This script mirrors the pilot comparison but removes asset preselection:
-- It keeps all assets after the same data cleaning/alignment stage.
-- It compares 6-qubit vs 5-qubit encoding on the same return horizon.
-- It exports summary, JSON metrics, and comparison figures.
+Este script replica la comparacion del piloto, pero sin preseleccion de activos:
+- Mantiene todo el universo disponible tras limpieza/alineamiento.
+- Compara codificacion de 6 qubits frente a 5 qubits en el mismo horizonte.
+- Exporta resumen, metricas JSON y figuras comparativas.
 
-Figure policy in this script:
-- Figures are generated on a shuffled asset order (seeded permutation),
-  matching the notebook's shuffled-style robustness check.
-- Fig. 3 is exported as a 3+3 comparison (six panels: 6q row + 5q row).
+A diferencia de analyze_qubits_6_vs_5.py, esta variante no aplica la prueba
+de preseleccion de 40 activos por liquidez.
 
-By default, it uses 90 days to remain comparable with the 40x90 pilot.
-Use --days 0 to run the maximum common horizon.
+Politica de figuras en este script:
+- Las figuras se generan sobre un orden aleatorio de activos (seed fija),
+  para mantener el enfoque de robustez tipo shuffled del notebook.
+- La Fig. 3 se exporta en formato 3+3 (seis paneles: fila 6q + fila 5q).
+
+Por defecto usa 90 dias para ser comparable con el piloto 40x90.
+Usa --days 0 para ejecutar el horizonte comun completo.
 """
 
 from __future__ import annotations
@@ -47,7 +50,7 @@ from analyze_qubits_6_vs_5 import (  # noqa: E402
 
 
 def load_all_assets(project_root: Path, days: int) -> tuple[list[str], pd.DataFrame, np.ndarray]:
-    """Load cleaned/aligned data and keep all assets after cleaning."""
+    """Cargar datos limpios/alineados y conservar todos los activos tras limpieza."""
     returns_path = project_root / "data" / "returns.csv"
     features_path = project_root / "data" / "features.npy"
 
@@ -59,7 +62,7 @@ def load_all_assets(project_root: Path, days: int) -> tuple[list[str], pd.DataFr
     returns = returns.dropna(axis=0, how="any")
     returns = returns.dropna(axis=1, how="all")
 
-    # Match cleaning used in notebook/scripts to avoid unstable correlations.
+    # Mantener la misma limpieza que en notebook/scripts para evitar correlaciones inestables.
     std = returns.std(axis=0)
     returns = returns.loc[:, std > 1e-8]
 
@@ -75,12 +78,13 @@ def load_all_assets(project_root: Path, days: int) -> tuple[list[str], pd.DataFr
         returns = returns.tail(t_use)
         features = features[:, -t_use:, :]
 
+    # Importante: conservar todo el universo limpio (sin ranking ni filtro de activos).
     asset_names = returns.columns.tolist()
     return asset_names, returns, features
 
 
 def quasi_diagonal(linkage_matrix: np.ndarray) -> list[int]:
-    """Quasi-diagonalization used by classical HRP ordering."""
+    """Cuasi-diagonalizacion usada por el ordenamiento HRP clasico."""
     linkage_matrix = linkage_matrix.astype(int)
     sorted_items = pd.Series([linkage_matrix[-1, 0], linkage_matrix[-1, 1]])
     num_items = int(linkage_matrix[-1, 3])
@@ -99,7 +103,7 @@ def quasi_diagonal(linkage_matrix: np.ndarray) -> list[int]:
 
 
 def classical_ordered_corr(corr: np.ndarray) -> tuple[np.ndarray, list[int]]:
-    """Classical HRP-style ordering from correlation matrix."""
+    """Ordenamiento estilo HRP clasico a partir de la matriz de correlacion."""
     dist = np.sqrt((1 - corr) / 2.0)
     dist = 0.5 * (dist + dist.T)
     np.fill_diagonal(dist, 0.0)
@@ -191,31 +195,31 @@ def build_summary_text_all_assets(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="QHRP all-assets simulation: 6 qubits vs 5 qubits")
+    parser = argparse.ArgumentParser(description="QHRP todos los activos: simulacion 6 qubits vs 5 qubits")
     parser.add_argument(
         "--days",
         type=int,
         default=90,
-        help="Days to keep from the tail. Use 0 for full common horizon.",
+        help="Dias a conservar desde el tramo final. Usa 0 para el horizonte comun completo.",
     )
-    parser.add_argument("--alpha", type=float, default=2.0, help="Feature-map alpha")
+    parser.add_argument("--alpha", type=float, default=2.0, help="Parametro alpha del feature-map")
     parser.add_argument(
         "--shuffle-seed",
         type=int,
         default=42,
-        help="Random seed for shuffled asset permutation used in figures.",
+        help="Semilla de la permutacion aleatoria de activos usada en figuras.",
     )
     parser.add_argument(
         "--drop-feature-index",
         type=int,
         default=5,
-        help="Feature index to drop for 5-qubit run (default: 5, kurtosis)",
+        help="Indice de feature a eliminar en 5 qubits (por defecto 5 = curtosis)",
     )
     parser.add_argument(
         "--out-dir",
         type=Path,
         default=SCRIPT_DIR / "results_6_vs_5_qubits_all_assets",
-        help="Output directory for figures and reports",
+        help="Directorio de salida para figuras e informes",
     )
     return parser.parse_args()
 
@@ -227,7 +231,7 @@ def save_fig3_shuffled_3x3(
     corr_quantum_6q: np.ndarray,
     corr_quantum_5q: np.ndarray,
 ) -> None:
-    """Fig. 3 comparison with 3+3 panels (6q row and 5q row), all shuffled."""
+    """Figura 3 en formato 3+3 (fila 6q y fila 5q), sobre universo shuffled."""
     fig, axes = plt.subplots(2, 3, figsize=(21, 14))
 
     mats = [
@@ -267,7 +271,7 @@ def save_fig3_shuffled_3x3(
 
 
 def save_fig4_distances(path: Path, result_6q, result_5q) -> None:
-    """Fig. 4 style: distance matrices for 6q and 5q, before/after ordering (shuffled)."""
+    """Figura 4: distancias 6q y 5q antes/despues de ordenar (shuffled)."""
     tri6 = np.triu_indices_from(result_6q.distance, 1)
     tri5 = np.triu_indices_from(result_5q.distance, 1)
     off_all = np.concatenate([result_6q.distance[tri6], result_5q.distance[tri5]])
@@ -307,17 +311,18 @@ def main() -> None:
     out_dir = args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    print("Loading all assets (after cleaning/alignment)...")
+    # Corrida de universo completo: contraste directo frente al piloto con preseleccion.
+    print("Cargando todos los activos (tras limpieza/alineamiento)...")
     asset_names, returns_all, features_all = load_all_assets(PROJECT_ROOT, days=args.days)
-    print(f"Universe -> assets={returns_all.shape[1]}, days={returns_all.shape[0]}, features={features_all.shape[2]}")
+    print(f"Universo -> activos={returns_all.shape[1]}, dias={returns_all.shape[0]}, features={features_all.shape[2]}")
 
-    # Shuffled version for all figures (deterministic via seed).
+    # Version shuffled para figuras (determinista con semilla).
     rng = np.random.default_rng(args.shuffle_seed)
     perm = rng.permutation(returns_all.shape[1])
     returns_work = returns_all.iloc[:, perm]
     features_work = features_all[perm]
     asset_names_work = [asset_names[i] for i in perm]
-    print(f"Shuffled assets with seed={args.shuffle_seed}; first 10 perm indices={perm[:10].tolist()}")
+    print(f"Activos shuffled con seed={args.shuffle_seed}; primeros 10 indices={perm[:10].tolist()}")
 
     tensor_6q, names_6q, _ = scenario_features(features_work, n_qubits=6, drop_feature_index=args.drop_feature_index)
     tensor_5q, names_5q, _ = scenario_features(features_work, n_qubits=5, drop_feature_index=args.drop_feature_index)
@@ -404,12 +409,12 @@ def main() -> None:
     json_path = out_dir / "metrics_6_vs_5_qubits_all_assets.json"
     json_path.write_text(json.dumps(metrics_payload, indent=2), encoding="utf-8")
 
-    print("\nDone.")
-    print(f"- Summary: {summary_path}")
-    print(f"- Metrics: {json_path}")
-    print(f"- Figure:  {fig3_path}")
-    print(f"- Figure:  {fig4_path}")
-    print(f"- Figure:  {legacy_plot_path}")
+    print("\nFinalizado.")
+    print(f"- Resumen: {summary_path}")
+    print(f"- Metricas: {json_path}")
+    print(f"- Figura:  {fig3_path}")
+    print(f"- Figura:  {fig4_path}")
+    print(f"- Figura:  {legacy_plot_path}")
 
 
 if __name__ == "__main__":
