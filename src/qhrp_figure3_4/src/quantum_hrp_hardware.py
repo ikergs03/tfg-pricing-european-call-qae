@@ -64,7 +64,7 @@ def build_feature_map_circuit(
 
     This mirrors the encoding logic from the simulation version and appends
     measurements so the circuit is executable on real hardware.
-    """
+    """###
     n = len(x)
     pairs = entanglement_pairs or DEFAULT_ENTANGLERS
 
@@ -73,7 +73,7 @@ def build_feature_map_circuit(
         if x_max[i] > x_min[i]:
             theta[i] = alpha * math.pi * (x[i] - x_min[i]) / (x_max[i] - x_min[i])
         else:
-            theta[i] = 0.0
+            theta[i] = 0.0###
 
     qc = QuantumCircuit(n)
     qc.h(range(n))

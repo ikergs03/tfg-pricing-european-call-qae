@@ -1,5 +1,13 @@
 {
   "mode": "all_assets_after_cleaning",
+  "pipeline": {
+    "features": "legacy_math_features",
+    "distance": "frobenius_scale1",
+    "ordering": "ward",
+    "shuffle_assets": false,
+    "shuffle_seed": null,
+    "fig4_vmax": 0.55
+  },
   "asset_count": 169,
   "asset_names": [
     "SPY",
@@ -173,79 +181,63 @@
     "KRBN"
   ],
   "shape_returns": [
-    1147,
+    756,
     169
   ],
   "shape_features": [
     169,
-    1147,
+    756,
     6
   ],
-  "days_requested": 0,
-  "shuffled": {
-    "enabled": true,
-    "seed": 42,
-    "permutation_head": [
-      152,
-      54,
-      7,
-      33,
-      125,
-      24,
-      56,
-      93,
-      120,
-      108
-    ]
-  },
+  "days_requested": 756,
   "drop_feature_index": 5,
   "used_features_6q": [
     "retorno",
-    "media_movil",
-    "desv_std_movil",
-    "retorno_acumulado",
-    "asimetria",
-    "curtosis"
+    "retorno_cuadrado",
+    "abs_ret_1p5",
+    "sign_log1p_abs_ret",
+    "tanh_ret",
+    "sign_sqrt_abs_ret"
   ],
   "used_features_5q": [
     "retorno",
-    "media_movil",
-    "desv_std_movil",
-    "retorno_acumulado",
-    "asimetria"
+    "retorno_cuadrado",
+    "abs_ret_1p5",
+    "sign_log1p_abs_ret",
+    "tanh_ret"
   ],
   "timing_seconds": {
-    "six_qubits": 1104.71222158,
-    "five_qubits": 924.4368121490006
+    "six_qubits": 364.600415339999,
+    "five_qubits": 307.2469835350057
   },
   "block_contrast": {
-    "six_qubits_raw": 0.0100871543317117,
-    "six_qubits_ordered": 0.19358133009005707,
-    "five_qubits_raw": 0.00975672279391504,
-    "five_qubits_ordered": 0.15988282162029044
+    "six_qubits_raw": 0.02263865396973505,
+    "six_qubits_ordered": 0.1333838813238066,
+    "five_qubits_raw": 0.024252504099383232,
+    "five_qubits_ordered": 0.14603387775334892
   },
   "figure_paths": {
-    "fig3_correlations": "/home/iker/TFG/src/qhrp_figure3_4/results_6_vs_5_qubits_all_assets/fig3_corr_6_vs_5_all_assets_shuffled_3x3.png",
-    "fig4_distances": "/home/iker/TFG/src/qhrp_figure3_4/results_6_vs_5_qubits_all_assets/fig4_distance_6_vs_5_all_assets_shuffled.png",
-    "legacy_combined": "/home/iker/TFG/src/qhrp_figure3_4/results_6_vs_5_qubits_all_assets/qubits_6_vs_5_all_assets_heatmaps_shuffled.png"
+    "fig3_correlations": "/home/iker/TFG/src/qhrp_figure3_4/results_6_vs_5_qubits_all_assets/fig3_corr_6_vs_5_all_assets_baseline_3x3.png",
+    "fig4_distances": "/home/iker/TFG/src/qhrp_figure3_4/results_6_vs_5_qubits_all_assets/fig4_distance_6_vs_5_all_assets_baseline.png"
   },
-  "classical_order_shuffled_head": [
-    135,
-    13,
-    125,
-    165,
-    160,
-    30,
-    10,
-    109,
-    45,
-    133
+  "classical_order_head": [
+    168,
+    64,
+    63,
+    62,
+    68,
+    65,
+    67,
+    66,
+    60,
+    61
   ],
   "comparison": {
-    "distance_pearson": 0.9805952053645868,
-    "distance_spearman": 0.9813409114390682,
-    "order_spearman": -0.12729352095867935,
-    "order_kendall": -0.04156100309946464,
-    "relative_frobenius_distortion": 0.10694800617803264
-  }
+    "distance_pearson": 0.9979958691761505,
+    "distance_spearman": 0.9983838114445432,
+    "order_spearman": 0.9526826115061411,
+    "order_kendall": 0.8324880247957173,
+    "relative_frobenius_distortion": 0.09244633135573288
+  },
+  "perm_head": null
 }

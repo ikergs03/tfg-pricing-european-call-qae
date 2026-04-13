@@ -104,23 +104,13 @@ TOTAL HRP Kernel & 510.007 & 119.269 \\
 \end{tabular}
 \end{table}
 
-En la Tabla~\ref{TB:COSTECOMPUTACIONAL} vemos que el coste de QHRP está concentrado casi por completo en la construcción de matrices de densidad (1903.279 s de 1909.566 s), mientras que la ordenación jerárquica en sí es prácticamente instantánea. Esto significa que el límite actual no es HRP, sino la simulación cuántica previa. Pasa porque hay que simular muchos estados en un espacio que crece con $2^P$, por lo que QHRP es viable sobre todo en análisis offline o con tamaños de problema más contenidos.
+En la Tabla~\ref{TB:COSTECOMPUTACIONAL} vemos que el coste de QHRP está concentrado casi por completo en la construcción de matrices de densidad (1903.279 s de 1909.566 s), mientras que la ordenación jerárquica en sí es prácticamente instantánea. Esto significa que el límite actual no es HRP, sino la fase cuántica previa de construcción de matrices de densidad (simulada en este trabajo). Pasa porque hay que procesar muchos estados en un espacio que crece con $2^P$, por lo que QHRP es viable sobre todo en análisis offline o con tamaños de problema más contenidos.
 
 La Tabla~\ref{TB:WALKFORWARD} permite comparar estabilidad y dispersión por ventana, mientras que la Tabla~\ref{TB:SHARPEAGREGADO} resume el rendimiento acumulado fuera de muestra. La Tabla~\ref{TB:COSTECOMPUTACIONAL} cuantifica el coste de cada enfoque y hace explícito el compromiso rendimiento--coste.
 
-\begin{figure}[Distribución Sharpe y PSR]{FIG:TABLE1_HISTS}
-{Histogramas de Sharpe y PSR por ventana para las estrategias comparadas. Permiten observar estabilidad, dispersión y sensibilidad de cada método.}
-	\image{14cm}{}{table1-sharpe-histograms}
-\end{figure}
+La lectura conjunta de las Tablas~\ref{TB:WALKFORWARD} y~\ref{TB:SHARPEAGREGADO} muestra dos mensajes complementarios: (i) por ventana hay alta variabilidad y diferencias moderadas entre métodos, y (ii) al agregar todo el periodo fuera de muestra, QHRP queda en primera posición en Sharpe acumulado. En consecuencia, la comparación debe hacerse en dos niveles (local y global), no solo con medias por ventana.
 
-En la Figura~\ref{FIG:TABLE1_HISTS} vemos que el solapamiento de distribuciones indica que las diferencias entre métodos no son uniformes en todas las ventanas, sino dependientes del régimen de mercado. En meses de mayor ruido o rotación sectorial, el ranking puede invertirse. Por eso esta figura sugiere prudencia: conviene combinar lectura de distribución (estabilidad) con métricas agregadas (resultado final).
-
-\begin{figure}[Sharpe agregado]{FIG:TABLE2_AGG}
-{Comparación del Sharpe fuera de muestra agregado por método. Esta figura resume el rendimiento global acumulado sobre las ventanas evaluadas.}
-	\image{11cm}{}{table2-aggregated-sharpe}
-\end{figure}
-
-En la Figura~\ref{FIG:TABLE2_AGG} vemos que QHRP ofrece el mejor balance acumulado entre retorno y riesgo. La mejora frente a HRP Clásico (1.4441 vs 1.2378) sugiere que la métrica cuántica captura dependencias que la correlación lineal no recoge del todo. Aun así, la ventaja frente a Pesos Iguales es moderada, por lo que su adopción debe evaluarse junto al coste computacional.
+Además, la ventaja agregada de QHRP frente a Pesos Iguales es positiva pero moderada, por lo que su adopción práctica debe evaluarse junto al coste computacional reportado en la Tabla~\ref{TB:COSTECOMPUTACIONAL}.
 
 \subsection{Relación entre estructura visual y desempeño}
 La comparación de matrices ordenadas y no ordenadas del Capítulo~\ref{sec:analisis_metodologia} ayuda a interpretar por qué en algunos casos el panel derecho ofrece mejor desempeño que el izquierdo. El panel ordenado concentra activos similares en bloques cuasi-diagonales, lo que favorece particiones más coherentes en la bisección recursiva de HRP. En consecuencia, se reduce la mezcla de activos poco afines dentro de subcarteras y mejora la asignación de riesgo.
@@ -297,7 +287,9 @@ Las diferencias entre este trabajo y el paper pueden explicarse, de forma no exc
 Por tanto, si los valores absolutos difieren pero se conserva el patrón cualitativo (QHRP competitivo y estructura cuasi-diagonal tras ordenación), la reproducción puede considerarse satisfactoria desde el punto de vista metodológico.
 
 \subsection{Coste computacional y escalabilidad}
-La Figura~\ref{FIG:TIME_COST} muestra que el coste del método cuántico está dominado por la simulación de circuitos para construir matrices densidad promedio. En la configuración evaluada ($N=169$, $P=6$), el tiempo medio por ventana es aproximadamente:
+La Figura~\ref{FIG:TIME_COST} se lee de forma sencilla en dos pasos. A la izquierda se ve el desglose del tiempo por etapa: ahí se identifica en qué parte del pipeline se va el coste. A la derecha no hay etapas; hay métodos. Cada punto es una ventana \textit{walk-forward} y cada línea es el tiempo total de un método en esa ventana (QHRP, Kernel o Clásico). El eje vertical está en escala logarítmica, así que la lectura correcta es por órdenes de magnitud.
+
+En la configuración evaluada ($N=169$, $P=6$), el tiempo medio por ventana es aproximadamente:
 
 \begin{itemize}
 	\item HRP Cuántico: \(\sim 1910\,\mathrm{s}\)
@@ -305,14 +297,14 @@ La Figura~\ref{FIG:TIME_COST} muestra que el coste del método cuántico está d
 	\item HRP Clásico: \(\sim 0.07\,\mathrm{s}\)
 \end{itemize}
 
-Esto implica una razón aproximada cuántico/clásico de \(\sim 2.8\times 10^4\). El resultado no invalida el enfoque cuántico, pero sí obliga a explicitar el contexto: en este trabajo se usa simulación clásica de circuitos. En hardware cuántico nativo, el perfil temporal esperado puede ser distinto.
+Con estas cifras, QHRP tarda alrededor de 32 minutos por ventana, HRP Kernel unos 8.5 minutos y HRP Clásico menos de una décima de segundo. La razón aproximada cuántico/clásico es \(\sim 2.8\times 10^4\). El panel izquierdo muestra que, dentro de QHRP, el tiempo se concentra casi por completo en la fase cuántica previa (construcción de matrices de densidad), no en la ordenación HRP. El panel derecho confirma que esta diferencia no es un caso aislado: la línea de QHRP permanece siempre en miles de segundos, la de Kernel en cientos y la del Clásico en centésimas. En este trabajo ese coste se mide con simulación clásica de circuitos; en hardware cuántico nativo el perfil temporal puede cambiar.
 
 \begin{figure}[Coste computacional]{FIG:TIME_COST}
-{Comparativa de tiempo por método y por ventana. Se observa que la etapa dominante del enfoque cuántico es la construcción de matrices densidad, mientras que el enfoque clásico tiene coste prácticamente despreciable en la misma escala.}
+{Comparativa de tiempo por método y por ventana. Izquierda: desglose por etapa para localizar el cuello de botella. Derecha: tiempo total por ventana de cada método (no por etapa), en escala logarítmica, para verificar que la brecha de coste se mantiene en todo el experimento.}
 	\image{15cm}{}{tabla3-tiempos-computacionales}
 \end{figure}
 
-En la Figura~\ref{FIG:TIME_COST} vemos que la limitación práctica de QHRP en este entorno es computacional, no financiera. Un coste de ~1910 s por ventana (unos 32 minutos) puede ser asumible en investigación offline, pero dificulta rebalanceos frecuentes en producción. Esto pasa porque domina la simulación cuántica de estados; por tanto, la adopción operativa requiere reducir ese coste (aproximaciones, paralelización o hardware cuántico más eficiente).
+En resumen, la aportación principal de la Figura~\ref{FIG:TIME_COST} es operativa: explica de forma visual por qué QHRP tarda más y demuestra que ese patrón se repite en todas las ventanas. La limitación práctica de QHRP en este entorno es computacional, no financiera. Un coste de ~1910 s por ventana (unos 32 minutos) puede ser asumible en investigación offline, pero dificulta rebalanceos frecuentes en producción. Por tanto, para uso operativo más frecuente, hay que reducir la fase cuántica previa (aproximaciones, paralelización o hardware cuántico más eficiente).
 
 Además, el crecimiento con el número de características debe interpretarse de forma distinta según el método:
 
