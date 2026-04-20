@@ -1,0 +1,63 @@
+\chapter{Estimación del circuito cuántico (Ansatz)}
+\label{ap:estimacion_ansatz}
+
+En este apéndice se explica, de forma sencilla, cómo se calcula $\theta$ a partir de los datos y cómo se monta el circuito cuántico (ansatz) usado en QHRP.
+
+\section[Cálculo del vector angular theta]{Cálculo del vector angular $\theta$}
+\label{ap:calculo_theta}
+
+Cada dato de entrada $\mathbf{x} = (x_1, \dots, x_P)$ se convierte en un ángulo. Para hacerlo, se compara cada componente con su mínimo y su máximo en la ventana temporal del activo:
+
+\begin{equation}[eq:theta_qhrp]{Definición del ángulo de codificación por característica}
+\theta_i =
+\begin{cases}
+\alpha\,\pi\,\dfrac{x_i - x_i^{\min}}{x_i^{\max} - x_i^{\min}}, & \text{si } x_i^{\max} > x_i^{\min}, \\
+0, & \text{si } x_i^{\max} = x_i^{\min},
+\end{cases}
+\quad i = 1, \dots, P.
+\end{equation}
+
+En palabras simples:
+\begin{itemize}
+  \item Si la característica $i$ tiene variación, $\theta_i$ indica en qué punto del rango $[x_i^{\min}, x_i^{\max}]$ cae el valor actual.
+  \item Si no hay variación (es decir, $x_i^{\max} = x_i^{\min}$), se fija $\theta_i = 0$ para evitar problemas numéricos.
+\end{itemize}
+
+El parámetro $\alpha$ controla la amplitud de esos ángulos. En este trabajo se usa $\alpha = 2.0$.
+
+\section{Estructura del ansatz de codificación}
+\label{ap:estructura_ansatz}
+
+Una vez calculado $\theta$, el circuito sigue una secuencia de pasos repetidos: se aplican rotaciones para cargar información y, entre medias, se conectan qubits para mezclar esa información. La Tabla~\ref{TB:ANSATZ_BLOQUES} resume el proceso.
+
+\begin{table}[Bloques del ansatz cuántico]{TB:ANSATZ_BLOQUES}{Secuencia de bloques del ansatz usado para codificar una observación de $P$ características en $P$ qubits.}
+  \begin{tabular}{p{2.0cm}p{3.5cm}p{8.0cm}}
+    \textbf{Bloque} & \textbf{Qué se aplica} & \textbf{Explicación breve} \\
+    \hline
+    B0 & Inicialización & Se aplica $H$ a todos los qubits para preparar el estado de partida. \\
+    B1 & Primera carga & En cada qubit: $T$ y después $R_y(\theta_i)$. \\
+    B2 & Primera conexión & Se aplican iSWAP entre pares de qubits definidos. \\
+    B3 & Segunda carga & En cada qubit: $T$ y después $R_x(\theta_i)$. \\
+    B4 & Segunda conexión & Se repite el bloque iSWAP sobre los mismos pares. \\
+    B5 & Tercera carga & En cada qubit: $T$ y después $R_y(\theta_i)$. \\
+    B6 & Tercera conexión & Se vuelve a aplicar iSWAP sobre los mismos pares. \\
+    B7 & Cierre & En cada qubit: $T$ y $H$ para terminar el circuito. \\
+  \end{tabular}
+\end{table}
+
+Los pares de qubits que se conectan en la implementación son:
+
+\begin{equation}[eq:pairs_ansatz_qhrp]{Pares de entrelazamiento del ansatz}
+\mathcal{E} = \{(0,1), (0,5), (2,4), (0,4), (2,3), (1,2)\}.
+\end{equation}
+
+Si se trabaja con menos qubits (por ejemplo, de 6 a 5), un par $(i,j)$ solo se usa cuando ambos índices existen en ese circuito.
+
+\section{Código de referencia en formato de listado}
+\label{ap:codigo_theta_ansatz}
+
+Para dejar claro de dónde sale todo, los Códigos~\ref{COD:THETA_QHRP} y~\ref{COD:ANSATZ_QHRP} muestran líneas del archivo original del proyecto (\texttt{src/qhrp\_figure3\_4/src/quantum\_hrp.py}): primero el cálculo de $\theta$ y después la construcción del circuito.
+
+\PythonCode[COD:THETA_QHRP]{Calculo de theta en QHRP.}{Fragmento del archivo original con el cálculo de los ángulos theta.}{../../src/qhrp_figure3_4/src/quantum_hrp.py}{62}{70}{62}
+
+\PythonCode[COD:ANSATZ_QHRP]{Construccion del ansatz en QHRP.}{Fragmento del archivo original con las rotaciones, las conexiones iSWAP y el estado final.}{../../src/qhrp_figure3_4/src/quantum_hrp.py}{71}{107}{71}
