@@ -59,7 +59,7 @@ def quantum_feature_map_density(x, x_min, x_max, alpha=2.0):
     """
     Encodes a high-dimensional observation x (a vector of length P)
     into a quantum state using a three‐round circuit.
-    """ ###
+    """
     n = len(x)
     pi = math.pi
     theta = np.zeros(n)
@@ -67,7 +67,7 @@ def quantum_feature_map_density(x, x_min, x_max, alpha=2.0):
         if x_max[i] > x_min[i]:
             theta[i] = alpha * pi * (x[i] - x_min[i]) / (x_max[i] - x_min[i]) #revisar esto
         else:
-            theta[i] = 0 ###
+            theta[i] = 0
     qc = QuantumCircuit(n)
     qc.h(range(n))
     qc.barrier()

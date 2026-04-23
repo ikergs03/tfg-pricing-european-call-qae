@@ -1,7 +1,7 @@
 \chapter{Estimación del circuito cuántico (Ansatz)}
 \label{ap:estimacion_ansatz}
 
-En este apéndice se explica, de forma sencilla, cómo se calcula $\theta$ a partir de los datos y cómo se monta el circuito cuántico (ansatz) usado en QHRP.
+En este apéndice se explica, cómo se calcula $\theta$ a partir de los datos y cómo se monta el circuito cuántico (ansatz) usado en QHRP.
 
 \section[Cálculo del vector angular theta]{Cálculo del vector angular $\theta$}
 \label{ap:calculo_theta}
@@ -17,13 +17,17 @@ Cada dato de entrada $\mathbf{x} = (x_1, \dots, x_P)$ se convierte en un ángulo
 \quad i = 1, \dots, P.
 \end{equation}
 
-En palabras simples:
+Es decir:
 \begin{itemize}
   \item Si la característica $i$ tiene variación, $\theta_i$ indica en qué punto del rango $[x_i^{\min}, x_i^{\max}]$ cae el valor actual.
   \item Si no hay variación (es decir, $x_i^{\max} = x_i^{\min}$), se fija $\theta_i = 0$ para evitar problemas numéricos.
 \end{itemize}
 
-El parámetro $\alpha$ controla la amplitud de esos ángulos. En este trabajo se usa $\alpha = 2.0$.
+El parámetro $\alpha$ controla la amplitud de esos ángulos. Como el factor normalizado está en el intervalo $[0,1]$, se cumple que $\theta_i \in [0, \alpha\pi]$. Por tanto, al usar $\alpha = 2.0$, el rango angular queda en $[0, 2\pi]$.
+
+\subsection[Por qué se fija alpha 2.0]{Por qué se fija $\alpha = 2.0$}
+
+En este trabajo se escoge $\alpha = 2.0$ para que el rango angular de codificación sea exactamente $[0,2\pi]$, es decir, una vuelta completa.
 
 \section{Estructura del ansatz de codificación}
 \label{ap:estructura_ansatz}

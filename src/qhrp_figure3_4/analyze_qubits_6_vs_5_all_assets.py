@@ -335,7 +335,68 @@ def parse_args() -> argparse.Namespace:
         default=SCRIPT_DIR / "results_6_vs_5_qubits_all_assets",
         help="Directorio de salida para figuras e informes",
     )
+    parser.add_argument(
+        "--axis-labels",
+        type=str,
+        choices=["none", "sparse", "all"],
+        default="sparse",
+        help=(
+            "Etiquetas de ejes en los heatmaps: "
+            "none (sin etiquetas), sparse (subset legible), all (todos los activos)."
+        ),
+    )
+    parser.add_argument(
+        "--max-axis-labels",
+        type=int,
+        default=30,
+        help="Numero maximo de etiquetas por eje cuando --axis-labels=sparse.",
+    )
     return parser.parse_args()
+
+
+def _tick_positions_for_heatmap(n_items: int, mode: str, max_labels: int) -> np.ndarray:
+    """Calcula posiciones de ticks para mantener legibilidad en matrices grandes."""
+    if n_items <= 0 or mode == "none":
+        return np.array([], dtype=int)
+
+    if mode == "all":
+        return np.arange(n_items)
+
+    # mode == "sparse"
+    max_labels = max(1, max_labels)
+    step = max(1, int(np.ceil(n_items / max_labels)))
+    return np.arange(0, n_items, step)
+
+
+def apply_axis_asset_labels(ax: plt.Axes, ordered_assets: list[str], mode: str, max_labels: int) -> None:
+    """Aplica etiquetas tipo indice:ticker para identificar cada coordenada de la matriz."""
+    n_items = len(ordered_assets)
+    tick_idx = _tick_positions_for_heatmap(n_items, mode, max_labels)
+
+    if tick_idx.size == 0:
+        ax.set_xticks([])
+        ax.set_yticks([])
+        return
+
+    labels = [f"{i}:{ordered_assets[i]}" for i in tick_idx]
+    ax.set_xticks(tick_idx + 0.5)
+    ax.set_yticks(tick_idx + 0.5)
+    ax.set_xticklabels(labels, rotation=90, fontsize=6)
+    ax.set_yticklabels(labels, rotation=0, fontsize=6)
+    ax.set_xlabel("Activo (indice:ticker)")
+    ax.set_ylabel("Activo (indice:ticker)")
+
+
+def save_index_map(path: Path, ordered_assets: list[str], raw_positions: list[int]) -> None:
+    """Guarda tabla de trazabilidad para mapear coordenadas de la matriz a tickers."""
+    df = pd.DataFrame(
+        {
+            "ordered_index": np.arange(len(ordered_assets), dtype=int),
+            "ticker": ordered_assets,
+            "raw_index": raw_positions,
+        }
+    )
+    df.to_csv(path, index=False)
 
 
 def save_fig3_corr(
@@ -345,6 +406,12 @@ def save_fig3_corr(
     corr_quantum_6q: np.ndarray,
     corr_quantum_5q: np.ndarray,
     shuffled: bool,
+    asset_names_raw: list[str],
+    asset_names_classical: list[str],
+    asset_names_quantum_6q: list[str],
+    asset_names_quantum_5q: list[str],
+    axis_labels_mode: str,
+    max_axis_labels: int,
 ) -> None:
     """Figura 3 en formato 3+3: fila 6q y fila 5q."""
     fig, axes = plt.subplots(2, 3, figsize=(21, 14))
@@ -353,6 +420,10 @@ def save_fig3_corr(
     mats = [
         [corr_raw, corr_classical, corr_quantum_6q],
         [corr_raw, corr_classical, corr_quantum_5q],
+    ]
+    assets_by_panel = [
+        [asset_names_raw, asset_names_classical, asset_names_quantum_6q],
+        [asset_names_raw, asset_names_classical, asset_names_quantum_5q],
     ]
     titles = [
         [
@@ -379,14 +450,30 @@ def save_fig3_corr(
                 ax=axes[r, c],
             )
             axes[r, c].set_title(titles[r][c])
-            axes[r, c].tick_params(labelsize=5)
+            apply_axis_asset_labels(
+                axes[r, c],
+                assets_by_panel[r][c],
+                mode=axis_labels_mode,
+                max_labels=max_axis_labels,
+            )
 
     plt.tight_layout()
     fig.savefig(path, dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
-def save_fig4_distances(path: Path, result_6q: ScenarioResult, result_5q: ScenarioResult, vmax: float, shuffled: bool) -> None:
+def save_fig4_distances(
+    path: Path,
+    result_6q: ScenarioResult,
+    result_5q: ScenarioResult,
+    vmax: float,
+    shuffled: bool,
+    asset_names_raw: list[str],
+    asset_names_quantum_6q: list[str],
+    asset_names_quantum_5q: list[str],
+    axis_labels_mode: str,
+    max_axis_labels: int,
+) -> None:
     """Figura 4: distancias 6q y 5q antes/despues de ordenar, con escala baseline."""
     d6_ordered = result_6q.distance[np.ix_(result_6q.order, result_6q.order)]
     d5_ordered = result_5q.distance[np.ix_(result_5q.order, result_5q.order)]
@@ -396,19 +483,19 @@ def save_fig4_distances(path: Path, result_6q: ScenarioResult, result_5q: Scenar
 
     sns.heatmap(result_6q.distance, cmap="coolwarm", vmin=0, vmax=vmax, square=True, cbar=True, ax=axes[0, 0])
     axes[0, 0].set_title(f"(a) Distancia cuantica 6q sin ordenar ({tag})")
-    axes[0, 0].tick_params(labelsize=5)
+    apply_axis_asset_labels(axes[0, 0], asset_names_raw, mode=axis_labels_mode, max_labels=max_axis_labels)
 
     sns.heatmap(d6_ordered, cmap="coolwarm", vmin=0, vmax=vmax, square=True, cbar=True, ax=axes[0, 1])
     axes[0, 1].set_title(f"(b) Distancia cuantica 6q ordenada ({tag})")
-    axes[0, 1].tick_params(labelsize=5)
+    apply_axis_asset_labels(axes[0, 1], asset_names_quantum_6q, mode=axis_labels_mode, max_labels=max_axis_labels)
 
     sns.heatmap(result_5q.distance, cmap="coolwarm", vmin=0, vmax=vmax, square=True, cbar=True, ax=axes[1, 0])
     axes[1, 0].set_title(f"(c) Distancia cuantica 5q sin ordenar ({tag})")
-    axes[1, 0].tick_params(labelsize=5)
+    apply_axis_asset_labels(axes[1, 0], asset_names_raw, mode=axis_labels_mode, max_labels=max_axis_labels)
 
     sns.heatmap(d5_ordered, cmap="coolwarm", vmin=0, vmax=vmax, square=True, cbar=True, ax=axes[1, 1])
     axes[1, 1].set_title(f"(d) Distancia cuantica 5q ordenada ({tag})")
-    axes[1, 1].tick_params(labelsize=5)
+    apply_axis_asset_labels(axes[1, 1], asset_names_quantum_5q, mode=axis_labels_mode, max_labels=max_axis_labels)
 
     plt.tight_layout()
     fig.savefig(path, dpi=300, bbox_inches="tight")
@@ -462,9 +549,18 @@ def main() -> None:
     corr_raw = np.corrcoef(returns_work.to_numpy(), rowvar=False)
     corr_classical, order_classical = classical_ordered_corr(corr_raw)
 
+    asset_names_raw = asset_names_work
+    asset_names_classical = [asset_names_work[i] for i in order_classical]
+    asset_names_quantum_6q = [asset_names_work[i] for i in result_6q.order]
+    asset_names_quantum_5q = [asset_names_work[i] for i in result_5q.order]
+
     suffix = "shuffled" if args.shuffle_assets else "baseline"
     fig3_path = out_dir / f"fig3_corr_6_vs_5_all_assets_{suffix}_3x3.png"
     fig4_path = out_dir / f"fig4_distance_6_vs_5_all_assets_{suffix}.png"
+    map_raw_path = out_dir / f"index_map_raw_{suffix}.csv"
+    map_classical_path = out_dir / f"index_map_classical_{suffix}.csv"
+    map_q6_path = out_dir / f"index_map_quantum_6q_{suffix}.csv"
+    map_q5_path = out_dir / f"index_map_quantum_5q_{suffix}.csv"
 
     save_fig3_corr(
         fig3_path,
@@ -473,6 +569,12 @@ def main() -> None:
         result_6q.corr_ordered,
         result_5q.corr_ordered,
         shuffled=args.shuffle_assets,
+        asset_names_raw=asset_names_raw,
+        asset_names_classical=asset_names_classical,
+        asset_names_quantum_6q=asset_names_quantum_6q,
+        asset_names_quantum_5q=asset_names_quantum_5q,
+        axis_labels_mode=args.axis_labels,
+        max_axis_labels=args.max_axis_labels,
     )
     save_fig4_distances(
         fig4_path,
@@ -480,7 +582,17 @@ def main() -> None:
         result_5q,
         vmax=args.fig4_vmax,
         shuffled=args.shuffle_assets,
+        asset_names_raw=asset_names_raw,
+        asset_names_quantum_6q=asset_names_quantum_6q,
+        asset_names_quantum_5q=asset_names_quantum_5q,
+        axis_labels_mode=args.axis_labels,
+        max_axis_labels=args.max_axis_labels,
     )
+
+    save_index_map(map_raw_path, asset_names_raw, list(range(len(asset_names_raw))))
+    save_index_map(map_classical_path, asset_names_classical, order_classical)
+    save_index_map(map_q6_path, asset_names_quantum_6q, result_6q.order.tolist())
+    save_index_map(map_q5_path, asset_names_quantum_5q, result_5q.order.tolist())
 
     summary_text = build_summary_text_all_assets(
         asset_names=asset_names_work,
@@ -531,6 +643,10 @@ def main() -> None:
         "figure_paths": {
             "fig3_correlations": str(fig3_path),
             "fig4_distances": str(fig4_path),
+            "index_map_raw": str(map_raw_path),
+            "index_map_classical": str(map_classical_path),
+            "index_map_quantum_6q": str(map_q6_path),
+            "index_map_quantum_5q": str(map_q5_path),
         },
         "classical_order_head": order_classical[:10],
         "comparison": cmp_metrics,
@@ -545,6 +661,10 @@ def main() -> None:
     print(f"- Metricas: {json_path}")
     print(f"- Figura:  {fig3_path}")
     print(f"- Figura:  {fig4_path}")
+    print(f"- Mapa indices: {map_raw_path}")
+    print(f"- Mapa indices: {map_classical_path}")
+    print(f"- Mapa indices: {map_q6_path}")
+    print(f"- Mapa indices: {map_q5_path}")
 
 
 if __name__ == "__main__":
