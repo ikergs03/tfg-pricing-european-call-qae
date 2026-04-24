@@ -286,6 +286,29 @@ Las diferencias entre este trabajo y el paper pueden explicarse, de forma no exc
 
 Por tanto, si los valores absolutos difieren pero se conserva el patrón cualitativo (QHRP competitivo y estructura cuasi-diagonal tras ordenación), la reproducción puede considerarse satisfactoria desde el punto de vista metodológico.
 
+\subsection{Piloto en hardware IBM con 40 activos}
+Para reforzar el apartado experimental con una prueba en entorno real, se diseñó un piloto específico en hardware IBM. La idea fue responder una pregunta concreta: si la parte cuántica se ejecuta fuera del simulador ideal, \textquestiondown se conserva la estructura jerárquica que necesita QHRP para ordenar activos de forma coherente?
+
+El piloto se acotó a \(N=40\) activos y \(T=90\) días recientes. Esta decisión tiene un motivo práctico: ejecutar en hardware real implica cola, número de mediciones y coste, por lo que conviene empezar con un tamaño manejable pero representativo. La selección de activos se hizo de forma reproducible, priorizando liquidez reciente (mediana de \(\text{precio}\times\text{volumen}\)); cuando faltaban datos, se completó el subconjunto con un criterio de respaldo por volatilidad.
+
+Con ese subconjunto fijo, el protocolo se ejecutó en dos pasos:
+\begin{enumerate}
+\item \textbf{Simulación ideal:} primero se generó la referencia con matrices densidad y distancias cuánticas, verificando que la ordenación QHRP produce bloques claros.
+\item \textbf{Hardware IBM real:} después se ejecutaron los circuitos en la plataforma de IBM, se estimaron distribuciones medidas y se construyó la matriz de distancias (Hellinger), aplicando la misma ordenación jerárquica.
+\end{enumerate}
+
+En ambos pasos se mantuvieron los mismos hiperparámetros del \textit{feature map} (\(\alpha=2.0\)) y un número de mediciones controlado. Así, la comparación hardware--simulador no mezcla efectos: cualquier diferencia observada se puede atribuir principalmente a medición, ruido y condiciones del equipo cuántico utilizado.
+
+La validación se evaluó con dos criterios complementarios:
+\begin{itemize}
+\item \textbf{Criterio estructural visual:} comprobar que la matriz ordenada en hardware conserva bloques cuasi-diagonales comparables a los del simulador.
+\item \textbf{Criterio cuantitativo de contraste:} verificar mejora de separación entre elementos cercanos y lejanos al ordenar, usando una métrica de \textit{block contrast} sobre la matriz de distancias.
+\end{itemize}
+
+El resultado del piloto es coherente con el objetivo del capítulo: en hardware IBM se mantiene la organización jerárquica relevante para QHRP, aunque aparezcan variaciones locales esperables por ruido de muestreo, calibración y dinámica de ejecución. En consecuencia, esta prueba no se interpreta como una competición de Sharpe, sino como evidencia de \textbf{transferencia metodológica} desde simulación ideal a hardware real.
+
+Por último, para asegurar reproducibilidad operativa, se guardó una copia local de la matriz de distancias de hardware y se habilitó recuperación desde trabajos ya completados en la plataforma de IBM. Esto permite rehacer figuras comparativas sin relanzar ejecuciones costosas tras reiniciar el kernel.
+
 \subsection{Coste computacional y escalabilidad}
 La Figura~\ref{FIG:TIME_COST} se lee de forma sencilla en dos pasos. A la izquierda se ve el desglose del tiempo por etapa: ahí se identifica en qué parte del pipeline se va el coste. A la derecha no hay etapas; hay métodos. Cada punto es una ventana \textit{walk-forward} y cada línea es el tiempo total de un método en esa ventana (QHRP, Kernel o Clásico). El eje vertical está en escala logarítmica, así que la lectura correcta es por órdenes de magnitud.
 
