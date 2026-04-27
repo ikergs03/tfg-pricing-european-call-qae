@@ -287,25 +287,34 @@ Las diferencias entre este trabajo y el paper pueden explicarse, de forma no exc
 Por tanto, si los valores absolutos difieren pero se conserva el patrón cualitativo (QHRP competitivo y estructura cuasi-diagonal tras ordenación), la reproducción puede considerarse satisfactoria desde el punto de vista metodológico.
 
 \subsection{Piloto en hardware IBM con 40 activos}
-Para reforzar el apartado experimental con una prueba en entorno real, se diseñó un piloto específico en hardware IBM. La idea fue responder una pregunta concreta: si la parte cuántica se ejecuta fuera del simulador ideal, \textquestiondown se conserva la estructura jerárquica que necesita QHRP para ordenar activos de forma coherente?
+Para reforzar la validación experimental en entorno real, se diseñó un piloto en hardware IBM con una pregunta operativa explícita: dado un subconjunto fijo de activos y el mismo pipeline QHRP, \textbf{¿se conserva la mejora estructural que aporta la ordenación cuántica al pasar de simulación ideal a hardware real?}
 
-El piloto se acotó a \(N=40\) activos y \(T=90\) días recientes. Esta decisión tiene un motivo práctico: ejecutar en hardware real implica cola, número de mediciones y coste, por lo que conviene empezar con un tamaño manejable pero representativo. La selección de activos se hizo de forma reproducible, priorizando liquidez reciente (mediana de \(\text{precio}\times\text{volumen}\)); cuando faltaban datos, se completó el subconjunto con un criterio de respaldo por volatilidad.
+La conservación se mide con la métrica \textit{block contrast} sobre la matriz de distancias \(D\). Para \(b=\max(3,\lfloor N/10\rfloor)\), se definen \(\mathcal{N}_b=\{(i,j):0<|i-j|\le b\}\) y \(\mathcal{F}_b=\{(i,j):|i-j|>b\}\); la condición \(0<|i-j|\) excluye explícitamente la diagonal. Sean \(\overline{D}_{\mathcal{N}_b}=\operatorname{mean}\{D_{ij}:(i,j)\in\mathcal{N}_b\}\) y \(\overline{D}_{\mathcal{F}_b}=\operatorname{mean}\{D_{ij}:(i,j)\in\mathcal{F}_b\}\). Entonces, \(\mathrm{BC}(D;b)=\overline{D}_{\mathcal{F}_b}-\overline{D}_{\mathcal{N}_b}\), con \(\Delta\mathrm{BC}=\mathrm{BC}(D_{\text{ord}};b)-\mathrm{BC}(D_{\text{raw}};b)\). Un valor positivo de \(\Delta\mathrm{BC}\) indica que la ordenación incrementa la separación entre pares cercanos y lejanos al eje diagonal.
 
-Con ese subconjunto fijo, el protocolo se ejecutó en dos pasos:
+El piloto se acotó a \(N=40\) activos y \(T=90\) días recientes. Esta decisión responde a restricciones prácticas de hardware (cola, coste de medición y ruido), por lo que se priorizó un tamaño manejable pero representativo. En consistencia con la definición del tensor en la Sección~\ref{sec:construccion_tensor}, \(P=6\) denota el número de características codificadas en el \textit{feature map} (un qubit por característica).
+
+La selección de activos se hizo de forma reproducible y en dos etapas:
 \begin{enumerate}
-\item \textbf{Simulación ideal:} primero se generó la referencia con matrices densidad y distancias cuánticas, verificando que la ordenación QHRP produce bloques claros.
-\item \textbf{Hardware IBM real:} después se ejecutaron los circuitos en la plataforma de IBM, se estimaron distribuciones medidas y se construyó la matriz de distancias (Hellinger), aplicando la misma ordenación jerárquica.
+\item \textbf{Criterio principal (liquidez):} ranking descendente por mediana de volumen monetario diario \((\text{precio}\times\text{volumen})\) en la ventana de 90 días. Se usa la mediana, y no la media, por su mayor robustez frente a picos transitorios y valores atípicos.
+\item \textbf{Criterio de respaldo (volatilidad):} si tras el filtro de datos faltan activos para completar 40, se añaden los no seleccionados con mayor desviación estándar de retornos en la misma ventana temporal.
 \end{enumerate}
 
-En ambos pasos se mantuvieron los mismos hiperparámetros del \textit{feature map} (\(\alpha=2.0\)) y un número de mediciones controlado. Así, la comparación hardware--simulador no mezcla efectos: cualquier diferencia observada se puede atribuir principalmente a medición, ruido y condiciones del equipo cuántico utilizado.
+La simulación actúa como \textit{baseline}. El pipeline se mantiene idéntico en preprocesado, subconjunto de activos, \textit{feature map}, ordenación jerárquica y criterio de evaluación. Solo cambia la capa de ejecución cuántica (observables ideales en simulador frente a distribuciones medidas en hardware). También se fija \(\alpha=2.0\) en ambos casos para mantener comparabilidad con el flujo principal y conservar una escala angular estable en la construcción de distancias.
 
-La validación se evaluó con dos criterios complementarios:
-\begin{itemize}
-\item \textbf{Criterio estructural visual:} comprobar que la matriz ordenada en hardware conserva bloques cuasi-diagonales comparables a los del simulador.
-\item \textbf{Criterio cuantitativo de contraste:} verificar mejora de separación entre elementos cercanos y lejanos al ordenar, usando una métrica de \textit{block contrast} sobre la matriz de distancias.
-\end{itemize}
+\begin{table}[Piloto hardware vs simulación]{TB:PILOTO_BC}{Resultados de \textit{block contrast} en el piloto \(N=40\), \(T=90\), \(P=6\).}
+\begin{tabular}{lccc}
+\hline
+\textbf{Caso} & \textbf{$BC_{\mathrm{raw}}$} & \textbf{$BC_{\mathrm{ord}}$} & \textbf{$\Delta\mathrm{BC}$} \\
+\hline
+Simulación (baseline) & -0.0037 & 0.0748 & 0.0786 \\
+Hardware IBM (256 \textit{shots}/circuito) & -0.0006 & 0.0096 & 0.0102 \\
+\hline
+\end{tabular}
+\end{table}
 
-El resultado del piloto es coherente con el objetivo del capítulo: en hardware IBM se mantiene la organización jerárquica relevante para QHRP, aunque aparezcan variaciones locales esperables por ruido de muestreo, calibración y dinámica de ejecución. En consecuencia, esta prueba no se interpreta como una competición de Sharpe, sino como evidencia de \textbf{transferencia metodológica} desde simulación ideal a hardware real.
+Los resultados de hardware corresponden a una única ejecución (sin promedio sobre \textit{runs} independientes). La mejora estructural se conserva en signo, pero se atenúa en magnitud: \(\Delta\mathrm{BC}_{\text{hw}}/\Delta\mathrm{BC}_{\text{sim}}\approx 0.1298\), equivalente a una degradación relativa de \(87.0\%\). Esta degradación combina dos efectos: (i) varianza de muestreo por \textit{shots} finitos y (ii) ruido físico del hardware (errores de puerta, lectura y deriva de calibración). Dado que se trata de una sola corrida en hardware, este piloto no permite descomponer cuantitativamente ambos efectos ni sostener una atribución causal fina entre ellos.
+
+El criterio visual (bloques cuasi-diagonales en mapas de calor) se utiliza como evidencia cualitativa complementaria, no como prueba suficiente por sí sola. Por ende, el piloto se interpreta como evidencia de \textbf{transferencia metodológica parcial}: la estructura jerárquica de QHRP persiste en hardware real, aunque con menor contraste que en simulación ideal.
 
 Por último, para asegurar reproducibilidad operativa, se guardó una copia local de la matriz de distancias de hardware y se habilitó recuperación desde trabajos ya completados en la plataforma de IBM. Esto permite rehacer figuras comparativas sin relanzar ejecuciones costosas tras reiniciar el kernel.
 
