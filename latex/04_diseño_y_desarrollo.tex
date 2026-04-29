@@ -54,16 +54,39 @@ Para cada activo, dichas matrices se agregan mediante un promedio temporal, obte
 \subsection{Circuito cuántico reproducido del paper}
 \label{sec:circuito_reproducido_paper}
 
-Como parte de la validación metodológica, se reproduce de forma explícita el circuito de referencia utilizado en el paper para el caso de seis qubits. La secuencia implementada incluye: (i) compuertas Hadamard en todos los qubits, (ii) rotaciones \texttt{RY} y \texttt{RX} parametrizadas por las características, (iii) compuertas de entrelazamiento tipo \texttt{CNOT} por pares y (iv) medición final en base computacional.
+Como parte de la validación metodológica, se reproduce de forma explícita el circuito de referencia utilizado en el paper para el caso de seis qubits. La secuencia incluye: (i) compuertas Hadamard en todos los qubits, (ii) rotaciones \texttt{RY} y \texttt{RX} parametrizadas por las características, (iii) capas de entrelazamiento intercaladas y (iv) una etapa final de medición en base computacional. En este contexto, la medición se incluye exclusivamente para la representación del diagrama; el pipeline experimental opera en representación de estado puro y construye las matrices de densidad en simulación sin colapso por medida.
+
+Es importante remarcar que, en el artículo original, CNOT aparece como \textbf{ejemplo} de compuerta de entrelazamiento en la figura del circuito, pero el texto metodológico permite alternativas (\texttt{CZ}, \texttt{SWAP}, \texttt{iSWAP}, etc.) dentro del mismo esquema de feature map.
 
 Esta representación se incorpora para dejar trazabilidad del diseño del ansatz y facilitar la comparación entre la formulación teórica y su implementación práctica. En el repositorio, la construcción de esta figura está disponible en el notebook de la Figura 1.
+
+Para evitar confusiones de interpretación, en este trabajo se separan dos circuitos complementarios:
+\begin{itemize}
+    \item \textbf{Circuito de referencia (Figura 1):} replica la narrativa del paper y usa CNOT como caso ilustrativo de entrelazamiento.
+    \item \textbf{Circuito del pipeline experimental QHRP:} usa la secuencia \texttt{H} -- \texttt{T} -- \texttt{RY/RX} con capas de \texttt{iSWAP} en pares predefinidos, consistente con el módulo de simulación que genera las matrices de densidad.
+\end{itemize}
+
+Esta decisión metodológica permite, simultáneamente, (i) mantener fidelidad documental con la presentación del paper y (ii) preservar coherencia con la implementación reproducible que produce los resultados reportados. Es relevante subrayar que ambos circuitos no son equivalentes desde el punto de vista del embedding cuántico: la sustitución de CNOT por iSWAP modifica la estructura de coherencias y, por tanto, la geometría inducida en el espacio de estados.
 
 \begin{figure}[Circuito cuántico reproducido del paper]{FIG:CIRCUITO_PAPER_QHRP}
 {Circuito cuántico de 6 qubits reproducido a partir del paper. Se muestran compuertas de inicialización, codificación parametrizada, entrelazamiento y medición final.}
     \image{16cm}{}{fig1-circuito-paper-qhrp}
 \end{figure}
 
-El circuito confirma que cada una de las 6 características del activo se codifica en un qubit y luego se mezcla mediante entrelazamiento. En términos prácticos, esto permite pasar de una representación clásica de 6 variables a una representación en un espacio de dimensión $2^6=64$, donde se pueden capturar interacciones entre características que no son evidentes con transformaciones lineales.
+El circuito confirma que cada una de las 6 características del activo se codifica en un qubit y se correlaciona mediante capas de entrelazamiento. Más precisamente, el feature map define una inmersión de vectores en un espacio de Hilbert de dimensión $2^6=64$ (para seis qubits), donde la información queda codificada en la geometría del espacio de estados y en su estructura de coherencias y correlaciones cuánticas.
+
+En términos de reproducibilidad experimental, los resultados principales de este TFG se obtienen con el circuito del pipeline experimental (con \texttt{iSWAP}), mientras que la figura del circuito de referencia (con CNOT en el ejemplo) se conserva como apoyo documental para comparación conceptual con el paper.
+
+\subsection{Reproducción práctica de ambos circuitos}
+\label{sec:reproduccion_practica_circuitos}
+
+La reproducción documentada en el repositorio se organiza en dos niveles:
+\begin{itemize}
+    \item \textbf{Nivel didáctico/figura:} notebook de la Figura 1, que construye el circuito de referencia de seis qubits y permite visualizar su estructura (capas de codificación y entrelazamiento de ejemplo).
+    \item \textbf{Nivel experimental/pipeline:} módulo principal de QHRP (archivo \texttt{src/qhrp\_figure3\_4/src/quantum\_hrp.py}), donde se define el ansatz usado para calcular estados, matrices de densidad promedio y distancias de Frobenius.
+\end{itemize}
+
+La trazabilidad queda garantizada porque el notebook documenta la arquitectura de referencia y el módulo del pipeline experimental implementa la configuración efectivamente utilizada en todos los resultados reportados. De este modo, es posible reproducir tanto la figura de referencia como los resultados cuantitativos del trabajo bajo el pipeline experimental utilizado.
 
 \subsection{Reproducibilidad: entorno, versiones y trazabilidad}
 \label{sec:reproducibilidad_entorno}

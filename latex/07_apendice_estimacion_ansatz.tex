@@ -1,14 +1,15 @@
 \chapter{Estimación del circuito cuántico (Ansatz)}
 \label{ap:estimacion_ansatz}
 
-En este apéndice se explica, cómo se calcula $\theta$ a partir de los datos y cómo se monta el circuito cuántico (ansatz) usado en QHRP.
+En este apéndice se describe cómo se calcula $\theta$ a partir de los datos y cómo se monta el circuito cuántico (ansatz) usado en QHRP.
 
 \section[Cálculo del vector angular theta]{Cálculo del vector angular $\theta$}
 \label{ap:calculo_theta}
 
-Cada dato de entrada $\mathbf{x} = (x_1, \dots, x_P)$ se convierte en un ángulo. Para hacerlo, se compara cada componente con su mínimo y su máximo en la ventana temporal del activo:
+Cada dato de entrada $\mathbf{x} = (x_1, \dots, x_P)$ se convierte en un ángulo. Para ello, se aplica una normalización afín de cada componente respecto a sus valores extremos en la ventana temporal considerada:
 
-\begin{equation}[eq:theta_qhrp]{Definición del ángulo de codificación por característica}
+\begin{equation}
+\label{eq:theta_qhrp}
 \theta_i =
 \begin{cases}
 \alpha\,\pi\,\dfrac{x_i - x_i^{\min}}{x_i^{\max} - x_i^{\min}}, & \text{si } x_i^{\max} > x_i^{\min}, \\
@@ -29,13 +30,79 @@ El parámetro $\alpha$ controla la amplitud de esos ángulos. Como el factor nor
 
 En este trabajo se escoge $\alpha = 2.0$ para que el rango angular de codificación sea exactamente $[0,2\pi]$, es decir, una vuelta completa.
 
+\subsection[Uso de máximos/mínimos históricos y dinámica de re-evaluación]{Uso de máximos y mínimos históricos y dinámica de re-evaluación}
+\label{ap:extremos_reevaluacion}
+
+En la Ecuación~\eqref{eq:theta_qhrp} los valores $x_i^{\min}$ y $x_i^{\max}$ determinan la normalización de cada característica. En la práctica estos extremos se obtienen a partir de un conjunto histórico de observaciones del activo; la elección de la ventana histórica y la política de actualización condicionan tanto la estabilidad de $\theta$ como la respuesta del sistema cuando se introducen nuevos datos.
+
+Definimos una ventana temporal de referencia $W(t)$ que contiene los índices de tiempo usados para calcular los extremos en el instante $t$. Por ejemplo, para una ventana deslizante de longitud $W$:
+\[
+x_i^{\min}(t) = \min_{s\in W(t)} x_i(s),\qquad x_i^{\max}(t) = \max_{s\in W(t)} x_i(s).
+\]
+
+Con esta notación la fórmula de codificación angular en el tiempo $t$ queda:
+\[
+\theta_i(t)=\begin{cases}
+\alpha\pi\dfrac{x_i(t)-x_i^{\min}(t)}{x_i^{\max}(t)-x_i^{\min}(t)}, & x_i^{\max}(t)>x_i^{\min}(t),\\
+0,&x_i^{\max}(t)=x_i^{\min}(t).
+\end{cases}
+\]
+
+Nótese que esta dependencia temporal induce un feature map no estacionario, ya que la transformación $x\mapsto\theta(t)$ varía con la ventana $W(t)$.
+
+Políticas habituales de mantenimiento de extremos:
+\begin{itemize}
+\item Ventana deslizante (recomendado en operación online): se calcula min/max sobre los últimos $W$ valores; al entrar un nuevo dato se elimina el más antiguo. Esto garantiza respuesta a cambios estructurales recientes pero puede introducir variabilidad si $W$ es pequeño.
+\item Ventana acumulada (offline): min/max sobre todo el historial disponible. Es más estable pero no refleja cambios recientes en la dinámica del activo.
+\item Estadística robusta: usar percentiles (p. ej. 1%/99%) en lugar de min/max para mitigar outliers.
+\end{itemize}
+
+Comportamiento del sistema al re-evaluar con un nuevo valor:
+\begin{itemize}
+\item \textbf{Cálculo determinista de $\theta$:} Con la política de extremos elegida, la transformación $x\mapsto\theta$ es puramente determinista y reproducible: dadas las mismas observaciones y la misma ventana, el vector $\theta(t)$ será siempre idéntico.
+
+\item \textbf{Recomposición del estado cuántico:} Una vez calculado $\theta(t)$ se construye el circuito (ver el fragmento en el código fuente) y se obtiene la densidad $\rho(t)$ mediante la instrucción que implementa el ansatz. En la implementación actual el código realiza una recomputación completa de la densidad por observación (ver \texttt{src/qhrp\_figure3\_4/src/quantum\_hrp.py}).
+
+\item \textbf{Actualización de la densidad media:} En el caso de ventana fija de tamaño $T$, la actualización puede realizarse de forma incremental para ahorrar cómputo. Si $\bar{\rho}_{t-1}$ es el promedio en el instante previo y se desplaza la ventana eliminando $\rho_{\text{out}}$ e incorporando $\rho_{\text{in}}$:\[
+\bar{\rho}_t = \bar{\rho}_{t-1} + \frac{1}{T}\big(\rho_{\text{in}} - \rho_{\text{out}}\big).
+\]
+Alternativamente se puede usar un promedio exponencial:
+\[
+\bar{\rho}_t = (1-\beta)\,\bar{\rho}_{t-1} + \beta\,\rho(t),\qquad \beta\in(0,1],
+\]
+que simplifica la gestión de memoria y da más peso a las observaciones recientes.
+\end{itemize}
+
+Consideraciones numéricas y de robustez:
+\begin{itemize}
+\item Normalización: tras operaciones numéricas conviene asegurar que las densidades mantengan la traza unitario y la positividad (corregir por truncado numérico si procede).
+\item Casos degenerados: cuando $x_i^{\max}=x_i^{\min}$ se fija $\theta_i=0$ (como en la Ecuación~\eqref{eq:theta_qhrp}) para evitar divisiones por cero.
+\item Trazabilidad: para reproducibilidad registre, para cada procesamiento, la política de extremos usada (tipo de ventana, $W$), la semilla aleatoria, el valor de $\alpha$ y las versiones de los scripts. Guardar el vector $\theta(t)$ y la matriz $\rho(t)$ en disco facilita auditoría y reanálisis.
+\end{itemize}
+
+Pseudocódigo de actualización online (esquema):
+\begin{verbatim}
+# Mantener ventana W de observaciones
+for each new observation x_new:
+  append x_new to W
+  if len(W)>W_max: x_out = pop_oldest(W)
+  compute x_min, x_max over W
+  compute theta from x_new using eq. (\ref{eq:theta_qhrp})
+  build circuit -> rho_new
+  update average rho (incremental o expon.)
+  recompute distancias / orden si procede
+  log: indices ventana, x_min, x_max, theta, alpha, commit_hash
+\end{verbatim}
+
+En resumen, la elección entre recomputar completamente o actualizar incrementalmente es una compensación entre coste computacional y simplicidad/consistencia estadística; la implementación en \texttt{src/qhrp\_figure3\_4/src/quantum\_hrp.py} realiza recomputaciones completas por observación, pero el esquema presentado permite alternativas eficientes para despliegues online.
+
 \section{Estructura del ansatz de codificación}
 \label{ap:estructura_ansatz}
 
-Una vez calculado $\theta$, el circuito sigue una secuencia de pasos repetidos: se aplican rotaciones para cargar información y, entre medias, se conectan qubits para mezclar esa información. La Tabla~\ref{TB:ANSATZ_BLOQUES} resume el proceso.
+Una vez calculado $\theta$, el circuito sigue una secuencia de pasos repetidos: se aplican rotaciones para cargar información y, entre medias, se conectan qubits para mezclar esa información. La tabla siguiente resume el proceso.
 
-\begin{table}[Bloques del ansatz cuántico]{TB:ANSATZ_BLOQUES}{Secuencia de bloques del ansatz usado para codificar una observación de $P$ características en $P$ qubits.}
-  \begin{tabular}{p{2.0cm}p{3.5cm}p{8.0cm}}
+\begin{table}[Bloques del ansatz]{TB:ANSATZ_BLOQUES}{Secuencia de bloques del ansatz de codificación.}
+\begin{tabular}{p{2.0cm}p{3.5cm}p{8.0cm}}
     \textbf{Bloque} & \textbf{Qué se aplica} & \textbf{Explicación breve} \\
     \hline
     B0 & Inicialización & Se aplica $H$ a todos los qubits para preparar el estado de partida. \\
@@ -46,12 +113,13 @@ Una vez calculado $\theta$, el circuito sigue una secuencia de pasos repetidos: 
     B5 & Tercera carga & En cada qubit: $T$ y después $R_y(\theta_i)$. \\
     B6 & Tercera conexión & Se vuelve a aplicar iSWAP sobre los mismos pares. \\
     B7 & Cierre & En cada qubit: $T$ y $H$ para terminar el circuito. \\
-  \end{tabular}
+\end{tabular}
 \end{table}
 
 Los pares de qubits que se conectan en la implementación son:
 
-\begin{equation}[eq:pairs_ansatz_qhrp]{Pares de entrelazamiento del ansatz}
+\begin{equation}
+\label{eq:pairs_ansatz_qhrp}
 \mathcal{E} = \{(0,1), (0,5), (2,4), (0,4), (2,3), (1,2)\}.
 \end{equation}
 
