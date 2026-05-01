@@ -45,18 +45,18 @@ El circuito utilizado en este trabajo se interpreta explícitamente como un \tex
 \subsection{Formalización: el feature map como embedding en el espacio de Hilbert}
 
 Sea $\mathbf{x}\in\mathbb{R}^P$ el vector de características de una observación. Definimos el mapeo de características cuántico (feature map) como una aplicación
-\begin{equation}{}
+\begin{equation}[eq:feature_map_cuantico]{Mapeo cuántico de las características}
 \Phi:\;\mathbb{R}^P \longrightarrow \mathcal{H},
 \qquad
 \Phi(\mathbf{x}) = \lvert\psi(\mathbf{x})\rangle = U(\mathbf{x})\lvert 0\rangle^{\otimes P},
 \end{equation}
 donde $U(\mathbf{x})$ es la unidadaria del circuito parametrizada por las entradas y $\mathcal{H}\cong\mathbb{C}^{2^P}$ es el espacio de Hilbert compuesto de $P$ qubits. La representación de cada activo se obtiene como la matriz de densidad promedio
-\begin{equation}
+\begin{equation}[eq:densidad_promedio_activo]{Definición de densidad promedio de un activo}
 \rho_i = \frac{1}{T}\sum_{t=1}^T \lvert\psi(\mathbf{x}_i^t)\rangle\langle\psi(\mathbf{x}_i^t)\rvert.
 \end{equation}
 
 Los operadores unitarios que construyen $U(\mathbf{x})$ se separan conceptualmente en dos bloques: (i) un bloque de operadores locales $U_{\mathrm{loc}}(\mathbf{x})=\bigotimes_{k=1}^P R_k(\theta_k(\mathbf{x}))$ que codifican las características en ángulos locales, y (ii) un bloque de entrelazadores globales $V_{\mathrm{ent}}$ que introducen correlaciones no locales. Así,
-\begin{equation}
+\begin{equation}[eq:estado_feature_map_entrelazado]{Estado embebido con bloques local y entrelazador}
 \lvert\psi(\mathbf{x})\rangle = V_{\mathrm{ent}} U_{\mathrm{loc}}(\mathbf{x})\lvert 0\rangle^{\otimes P}.
 \end{equation}
 
@@ -65,7 +65,7 @@ Nótese que operaciones locales $U_{\mathrm{loc}}$ por sí solas generan embeddi
 \subsection{Efecto del entrelazamiento sobre separabilidad y geometría de distancias}
 
 Un estado puro es separable si puede factorizarse como un producto tensorial entre subsistemas; en presencia de entrelazamiento el estado no admite tal factorización. A nivel de matrices de densidad, un estado global separable es una combinación convexa de productos tensoriales, esto es,
-\begin{equation}
+\begin{equation}[eq:estado_separable_mixto]{Forma general de un estado separable mixto}
 \rho_{\mathrm{sep}} = \sum_{\ell} p_{\ell} \bigotimes_{k=1}^P \rho_k^{(\ell)},
 \end{equation}
 donde $p_{\ell}\geq 0$ y $\sum_{\ell}p_{\ell}=1$.
@@ -81,7 +81,7 @@ En síntesis: el entrelazamiento extiende la capacidad del feature map para codi
 Aunque el trabajo de referencia ilustra el entrelazamiento con CNOT, la formulación admite otras puertas (CZ, SWAP, iSWAP, ...). Es conveniente precisar en qué sentido la elección concreta afecta al embedding.
 
 La acción en base computacional de CNOT y iSWAP sobre el subespacio de dos qubits puede escribirse como
-\begin{equation}
+\begin{equation}[eq:matrices_cnot_iswap]{Matrices en base computacional de CNOT e iSWAP}
 \mathrm{CNOT} = \begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&0&1\\0&0&1&0\end{pmatrix},
 \qquad
 \mathrm{iSWAP} = \begin{pmatrix}1&0&0&0\\0&0&i&0\\0&i&0&0\\0&0&0&1\end{pmatrix}.
@@ -92,7 +92,7 @@ CNOT implementa un flip condicionado en el segundo qubit y es particularmente ad
 \subsection{Papel del parámetro \texorpdfstring{$\alpha$}{alpha} y fenómenos de saturación}
 
 Las rotaciones locales se parametrizan mediante ángulos que dependen de las características normalizadas $s_k(\mathbf{x})\in[0,1]$; en la implementación se usa una escala global $\alpha$ para controlar el rango angular, por ejemplo
-\begin{equation}
+\begin{equation}[eq:escala_angular_alpha]{Escalado angular de las características normalizadas}
 \theta_k(\mathbf{x}) = \alpha\,\pi\, s_k(\mathbf{x}).
 \end{equation}
 
