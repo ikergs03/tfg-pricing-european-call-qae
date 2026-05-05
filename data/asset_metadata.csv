@@ -1,0 +1,170 @@
+ticker,asset_type,sector,industry,country,theme
+SPY,etf,Broad Equity,unknown,unknown,unknown
+QQQ,etf,Broad Equity,unknown,unknown,unknown
+DIA,etf,Broad Equity,unknown,unknown,unknown
+IWM,etf,Broad Equity,unknown,unknown,unknown
+IVV,etf,Broad Equity,unknown,unknown,unknown
+VTI,etf,Broad Equity,unknown,unknown,unknown
+VOO,etf,Broad Equity,unknown,unknown,unknown
+EFA,etf,Broad Equity,unknown,unknown,unknown
+EEM,etf,Broad Equity,unknown,unknown,unknown
+VEA,etf,Broad Equity,unknown,unknown,unknown
+VWO,etf,Broad Equity,unknown,unknown,unknown
+ACWI,etf,Broad Equity,unknown,unknown,unknown
+SPDW,etf,Broad Equity,unknown,unknown,unknown
+SCHF,etf,Broad Equity,unknown,unknown,unknown
+XLK,etf,Technology,unknown,unknown,unknown
+XLF,etf,Financials,unknown,unknown,unknown
+XLE,etf,Energy,unknown,unknown,unknown
+XLI,etf,Industrials,unknown,unknown,unknown
+XLY,etf,Consumer Discretionary,unknown,unknown,unknown
+XLV,etf,Health Care,unknown,unknown,unknown
+XLC,etf,Communication Services,unknown,unknown,unknown
+XLP,etf,Consumer Staples,unknown,unknown,unknown
+XLRE,etf,Real Estate,unknown,unknown,unknown
+XLU,etf,Utilities,unknown,unknown,unknown
+XLB,etf,Materials,unknown,unknown,unknown
+VNQ,etf,Real Estate,unknown,unknown,unknown
+IYR,etf,Real Estate,unknown,unknown,unknown
+RWX,etf,Real Estate,unknown,unknown,unknown
+SCHH,etf,Real Estate,unknown,unknown,unknown
+FREL,etf,Real Estate,unknown,unknown,unknown
+RWO,etf,Real Estate,unknown,unknown,unknown
+BNDX,etf,Fixed Income,unknown,unknown,unknown
+VWOB,etf,Fixed Income,unknown,unknown,unknown
+IGOV,etf,Fixed Income,unknown,unknown,unknown
+IEMG,etf,Broad Equity,unknown,unknown,unknown
+EMB,etf,Fixed Income,unknown,unknown,unknown
+GLD,etf,Commodities,unknown,unknown,unknown
+SLV,etf,Commodities,unknown,unknown,unknown
+PPLT,etf,Commodities,unknown,unknown,unknown
+COPX,etf,Commodities,unknown,unknown,unknown
+DBB,etf,Commodities,unknown,unknown,unknown
+DBC,etf,Commodities,unknown,unknown,unknown
+PDBC,etf,Commodities,unknown,unknown,unknown
+USO,etf,Commodities,unknown,unknown,unknown
+UGA,etf,Commodities,unknown,unknown,unknown
+CORN,etf,Commodities,unknown,unknown,unknown
+WEAT,etf,Commodities,unknown,unknown,unknown
+SOYB,etf,Commodities,unknown,unknown,unknown
+TLT,etf,Fixed Income,unknown,unknown,unknown
+IEF,etf,Fixed Income,unknown,unknown,unknown
+LQD,etf,Fixed Income,unknown,unknown,unknown
+HYG,etf,Fixed Income,unknown,unknown,unknown
+SHY,etf,Fixed Income,unknown,unknown,unknown
+TIP,etf,Fixed Income,unknown,unknown,unknown
+AGG,etf,Fixed Income,unknown,unknown,unknown
+BND,etf,Fixed Income,unknown,unknown,unknown
+MBB,etf,Fixed Income,unknown,unknown,unknown
+SCHZ,etf,Fixed Income,unknown,unknown,unknown
+VCSH,etf,Fixed Income,unknown,unknown,unknown
+VCIT,etf,Corporate Bond,unknown,unknown,unknown
+BTC-USD,cryptocurrency,Crypto,Crypto,Global,Crypto
+ETH-USD,cryptocurrency,Crypto,Crypto,Global,Crypto
+SOL-USD,cryptocurrency,Crypto,Crypto,Global,Crypto
+BNB-USD,cryptocurrency,Crypto,Crypto,Global,Crypto
+XRP-USD,cryptocurrency,Crypto,Crypto,Global,Crypto
+ADA-USD,cryptocurrency,Crypto,Crypto,Global,Crypto
+DOGE-USD,cryptocurrency,Crypto,Crypto,Global,Crypto
+DOT-USD,cryptocurrency,Crypto,Crypto,Global,Crypto
+AVAX-USD,cryptocurrency,Crypto,Crypto,Global,Crypto
+AAPL,equity,Technology,Consumer Electronics,United States,unknown
+MSFT,equity,Technology,Software - Infrastructure,United States,unknown
+GOOGL,equity,Communication Services,Internet Content & Information,United States,unknown
+AMZN,equity,Consumer Cyclical,Internet Retail,United States,unknown
+NVDA,equity,Technology,Semiconductors,United States,unknown
+TSLA,equity,Consumer Cyclical,Auto Manufacturers,United States,unknown
+BRK-B,equity,Financial Services,Insurance - Diversified,United States,unknown
+META,equity,Communication Services,Internet Content & Information,United States,unknown
+NFLX,equity,Communication Services,Entertainment,United States,unknown
+DIS,equity,Communication Services,Entertainment,United States,unknown
+JPM,equity,Financial Services,Banks - Diversified,United States,unknown
+GS,equity,Financial Services,Capital Markets,United States,unknown
+BAC,equity,Financial Services,Banks - Diversified,United States,unknown
+C,equity,Financial Services,Banks - Diversified,United States,unknown
+WFC,equity,Financial Services,Banks - Diversified,United States,unknown
+MS,equity,Financial Services,Capital Markets,United States,unknown
+AXP,equity,Financial Services,Credit Services,United States,unknown
+BLK,equity,Financial Services,Asset Management,United States,unknown
+SCHW,equity,Financial Services,Capital Markets,United States,unknown
+TFC,equity,Financial Services,Banks - Regional,United States,unknown
+BA,equity,Industrials,Aerospace & Defense,United States,unknown
+CAT,equity,Industrials,Farm & Heavy Construction Machinery,United States,unknown
+HON,equity,Industrials,Conglomerates,United States,unknown
+LMT,equity,Industrials,Aerospace & Defense,United States,unknown
+UNP,equity,Industrials,Railroads,United States,unknown
+CSX,equity,Industrials,Railroads,United States,unknown
+NSC,equity,Industrials,Railroads,United States,unknown
+UPS,equity,Industrials,Integrated Freight & Logistics,United States,unknown
+FDX,equity,Industrials,Integrated Freight & Logistics,United States,unknown
+RTX,equity,Industrials,Aerospace & Defense,United States,unknown
+CVX,equity,Energy,Oil & Gas Integrated,United States,unknown
+XOM,equity,Energy,Oil & Gas Integrated,United States,unknown
+OXY,equity,Energy,Oil & Gas E&P,United States,unknown
+MPC,equity,Energy,Oil & Gas Refining & Marketing,United States,unknown
+PSX,equity,Energy,Oil & Gas Refining & Marketing,United States,unknown
+VLO,equity,Energy,Oil & Gas Refining & Marketing,United States,unknown
+SLB,equity,Energy,Oil & Gas Equipment & Services,United States,unknown
+HAL,equity,Energy,Oil & Gas Equipment & Services,United States,unknown
+BKR,equity,Energy,Oil & Gas Equipment & Services,United States,unknown
+PG,equity,Consumer Defensive,Household & Personal Products,United States,unknown
+KO,equity,Consumer Defensive,Beverages - Non-Alcoholic,United States,unknown
+PEP,equity,Consumer Defensive,Beverages - Non-Alcoholic,United States,unknown
+MO,equity,Consumer Defensive,Tobacco,United States,unknown
+PM,equity,Consumer Defensive,Tobacco,United States,unknown
+WMT,equity,Consumer Defensive,Discount Stores,United States,unknown
+TGT,equity,Consumer Defensive,Discount Stores,United States,unknown
+HD,equity,Consumer Cyclical,Home Improvement Retail,United States,unknown
+LOW,equity,Consumer Cyclical,Home Improvement Retail,United States,unknown
+MCD,equity,Consumer Cyclical,Restaurants,United States,unknown
+SBUX,equity,Consumer Cyclical,Restaurants,United States,unknown
+NKE,equity,Consumer Cyclical,Footwear & Accessories,United States,unknown
+TJX,equity,Consumer Cyclical,Apparel Retail,United States,unknown
+JNJ,equity,Healthcare,Drug Manufacturers - General,United States,unknown
+PFE,equity,Healthcare,Drug Manufacturers - General,United States,unknown
+UNH,equity,Healthcare,Healthcare Plans,United States,unknown
+CVS,equity,Healthcare,Healthcare Plans,United States,unknown
+ABBV,equity,Healthcare,Drug Manufacturers - General,United States,unknown
+LLY,equity,Healthcare,Drug Manufacturers - General,United States,unknown
+MRNA,equity,Healthcare,Biotechnology,United States,unknown
+REGN,equity,Healthcare,Biotechnology,United States,unknown
+BMY,equity,Healthcare,Drug Manufacturers - General,United States,unknown
+GILD,equity,Healthcare,Drug Manufacturers - General,United States,unknown
+AMD,equity,Technology,Semiconductors,United States,unknown
+INTC,equity,Technology,Semiconductors,United States,unknown
+TSM,equity,Technology,Semiconductors,Taiwan,unknown
+ORCL,equity,Technology,Software - Infrastructure,United States,unknown
+IBM,equity,Technology,Information Technology Services,United States,unknown
+ADBE,equity,Technology,Software - Application,United States,unknown
+CRM,equity,Technology,Software - Application,United States,unknown
+SNOW,equity,Technology,Software - Application,United States,unknown
+PANW,equity,Technology,Software - Infrastructure,United States,unknown
+AVGO,equity,Technology,Semiconductors,United States,unknown
+VZ,equity,Communication Services,Telecom Services,United States,unknown
+T,equity,Communication Services,Telecom Services,United States,unknown
+CMCSA,equity,Communication Services,Telecom Services,United States,unknown
+CHTR,equity,Communication Services,Telecom Services,United States,unknown
+TMUS,equity,Communication Services,Telecom Services,United States,unknown
+WBD,equity,Communication Services,Entertainment,United States,unknown
+BABA,equity,Consumer Cyclical,Internet Retail,Hong Kong,unknown
+TCEHY,equity,Communication Services,Internet Content & Information,China,unknown
+NIO,equity,Consumer Cyclical,Auto Manufacturers,China,unknown
+INFY,equity,Technology,Information Technology Services,India,unknown
+SHOP,equity,Technology,Software - Application,Canada,unknown
+SE,equity,Consumer Cyclical,Internet Retail,Singapore,unknown
+MELI,equity,Consumer Cyclical,Internet Retail,Uruguay,unknown
+BYDDF,equity,Consumer Cyclical,Auto Manufacturers,China,unknown
+GM,equity,Consumer Cyclical,Auto Manufacturers,United States,unknown
+F,equity,Consumer Cyclical,Auto Manufacturers,United States,unknown
+RIVN,equity,Consumer Cyclical,Auto Manufacturers,United States,unknown
+LCID,equity,Consumer Cyclical,Auto Manufacturers,United States,unknown
+XPEV,equity,Consumer Cyclical,Auto Manufacturers,China,unknown
+LI,equity,Consumer Cyclical,Auto Manufacturers,China,unknown
+ICLN,etf,Miscellaneous Sector,unknown,unknown,Clean Energy
+TAN,etf,Miscellaneous Sector,unknown,unknown,Clean Energy
+PBW,etf,Small Growth,unknown,unknown,Clean Energy
+QCLN,etf,Miscellaneous Sector,unknown,unknown,Clean Energy
+LIT,etf,Natural Resources,unknown,unknown,Clean Energy
+FAN,etf,Miscellaneous Sector,unknown,unknown,Clean Energy
+PBD,etf,Global Small/Mid Stock,unknown,unknown,Clean Energy
+KRBN,etf,Commodities,unknown,unknown,unknown

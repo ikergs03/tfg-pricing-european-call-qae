@@ -1,0 +1,12 @@
+method,group_id,n_assets,dominant_asset_type,dominant_sector,sector_purity,sector_entropy_norm,n_sectors,assets
+quantum,10,31,etf,Fixed Income,0.2903225806451613,0.8448327102120919,12,DBC | PDBC | XLP | PPLT | PBW | QCLN | IGOV | MBB | SCHZ | AGG | BND | TLT | LQD | VCIT | PBD | ICLN | TAN | GLD | SLV | PFE | COPX | OXY | VWOB | EMB | VWO | EEM | IEMG | SLB | AMD | BA | KRBN
+quantum,1,27,equity,Financial Services,0.25925925925925924,0.8828876541800034,11,ETH-USD | BKR | RWO | SCHH | VNQ | FREL | XLRE | IYR | BTC-USD | BLK | AAPL | TJX | TSM | JPM | WFC | LMT | MS | AXP | XLF | DIA | XLI | IWM | WEAT | XLC | BRK-B | BAC | CAT
+quantum,9,25,etf,Broad Equity,0.4,0.8251916113234788,11,XOM | XLB | USO | VLO | PEP | QQQ | XLK | XLV | XLE | XLU | EFA | SPDW | VEA | SCHF | VTI | VOO | SPY | IVV | ACWI | XLY | MCD | UGA | BYDDF | HON | HD
+quantum,8,20,equity,Communication Services,0.3,0.9170696227168975,10,VZ | GOOGL | C | ADBE | INFY | CORN | MRNA | CHTR | REGN | T | RTX | WMT | AMZN | HAL | PSX | TMUS | FAN | RIVN | PG | WBD
+quantum,3,14,etf,Fixed Income,0.2857142857142857,0.8982265179691367,7,VCSH | IEF | TIP | BNDX | JNJ | RWX | SOYB | LIT | TSLA | BABA | SOL-USD | AVAX-USD | BNB-USD | DOT-USD
+quantum,6,14,equity,Technology,0.21428571428571427,0.9615862351816213,7,UPS | INTC | F | NKE | PANW | TFC | ABBV | CRM | CVS | SE | SCHW | CVX | MPC | KO
+quantum,11,11,equity,Consumer Cyclical,0.45454545454545453,0.8596610491977074,6,MELI | UNH | GILD | NIO | LOW | TCEHY | LI | HYG | GM | DBB | MSFT
+quantum,4,10,equity,Technology,0.3,0.9464119282150146,6,NFLX | SNOW | NSC | GS | LLY | META | AVGO | PM | NVDA | UNP
+quantum,2,6,equity,Communication Services,0.3333333333333333,0.9697238998682473,5,SBUX | BMY | SHOP | CSX | DIS | CMCSA
+quantum,5,5,equity,Consumer Cyclical,0.4,0.9602297178607612,3,SHY | LCID | XPEV | ADA-USD | DOGE-USD
+quantum,7,5,equity,Consumer Defensive,0.4,0.9602297178607612,3,TGT | FDX | IBM | MO | ORCL
