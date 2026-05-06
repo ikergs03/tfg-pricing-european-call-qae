@@ -18,12 +18,10 @@ El uso de una representación multivariante permite superar las limitaciones del
 \section{Normalización de características}
 \label{sec:normalizacion_caracteristicas}
 
-El preprocesamiento de características consta de dos etapas diferenciadas:
+El preprocesamiento visible en el pipeline se centra en la normalización angular del feature map; no se documenta aquí una estandarización previa adicional a las seis características ya calculadas.
 
 \begin{itemize}
-\item \textbf{Estandarización estadística (pre-procesamiento):} Con el fin de garantizar una contribución equilibrada de todas las variables, las características se estandarizan de forma independiente para cada activo mediante transformación a media cero y desviación estándar unitaria. Este procedimiento evita que magnitudes extremas (como la curtosis) dominen el proceso de modelado y asegura la comparabilidad entre activos.
-
-\item \textbf{Normalización angular (feature map):} Posteriormente, dentro del circuito cuántico, cada característica estandarizada $x_i$ se normaliza mediante mapeo afín respecto a sus extremos históricos en una ventana temporal activa, transformándose en un ángulo $\theta_i \in [0, \alpha\pi]$ (véase Apéndice~\ref{ap:estimacion_ansatz}). Esta normalización min-max es específica del feature map y permite que el embedding cuántico se adapte a cambios de régimen de mercado.
+\item \textbf{Normalización angular (feature map):} Dentro del circuito cuántico, cada característica $x_i$ se normaliza mediante mapeo afín respecto a sus extremos históricos en una ventana temporal activa, transformándose en un ángulo $\theta_i \in [0, \alpha\pi]$ (véase Apéndice~\ref{ap:estimacion_ansatz}). Esta normalización min-max es específica del feature map y permite que el embedding cuántico se adapte a cambios de régimen de mercado.
 \end{itemize}
 
 
@@ -60,7 +58,7 @@ Esta métrica proporciona una medida geométrica natural en el espacio de operad
 \section{Construcción y ordenamiento jerárquico}
 \label{sec:construccion_ordenamiento}
 
-Las distancias cuánticas entre todos los pares de activos se organizan en una matriz de distancias simétrica $D \in \mathbb{R}^{N \times N}$. Dicha matriz se emplea como entrada para un procedimiento de clustering jerárquico con enlace simple (\textit{single linkage}), que genera un dendrograma jerárquico a partir de una métrica de distancia entre clusters.
+Las distancias cuánticas entre todos los pares de activos se organizan en una matriz de distancias simétrica $D \in \mathbb{R}^{N \times N}$. Dicha matriz se emplea como entrada para un procedimiento de clustering jerárquico, que genera un dendrograma jerárquico a partir de una métrica de distancia entre clusters.
 
 En la implementación experimental comparada en este trabajo, el HRP clásico y el HRP Kernel emplean enlace simple para la construcción jerárquica, mientras que la ordenación cuántica evaluada con distancias de Frobenius utiliza Ward. Esta diferencia afecta únicamente a la fase de ordenamiento; el esquema de asignación de pesos mediante bisección recursiva se mantiene común.
 
@@ -92,7 +90,7 @@ La implementación de QHRP se especifica mediante los siguientes parámetros:
     \item \textbf{Profundidad del circuito:} El feature map consta de bloques locales (rotaciones parametrizadas) intercalados con capas de entrelazamiento.
     \item \textbf{Puertas de entrelazamiento:} Se utiliza iSWAP aplicada sobre pares predefinidos de qubits.
     \item \textbf{Backend de simulación:} Simulación mediante simulador de estado vectorial (statevector), sin ruido, permitiendo acceso directo a la función de onda completa en el régimen ideal.
-    \item \textbf{Normalización de características:} Estandarización para el preprocesamiento y normalización angular min-max dentro del feature map.
+    \item \textbf{Normalización de características:} Normalización angular min-max dentro del feature map.
 \end{itemize}
 
 \section{Pipeline completo}
@@ -103,7 +101,7 @@ El proceso integral de análisis se estructura en las siguientes etapas:
 \begin{enumerate}
     \item \textbf{Preparación de datos:} Carga de series de precios, cálculo de retornos diarios y organización en ventanas temporales.
     \item \textbf{Ingeniería de características:} Cálculo de momentos estadísticos mediante ventanas móviles.
-    \item \textbf{Normalización:} Estandarización independiente de cada característica por activo.
+    \item \textbf{Normalización:} Normalización angular min-max dentro del feature map.
     \item \textbf{Representación cuántica:} Aplicación del feature map parametrizado para generar matrices de densidad promedio de cada activo (Sección \ref{sec:representacion_cuantica}).
     \item \textbf{Métrica de distancia:} Cálculo de la matriz de distancias de Frobenius entre pares de activos (Sección \ref{sec:metrica_distancia_cuantica}).
     \item \textbf{Clustering jerárquico:} Aplicación del algoritmo de enlace simple y extracción del ordenamiento del dendrograma (Sección \ref{sec:construccion_ordenamiento}).

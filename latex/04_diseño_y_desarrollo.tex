@@ -42,12 +42,10 @@ Para cada activo se calculan ventanas móviles (típicamente de 5 períodos) uti
 \subsection{Estandarización y normalización}
 \label{sec:estandarizacion_control}
 
-El procesamiento de características antes del circuito cuántico consta de dos etapas diferenciadas:
+El procesamiento de características visible en el flujo principal se centra en la normalización angular del feature map; no se documenta aquí una estandarización previa adicional a las seis características ya calculadas.
 
 \begin{itemize}
-\item \textbf{Estandarización estadística (pre-procesamiento):} Con el objetivo de garantizar estabilidad numérica durante las etapas posteriores del análisis y evitar la dominancia de magnitudes extremas (como la curtosis), las características se estandarizan de forma independiente para cada activo mediante transformación a media cero y desviación estándar unitaria. Este procedimiento preserva la dinámica relativa de cada serie temporal.
-
-\item \textbf{Normalización angular (dentro del feature map):} Posteriormente, antes de la codificación cuántica, cada característica estandarizada se normaliza mediante mapeo afín respecto a sus extremos históricos en una ventana temporal activa, transformándose en un ángulo $\theta_i \in [0, \alpha\pi]$ que parametriza las rotaciones del circuito. Esta normalización min-max adicional es específica del feature map y permite que el embedding cuántico se adapte dinámicamente a cambios de régimen de mercado (véase Apéndice~\ref{ap:estimacion_ansatz}).
+\item \textbf{Normalización angular (dentro del feature map):} Antes de la codificación cuántica, cada característica se normaliza mediante mapeo afín respecto a sus extremos históricos en una ventana temporal activa, transformándose en un ángulo $\theta_i \in [0, \alpha\pi]$ que parametriza las rotaciones del circuito. Esta normalización min-max es específica del feature map y permite que el embedding cuántico se adapte dinámicamente a cambios de régimen de mercado (véase Apéndice~\ref{ap:estimacion_ansatz}).
 \end{itemize}
 
 \subsection{Implementación del modelo cuántico}
