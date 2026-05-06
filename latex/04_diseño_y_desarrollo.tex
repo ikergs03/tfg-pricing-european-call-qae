@@ -13,9 +13,9 @@ En esta sección se detalla el diseño y desarrollo del código utilizado para l
 El sistema se ha diseñado siguiendo una estructura modular con el objetivo de facilitar la mantenibilidad, la escalabilidad y la reproducibilidad de los experimentos. El flujo general del proceso se divide en tres bloques principales:
 
 \begin{itemize}
-    \item Preparación y preprocesamiento de datos (extracción de indicadores estadísticos).
-    \item Implementación del modelo de análisis (QHRP y distancias de Frobenius).
-    \item Generación de resultados y visualizaciones (Heatmaps de distancias).
+\item Preparación y preprocesamiento de datos (extracción de indicadores estadísticos).
+\item Implementación del modelo de análisis (QHRP y distancias de Frobenius).
+\item Generación de resultados y visualizaciones (Heatmaps de distancias).
 \end{itemize}
 
 Cada uno de estos bloques se implementa mediante scripts y cuadernos de trabajo independientes, permitiendo ejecutar y modificar cada etapa sin afectar al resto del sistema.
@@ -135,15 +135,15 @@ Esta representación se incorpora para dejar trazabilidad del diseño del ansatz
 
 Para evitar confusiones de interpretación, en este trabajo se separan dos circuitos complementarios:
 \begin{itemize}
-    \item \textbf{Circuito de referencia (Figura 1):} replica la narrativa del paper y usa CNOT como caso ilustrativo de entrelazamiento.
-    \item \textbf{Circuito del pipeline experimental QHRP:} usa la secuencia \texttt{H} -- \texttt{T} -- \texttt{RY/RX} con capas de \texttt{iSWAP} en pares predefinidos, consistente con el módulo de simulación que genera las matrices de densidad.
+\item \textbf{Circuito de referencia (Figura 1):} replica la narrativa del paper y usa CNOT como caso ilustrativo de entrelazamiento.
+\item \textbf{Circuito del pipeline experimental QHRP:} usa la secuencia \texttt{H} -- \texttt{T} -- \texttt{RY/RX} con capas de \texttt{iSWAP} en pares predefinidos, consistente con el módulo de simulación que genera las matrices de densidad.
 \end{itemize}
 
 Esta decisión metodológica permite, simultáneamente, (i) mantener fidelidad documental con la presentación del paper y (ii) preservar coherencia con la implementación reproducible que produce los resultados reportados. Es relevante subrayar que ambos circuitos no son equivalentes desde el punto de vista del embedding cuántico: la sustitución de CNOT por iSWAP modifica la estructura de coherencias y, por tanto, la geometría inducida en el espacio de estados.
 
 \begin{figure}[Circuito cuántico reproducido del paper]{FIG:CIRCUITO_PAPER_QHRP}
 {Circuito cuántico de 6 qubits reproducido a partir del paper. Se muestran compuertas de inicialización, codificación parametrizada, entrelazamiento y medición final.}
-    \image{15cm}{}{fig1-circuito-paper-qhrp}
+\image{15cm}{}{fig1-circuito-paper-qhrp}
 \end{figure}
 
 El circuito confirma que cada una de las 6 características del activo se codifica en un qubit y se correlaciona mediante capas de entrelazamiento. Más precisamente, el feature map define una inmersión de vectores en un espacio de Hilbert de dimensión $2^6=64$ (para seis qubits), donde la información queda codificada en la geometría del espacio de estados y en su estructura de coherencias y correlaciones cuánticas.
@@ -155,8 +155,8 @@ En términos de reproducibilidad experimental, los resultados principales de est
 
 La reproducción documentada en el repositorio se organiza en dos niveles:
 \begin{itemize}
-    \item \textbf{Nivel didáctico/figura:} notebook de la Figura 1, que construye el circuito de referencia de seis qubits y permite visualizar su estructura (capas de codificación y entrelazamiento de ejemplo).
-    \item \textbf{Nivel experimental/pipeline:} módulo principal de QHRP (archivo \texttt{src/qhrp\_figure3\_4/src/quantum\_hrp.py}), donde se define el ansatz usado para calcular estados, matrices de densidad promedio y distancias de Frobenius.
+\item \textbf{Nivel didáctico/figura:} notebook de la Figura 1, que construye el circuito de referencia de seis qubits y permite visualizar su estructura (capas de codificación y entrelazamiento de ejemplo).
+\item \textbf{Nivel experimental/pipeline:} módulo principal de QHRP (archivo \texttt{src/qhrp\_figure3\_4/src/quantum\_hrp.py}), donde se define el ansatz usado para calcular estados, matrices de densidad promedio y distancias de Frobenius.
 \end{itemize}
 
 La trazabilidad queda garantizada porque el notebook documenta la arquitectura de referencia y el módulo del pipeline experimental implementa la configuración efectivamente utilizada en todos los resultados reportados. De este modo, es posible reproducir tanto la figura de referencia como los resultados cuantitativos del trabajo bajo el pipeline experimental utilizado.
@@ -166,8 +166,8 @@ La trazabilidad queda garantizada porque el notebook documenta la arquitectura d
 
 Con el objetivo de facilitar la réplica de los resultados, el proyecto mantiene dos ficheros de dependencias:
 \begin{itemize}
-    \item \texttt{requirements\_paper\_qiskit.txt}: entorno compatible con la versión usada para reproducir el pipeline del paper.
-    \item \texttt{requirements\_act\_qiskit.txt}: entorno actualizado para pruebas recientes y extensiones.
+\item \texttt{requirements\_paper\_qiskit.txt}: entorno compatible con la versión usada para reproducir el pipeline del paper.
+\item \texttt{requirements\_act\_qiskit.txt}: entorno actualizado para pruebas recientes y extensiones.
 \end{itemize}
 
 En particular, se documentan explícitamente las librerías clave de cálculo científico, de visualización y de computación cuántica utilizadas en los experimentos.
@@ -178,9 +178,9 @@ Para ejecutar el código en backend real de IBM, es necesario instalar \texttt{q
 
 La trazabilidad experimental se apoya en la separación entre:
 \begin{itemize}
-    \item Notebook principal de resultados y figuras metodológicas.
-    \item Notebook independiente para prueba en hardware real (sin alterar el flujo principal).
-    \item Módulo específico de hardware cuántico, separado del módulo de simulación.
+\item Notebook principal de resultados y figuras metodológicas.
+\item Notebook independiente para prueba en hardware real (sin alterar el flujo principal).
+\item Módulo específico de hardware cuántico, separado del módulo de simulación.
 \end{itemize}
 
 Esta organización permite distinguir con claridad resultados en simulación ideal, resultados en ejecución hardware y resultados de comparación con el paper, reduciendo ambigüedades en la interpretación.
@@ -206,12 +206,12 @@ Las visualizaciones se generan mediante mapas de calor (\texttt{seaborn}) que re
 Para cada activo se construye un conjunto de seis características que describen la distribución de sus retornos, lo cual es fundamental para el enfoque de densidad cuántica:
 
 \begin{itemize}
-    \item \textbf{Retorno diario:} El valor puntual del retorno en el tiempo $t$.
-    \item \textbf{Media móvil:} El retorno promedio en la ventana seleccionada.
-    \item \textbf{Volatilidad:} La desviación estándar de los retornos (segundo momento).
-    \item \textbf{Retorno acumulado:} El producto de los retornos en la ventana.
-    \item \textbf{Asimetría (Skewness):} Medida de la falta de simetría en la distribución (tercer momento).
-    \item \textbf{Curtosis (Kurtosis):} Medida del apuntamiento y riesgo de cola (cuarto momento).
+\item \textbf{Retorno diario:} El valor puntual del retorno en el tiempo $t$.
+\item \textbf{Media móvil:} El retorno promedio en la ventana seleccionada.
+\item \textbf{Volatilidad:} La desviación estándar de los retornos (segundo momento).
+\item \textbf{Retorno acumulado:} El producto de los retornos en la ventana.
+\item \textbf{Asimetría (Skewness):} Medida de la falta de simetría en la distribución (tercer momento).
+\item \textbf{Curtosis (Kurtosis):} Medida del apuntamiento y riesgo de cola (cuarto momento).
 \end{itemize}
 
 Estas características se calculan mediante ventanas móviles, permitiendo capturar dinámicas estadísticas de corto y medio plazo que los modelos de correlación simple suelen ignorar.
