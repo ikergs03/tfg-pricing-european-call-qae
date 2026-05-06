@@ -194,7 +194,7 @@ Esta organización permite distinguir con claridad resultados en simulación ide
 
 Una vez obtenidas las matrices densidad promedio, se calcula la distancia de Frobenius entre todos los pares de activos. Estas distancias se almacenan en una matriz simétrica $D$.
 
-El orden de los activos se determina mediante técnicas de clustering jerárquico utilizando el método de enlace simple (\textit{single linkage}), siguiendo estrictamente la metodología HRP original. Este procedimiento permite identificar la estructura de grupos de activos basándose en la proximidad de sus estados cuánticos. Finalmente, el sistema ejecuta el algoritmo de bisección recursiva clásico sobre la matriz de covarianza para calcular los pesos definitivos de la cartera, garantizando así la paridad de riesgo basada en la nueva topología cuántica.
+El orden de los activos se determina mediante técnicas de clustering jerárquico, siguiendo la metodología HRP original. Este procedimiento permite identificar la estructura de grupos de activos basándose en la proximidad de sus estados cuánticos. Finalmente, el sistema ejecuta el algoritmo de bisección recursiva clásico sobre la matriz de covarianza para calcular los pesos definitivos de la cartera, garantizando así la paridad de riesgo basada en la nueva topología cuántica.
 
 En la comparación experimental, HRP clásico y HRP Kernel emplean enlace simple, mientras que la ordenación cuántica evaluada utiliza Ward sobre las distancias de Frobenius. La fase de asignación de pesos sigue siendo la misma bisección recursiva clásica, de modo que la diferencia metodológica queda concentrada en el criterio de ordenamiento.
 
