@@ -62,6 +62,8 @@ Esta métrica proporciona una medida geométrica natural en el espacio de operad
 
 Las distancias cuánticas entre todos los pares de activos se organizan en una matriz de distancias simétrica $D \in \mathbb{R}^{N \times N}$. Dicha matriz se emplea como entrada para un procedimiento de clustering jerárquico con enlace simple (\textit{single linkage}), que genera un dendrograma jerárquico a partir de una métrica de distancia entre clusters.
 
+En la implementación experimental comparada en este trabajo, el HRP clásico y el HRP Kernel emplean enlace simple para la construcción jerárquica, mientras que la ordenación cuántica evaluada con distancias de Frobenius utiliza Ward. Esta diferencia afecta únicamente a la fase de ordenamiento; el esquema de asignación de pesos mediante bisección recursiva se mantiene común.
+
 Del dendrograma se extrae un ordenamiento de los activos, de forma que activos con menor distancia tienden a situarse próximos en la representación final. El reordenamiento de la matriz de distancias mediante este procedimiento no altera los valores originales, pero facilita su reorganización consistente con la estructura jerárquica.
 
 \section{Definición operativa de QHRP y diferenciación respecto a HRP clásico}
@@ -84,12 +86,13 @@ La implementación de QHRP se especifica mediante los siguientes parámetros:
 
 \begin{itemize}
     \item \textbf{Número de qubits:} $P = 6$, correspondiente a las seis características por activo.
-    \item \textbf{Profundidad del circuito:} El feature map consta de bloques locales (rotaciones parametrizadas) intercalados con capas de entrelazamiento (típicamente 2-3 capas de puertas de dos qubits).
+    \item \textbf{Configuración principal de evaluación:} 18 ventanas walk-forward con 756 días de entrenamiento y 21 días de prueba por ventana.
+    \item \textbf{Universo principal de activos:} $N = 169$ activos del S\&P 500 en el experimento principal.
+    \item \textbf{Piloto hardware:} Subconjunto de $N = 40$ activos para la validación exploratoria en hardware cuántico real.
+    \item \textbf{Profundidad del circuito:} El feature map consta de bloques locales (rotaciones parametrizadas) intercalados con capas de entrelazamiento.
     \item \textbf{Puertas de entrelazamiento:} Se utiliza iSWAP aplicada sobre pares predefinidos de qubits.
     \item \textbf{Backend de simulación:} Simulación mediante simulador de estado vectorial (statevector), sin ruido, permitiendo acceso directo a la función de onda completa en el régimen ideal.
-    \item \textbf{Ventana temporal:} Los datos se agrupan en ventanas de 252 observaciones (aproximadamente un año de trading).
-    \item \textbf{Normalización de características:} Estandarización independiente por activo (media cero, desviación estándar uno).
-    \item \textbf{Número de activos ($N$):} Variable según el experimento, típicamente entre 5 y 20 activos del S\&P 500.
+    \item \textbf{Normalización de características:} Estandarización para el preprocesamiento y normalización angular min-max dentro del feature map.
 \end{itemize}
 
 \section{Pipeline completo}
