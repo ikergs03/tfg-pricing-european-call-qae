@@ -5,68 +5,84 @@
 \section{Método Clásico}
 \label{sec:metodo_clasico}
 El análisis y construcción de carteras eficientes ha sido un área central en las finanzas 
-cuantitativas desde la propuesta original de Markowitz (1952), donde se formalizó la optimización 
-media–varianza como problema fundamental de selección de activos. A pesar de su relevancia 
-histórica, numerosos autores han demostrado que estos modelos clásicos sufren importantes 
-limitaciones en entornos reales: inestabilidad numérica, sensibilidad extrema al ruido en las 
-estimaciones de la matriz de covarianza y falta de robustez en presencia de correlaciones 
-cambiantes. Entre ellos, López de Prado destaca en [“A Robust Estimator of the Efficient Frontier”]
-que estos métodos suelen amplificar el error en los datos en lugar de mitigarlo, lo que provoca 
-carteras inestables y poco realistas.
+cuantitativas desde la propuesta original de Markowitz\cite{markowitz1952}, donde se formalizó la 
+optimización media–varianza como problema fundamental de selección de activos. A pesar de su 
+relevancia histórica, numerosos autores han demostrado que estos modelos clásicos sufren 
+importantes limitaciones en entornos reales: inestabilidad numérica, sensibilidad extrema al ruido 
+en las estimaciones de la matriz de covarianza y falta de robustez en presencia de correlaciones 
+cambiantes. López de Prado muestra en \cite{lopezdeprado2019frontier} que estos métodos suelen 
+amplificar el error de estimación en la matriz de covarianza en lugar de mitigarlo, lo que provoca 
+carteras inestables y poco realistas. Estas limitaciones motivan el desarrollo de enfoques 
+alternativos como HRP.
 
 \section{HRP Clásico y Variantes No-Cuánticas}
 \label{sec:hrp_clas_y_variantes_no_cuanticas}
 Estas limitaciones dieron lugar al desarrollo de alternativas más robustas como el Hierarchical 
-Risk Parity (HRP), introducido por López de Prado en 2016. HRP evita la inversión de la matriz de 
-covarianza y utiliza en cambio técnicas de clustering jerárquico para organizar los activos según 
-su proximidad estadística. Una vez construida la estructura jerárquica, el riesgo se reparte 
-mediante un procedimiento de bisección recursiva que genera carteras más estables y menos 
-sensibles al ruido. Desde su presentación, numerosas extensiones se han propuesto, incluyendo 
-variantes con restricciones, métricas de distancia alternativas y métodos no lineales basados en kernels.
+Risk Parity (HRP)\cite{lopezdeprado2016hrp}. HRP evita la inversión de la matriz de covarianza y 
+utiliza en cambio técnicas de clustering jerárquico para organizar los activos según distancias 
+obtenidas a partir de la correlación. Una vez construida la estructura jerárquica, el riesgo se 
+reparte mediante un procedimiento de asignación por bisección recursiva (recursive bisection) que 
+genera carteras más estables y menos sensibles al ruido. 
+No obstante, HRP sigue dependiendo de la definición de la métrica de distancia, lo que introduce 
+una dependencia crítica en la representación de las relaciones entre activos.
+Desde su presentación, numerosas extensiones se han propuesto, incluyendo variantes con 
+restricciones\cite{pfitzinger2019constrainedhrp}, métricas de distancia alternativas 
+\cite{salasmolina2025hrpdist} y métodos no lineales basados en kernels.
 
 \section{KHRP}
 \label{sec:khrp}
 Una de estas extensiones es el Kernel HRP (KHRP), que sustituye la correlación estándar por 
-distancias derivadas de embeddings no lineales mediante métodos kernel como MMD o RBF. El uso de 
-kernels permite capturar relaciones complejas entre activos que la correlación lineal no refleja 
-adecuadamente. Trabajos recientes han mostrado que la elección de la métrica de distancia influye 
-de forma decisiva en la estructura jerárquica del HRP y en el rendimiento de la cartera, lo que 
-ha impulsado la búsqueda de representaciones más expresivas.
+distancias derivadas de embeddings no lineales mediante kernels (p. ej. RBF) y métricas inducidas 
+como MMD. El uso de kernels permite capturar relaciones complejas entre activos que la correlación 
+lineal no refleja adecuadamente\cite{sriperumbudur2011kernels}. Trabajos recientes han mostrado que 
+la elección de la métrica de distancia influye de forma decisiva en la estructura jerárquica del 
+HRP y en el rendimiento de la cartera\cite{salasmolina2025hrpdist}, lo que ha impulsado la búsqueda 
+de representaciones más expresivas.
 
 \section{Computación Cuántica en Finanzas}
 \label{sec:computacion_cuantica_en_finanzas}
-Paralelamente, la investigación en computación cuántica aplicada a las finanzas ha ganado una 
-notable tracción en los últimos años. Los primeros trabajos, como el de Rebentrost et al. (2018), 
+Paralelamente, la investigación en computación cuántica aplicada a las finanzas ha experimentado un 
+crecimiento significativo en los últimos años. Los primeros trabajos, como \cite{rebentrost2018quantumportfolio}, 
 demostraron que algoritmos cuánticos como Quantum Amplitude Estimation (QAE) permiten acelerar 
-ciertos cálculos financieros, especialmente los basados en Monte Carlo. Egger y Woerner (2019) 
-aplicaron estas técnicas al análisis de riesgo de crédito siguiendo el marco de Basilea II, 
-estableciendo así una conexión directa entre computación cuántica y metodologías cuantitativas 
-tradicionales. Otros avances, como Real-QAE (Manzano et al., 2023) o el análisis del sesgo en 
-QAE iterativa (Miyamoto, 2024), han contribuido a disponer de herramientas cuánticas más estables 
-y adecuadas para hardware NISQ.
+ciertos cálculos financieros, especialmente los basados en Monte Carlo. Egger y Woerner 
+\cite{egger2019creditrisk} aplicaron estas técnicas al análisis de riesgo de crédito siguiendo el 
+marco de Basilea II, estableciendo así una conexión directa entre computación cuántica y 
+metodologías cuantitativas tradicionales. Otros avances, como Real-QAE \cite{manzano2023rqae} o el 
+análisis del sesgo en QAE iterativa \cite{miyamoto2024iqae}, han contribuido a disponer de 
+herramientas cuánticas más estables y adecuadas para hardware NISQ. Una revisión sistemática de 
+este campo puede encontrarse en \cite{naik2023quantumfinance}. En general, estos trabajos se 
+centran en tareas de estimación y valoración financiera, más que en la estructuración jerárquica 
+de carteras del tipo HRP.
+Sin embargo, la mayoría de estos enfoques se encuentran limitados por las restricciones del 
+hardware NISQ, incluyendo ruido, baja fidelidad y número reducido de qubits.
 
 \section{QHRP}
 \label{sec:qhrp}
-En este contexto surge el trabajo más reciente de Arian et al. (2025), Quantum Hierarchical Risk 
+En este contexto surge el trabajo más reciente de Arian et al.\cite{arian2025qhrp}, Quantum Hierarchical Risk 
 Parity (QHRP), que constituye el punto central del presente Trabajo de Fin de Grado. QHRP 
 reinterpreta la etapa fundamental del HRP, la construcción de la matriz de distancias entre 
-activos, a través de un enfoque cuántico basado en feature maps cuánticas y matrices densidad 
+activos, a través de un enfoque cuántico basado en feature maps cuánticos y matrices de densidad 
 promedio. En lugar de medir correlaciones o distancias clásicas, QHRP calcula distancias cuánticas 
 obtenidas del grado de similitud entre estados cuánticos codificados a partir de los datos 
-financieros. Este enfoque proporciona una métrica más rica geométricamente y potencialmente más 
-expresiva que sus alternativas clásicas. Los autores muestran, además, que QHRP supera a HRP 
-clásico y KHRP en términos de estabilidad, Sharpe ratio y robustez, utilizando datos reales de 
-mercado. Otro aspecto clave del trabajo es que proporciona un repositorio GitHub con código 
-completamente reproducible, lo que facilita su implementación y la experimentación práctica.
+financieros. Este enfoque proporciona una métrica definida en el espacio de estados cuánticos (espacio de Hilbert), 
+con mayor capacidad para capturar relaciones no lineales entre activos que sus alternativas clásicas. 
+Según los experimentos reportados por los autores y en 
+los escenarios considerados, QHRP supera a HRP clásico y KHRP en términos de estabilidad, Sharpe 
+ratio y robustez, utilizando datos reales de mercado. Otro aspecto clave del trabajo es que 
+proporciona un repositorio GitHub con código completamente reproducible, lo que facilita su 
+implementación y la experimentación práctica.
 
 \section{Herramientas Cuánticas Utilizadas}
 \label{sec:herramientas_cuanticas_utilizadas}
 Por último, dado que QHRP se basa en técnicas cuánticas inspiradas en el modelo gate-based, 
 la herramienta de referencia para la construcción y simulación de circuitos cuánticos es Qiskit. 
-Esta librería de IBM se ha convertido en el estándar para la programación cuántica debido a su 
-acceso directo a hardware real, su comunidad activa y la amplia documentación disponible. Qiskit, 
-además, incluye módulos específicos para finanzas que implementan algoritmos como QAE o modelos de 
-riesgo crediticio, constituyendo un entorno adecuado para familiarizarse con los conceptos 
-necesarios para comprender QHRP. Por este motivo, y siguiendo la práctica habitual en la comunidad, 
-se utilizará Qiskit como entorno de simulación y experimentación cuántica en este proyecto.
+Esta librería de IBM se ha convertido en el estándar de facto para la programación cuántica debido 
+a su acceso directo a hardware real, su comunidad activa y la amplia documentación disponible. En 
+particular, el ecosistema incluye simuladores como Aer, que resultan fundamentales para validar y 
+comparar circuitos en condiciones controladas antes de su ejecución en dispositivos físicos. 
+Qiskit, además, incluye módulos específicos para finanzas que implementan algoritmos como QAE o 
+modelos de riesgo crediticio, constituyendo un entorno adecuado para familiarizarse con los 
+conceptos necesarios para comprender QHRP en el contexto actual de hardware NISQ. Por este motivo, 
+y siguiendo la práctica habitual en la comunidad, se utilizará Qiskit como entorno de simulación y 
+experimentación cuántica en este proyecto.
 
