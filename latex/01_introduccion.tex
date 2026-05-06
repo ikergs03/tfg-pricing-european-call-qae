@@ -25,9 +25,7 @@ donde $\alpha$ y $\beta$ son números complejos denominados \textbf{amplitudes d
 |\alpha|^2 + |\beta|^2 = 1.
 \end{equation}
 
-Esta condición garantiza que las probabilidades de obtener cada resultado al medir sumen la unidad. En concreto, $|\alpha|^2$ representa la probabilidad de obtener el resultado 0 y $|\beta|^2$ la probabilidad de obtener el resultado 1. El hecho de que $\alpha$ y $\beta$ sean complejos implica que el estado del qubit codifica no solo probabilidades, sino también información de fase relativa, lo cual resulta esencial para los algoritmos cuánticos.
-
-Es importante destacar que la superposición no significa que el qubit esté ``en ambos estados a la vez'' en un sentido clásico. Más bien, el qubit no tiene un valor definido hasta que se realiza una medición: se encuentra en un estado cuántico que contiene información sobre ambas posibilidades simultáneamente.
+Esta condición garantiza que las probabilidades de obtener cada resultado al medir sumen la unidad: $|\alpha|^2$ representa la probabilidad de obtener 0 y $|\beta|^2$ la de 1. Como $\alpha$ y $\beta$ son complejos, el estado codifica además información de fase relativa, esencial para los algoritmos cuánticos; la superposición no implica que el qubit "esté en ambos estados a la vez" en sentido clásico, sino que no tiene un valor definido hasta la medición.
 
 \begin{figure}[Esfera de Bloch]{FIG:BLOCHSPHERE}
 {Representación geométrica de un qubit en la esfera de Bloch. 
@@ -50,7 +48,7 @@ El estado de un qubit admite una representación geométrica intuitiva conocida 
 
 En esta representación, cada estado puro del qubit corresponde a un punto en la superficie de una esfera unitaria. El polo norte ($\theta = 0$) representa el estado $\ket{0}$, el polo sur ($\theta = \pi$) el estado $\ket{1}$, y los puntos del ecuador representan superposiciones con igual probabilidad de medir 0 o 1, diferenciándose únicamente en la fase relativa $\phi$.
 
-La esfera de Bloch constituye una herramienta conceptual fundamental para visualizar el efecto de las puertas cuánticas, que se corresponden con rotaciones sobre los distintos ejes de la esfera.
+La esfera de Bloch constituye una herramienta conceptual fundamental para visualizar el efecto de las puertas cuánticas, que se corresponden con rotaciones sobre los distintos ejes de la esfera. El estado físico pertenece al espacio proyectivo complejo, puesto que la fase global no es observable y no altera las probabilidades de medida.
 
 
 \subsection{Espacio de Hilbert y sistemas de múltiples qubits}
@@ -62,7 +60,8 @@ El estado de un qubit vive en un espacio vectorial complejo de dimensión 2, den
 \mathcal{H}_n = \underbrace{\mathbb{C}^2 \otimes \mathbb{C}^2 \otimes \cdots \otimes \mathbb{C}^2}_{n \text{ veces}} = \mathbb{C}^{2^n}.
 \end{equation}
 
-Esto significa que un sistema de $n$ qubits habita un espacio de dimensión $2^n$. El crecimiento es \textbf{exponencial}: mientras que 1 qubit vive en un espacio de dimensión 2, un sistema de 6 qubits reside en un espacio de $2^6 = 64$ dimensiones. Esta propiedad es precisamente la que se explota en este trabajo: las 6 características financieras de cada activo se codifican en 6 qubits, lo que permite representar las relaciones entre estas características en un espacio de 64 dimensiones, capturando correlaciones complejas que serían difíciles de modelar clásicamente.
+
+Esto significa que un sistema de $n$ qubits habita un espacio de dimensión $2^n$. El crecimiento es \textbf{exponencial}: mientras que 1 qubit vive en un espacio de dimensión 2, un sistema de 6 qubits reside en un espacio de $2^6 = 64$ dimensiones. Esta propiedad es precisamente la que se explota en este trabajo: las 6 características financieras de cada activo se codifican en 6 qubits, lo que permite potencialmente representar las relaciones entre estas características en un espacio de 64 dimensiones y proporciona un espacio de representación más expresivo, capaz de capturar correlaciones complejas que serían difíciles de modelar clásicamente.
 
 El estado general de un sistema de $n$ qubits se escribe como:
 
@@ -76,7 +75,8 @@ donde cada $\ket{k}$ denota un estado de la base computacional (por ejemplo, $\k
 \subsection{Entrelazamiento cuántico}
 \label{subsec:entrelazamiento}
 
-El entrelazamiento es un fenómeno exclusivamente cuántico que surge cuando el estado de un sistema de múltiples qubits no puede descomponerse como producto de estados individuales. Un estado entrelazado clásico es el estado de Bell:
+
+El entrelazamiento es un fenómeno exclusivamente cuántico que surge cuando el estado de un sistema de múltiples qubits no puede descomponerse como producto de estados individuales. Un ejemplo de estado entrelazado es el estado de Bell:
 
 \begin{equation}[eq:bell]{Estado de Bell Phi mas}
 \ket{\Phi^+} = \frac{1}{\sqrt{2}}\left(\ket{00} + \ket{11}\right).
@@ -137,23 +137,13 @@ R_y(\theta) = \begin{pmatrix} \cos\frac{\theta}{2} & -\sin\frac{\theta}{2} \\ \s
 R_z(\theta) = \begin{pmatrix} e^{-i\theta/2} & 0 \\ 0 & e^{i\theta/2} \end{pmatrix}.
 \end{equation}
 
-Estas puertas parametrizadas son especialmente relevantes en los circuitos cuánticos variacionales, donde los ángulos de rotación se determinan a partir de los datos de entrada. En el circuito empleado en este trabajo, las rotaciones $R_y$ y $R_z$ se utilizan para codificar las características financieras de cada activo.
+Estas puertas parametrizadas son especialmente relevantes en los circuitos cuánticos variacionales, donde los ángulos de rotación se determinan a partir de los datos de entrada. En el circuito empleado en este trabajo, las rotaciones $R_y$ y $R_x$ se utilizan para codificar las características financieras de cada activo en el ansatz empleado por QHRP. Aunque se incluye $R_z$ por completitud teórica, en este trabajo se emplean principalmente $R_y$ y $R_x$ en el diseño práctico del ansatz.
 
 \paragraph{Puerta de fase ($P$).} Aplica una fase relativa $\phi$ al estado $\ket{1}$ sin modificar $\ket{0}$:
 
 \begin{equation}{Matriz de la puerta de fase}
 P(\phi) = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\phi} \end{pmatrix}.
 \end{equation}
-
-% >>> IMAGEN: Aquí incluir una tabla visual o diagrama con los símbolos <<<
-% de las puertas cuánticas más comunes en notación de circuito.
-%
-% \begin{figure}[Puertas cuánticas de un qubit]{FIG:PUERTAS_1QUBIT}
-% {Representación en notación de circuito de las puertas de un solo qubit 
-% más utilizadas: Hadamard, rotaciones $R_x$, $R_y$, $R_z$ y puerta de fase.}
-%     \image{10cm}{}{puertas-1qubit}
-% \end{figure}
-
 
 \subsection{Puertas de múltiples qubits}
 \label{subsec:puertasmultiplesqubits}
@@ -190,17 +180,13 @@ Las puertas de dos qubits, combinadas con las puertas de un qubit, forman un con
 \subsection{Medición}
 \label{subsec:medicion}
 
-Al final de un circuito cuántico se realiza la \textbf{medición}, que constituye la interfaz entre el mundo cuántico y el clásico. Al medir un qubit en superposición, el estado cuántico \textbf{colapsa} irreversiblemente a uno de los estados base, obteniéndose un resultado clásico: un 0 o un 1.
-
-Para un qubit en el estado $\ket{\psi} = \alpha\ket{0} + \beta\ket{1}$, la probabilidad de obtener cada resultado viene dada por las amplitudes al cuadrado:
+Al final de un circuito cuántico se realiza la \textbf{medición}, que constituye la interfaz entre el mundo cuántico y el clásico. Al medir un qubit en superposición, el estado cuántico colapsa a uno de los estados base y se obtiene un resultado clásico (0 o 1). Para un qubit en el estado $\ket{\psi}=\alpha\ket{0}+\beta\ket{1}$ se tiene
 
 \begin{equation}{Probabilidades de medición de un qubit}
-P(0) = |\alpha|^2, \quad P(1) = |\beta|^2.
+P(0)=|\alpha|^2, \quad P(1)=|\beta|^2,
 \end{equation}
 
-En un sistema de $n$ qubits, la medición produce una cadena de $n$ bits clásicos. La probabilidad de obtener una cadena concreta $k$ es $|{\alpha}_{k}|^{2}$, según el estado de la ecuación~\eqref{eq:estadonqubits}.
-
-La naturaleza probabilística de la medición implica que los algoritmos cuánticos están diseñados para que la \textbf{probabilidad de obtener la respuesta correcta sea alta}. En la práctica, el circuito se ejecuta múltiples veces (\textit{shots}) y se analiza la distribución de resultados para determinar el resultado más probable.
+y, en un sistema de $n$ qubits, la probabilidad de observar una cadena $k$ viene dada por $|{\alpha}_k|^2$ (ec.~\eqref{eq:estadonqubits}). Dada la naturaleza probabilística de la medición, en la práctica el circuito se ejecuta múltiples veces (\textit{shots}) y se analiza la distribución de resultados para estimar cantidades de interés. En el contexto de QHRP se repite la ejecución del circuito y se agregan las estimaciones estadísticas para construir medidas de correlación entre activos, aprovechando el espacio de 64 dimensiones resultante de codificar 6 características por activo.
 
 % >>> IMAGEN: Esquema de medición y colapso del estado <<<
 % Un diagrama que muestre el proceso de medición: estado en superposición → 
@@ -237,7 +223,7 @@ La siguiente tabla resume las diferencias conceptuales fundamentales entre ambos
   \end{tabular}
 \end{table}
 
-El aspecto más relevante para este trabajo es el crecimiento exponencial del espacio de estados. Mientras que representar 6 variables clásicas requiere un vector en $\mathbb{R}^6$, codificar esas mismas 6 variables en qubits permite trabajar en un espacio de Hilbert de dimensión $2^6 = 64$. Este espacio exponencialmente mayor proporciona una representación más rica de las relaciones entre las características financieras de cada activo, lo que constituye la motivación principal del enfoque cuántico adoptado en este trabajo.
+El aspecto más relevante para este trabajo es el crecimiento exponencial del espacio de estados. Mientras que representar 6 variables clásicas requiere un vector en $\mathbb{R}^6$, codificar esas mismas 6 variables en qubits permite trabajar en un espacio de Hilbert de dimensión $2^6 = 64$. Este espacio exponencialmente mayor proporciona un espacio de representación más expresivo de las relaciones entre las características financieras de cada activo, lo que constituye la motivación principal del enfoque cuántico adoptado en este trabajo.
 
 
 %% =====================================================================
@@ -248,7 +234,10 @@ El aspecto más relevante para este trabajo es el crecimiento exponencial del es
 
 El problema de optimización de portafolios ha sido ampliamente estudiado en la literatura financiera. Sin embargo, con la llegada de la computación cuántica, surgen nuevas oportunidades para abordar estos problemas desde una perspectiva diferente.
 
+
 La computación cuántica emerge como una alternativa prometedora para resolver problemas de optimización complejos. Algoritmos como el QAOA (Quantum Approximate Optimization Algorithm) y VQE (Variational Quantum Eigensolver) ofrecen potencial para acelerar cálculos que serían intratables en computadores clásicos. En particular, la capacidad de los circuitos cuánticos para codificar datos en espacios de alta dimensión mediante mapeos de características cuánticas permite capturar relaciones no lineales entre activos financieros que las métricas clásicas, basadas en la correlación lineal, no logran reflejar.
+
+No obstante, aunque QAOA y VQE son relevantes en el panorama de optimización cuántica, este trabajo sigue un enfoque distinto basado en la codificación explícita de características y un ansatz variacional concreto para QHRP.
 
 
 \section{Objetivos}
@@ -257,7 +246,7 @@ La computación cuántica emerge como una alternativa prometedora para resolver 
 Los objetivos principales de este trabajo son:
 
 \begin{enumerate}
-\item Estudiar la viabilidad de aplicar técnicas de computación cuántica al análisis jerárquico de riesgo en carteras financieras.
+\item Analizar la viabilidad de la codificación angular y del ansatz variacional en la representación de correlaciones financieras.
 \item Implementar y reproducir el algoritmo Quantum Hierarchical Risk Parity (QHRP) propuesto por Arian et al.\ (2025), comparando los resultados con el enfoque clásico HRP.
 \item Analizar el impacto de la representación cuántica sobre la estructura jerárquica del mercado y sobre el rendimiento de las carteras resultantes.
 \end{enumerate}
