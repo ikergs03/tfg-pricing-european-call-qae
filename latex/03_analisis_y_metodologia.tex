@@ -11,13 +11,20 @@ Cada activo financiero se representa mediante un conjunto de características ec
 X_i \in \mathbb{R}^{T \times P},
 \end{equation}
 
-donde $T$ denota el número de observaciones temporales y $P$ el número de características consideradas. En este trabajo se emplean seis características por activo, diseñadas para capturar información relacionada con retornos, volatilidad, momentum, reversión y volumen negociado.
+donde $T$ denota el número de observaciones temporales y $P$ el número de características consideradas. En este trabajo se emplean seis características por activo, calculadas a partir de ventanas móviles de retornos: (1) retorno diario, (2) media móvil de retornos, (3) desviación estándar móvil, (4) retorno acumulado, (5) asimetría (\textit{skewness}) y (6) curtosis. Esta combinación de momentos estadísticos de la distribución de retornos permite capturar tanto el comportamiento central del activo como sus características de cola y dispersión, proporcionando una representación multifacética del perfil de riesgo.
 
 El uso de una representación multivariante permite superar las limitaciones del enfoque clásico basado exclusivamente en la correlación de retornos, la cual es conocida por su elevada inestabilidad temporal y sensibilidad al ruido.
 
 \section{Normalización de características}
 \label{sec:normalizacion_caracteristicas}
-Con el fin de garantizar una contribución equilibrada de todas las variables, las características se estandarizan de forma independiente para cada activo. Este procedimiento evita que determinadas magnitudes, como la volatilidad o el volumen, dominen el proceso de modelado y asegura la comparabilidad entre activos.
+
+El preprocesamiento de características consta de dos etapas diferenciadas:
+
+\begin{itemize}
+\item \textbf{Estandarización estadística (pre-procesamiento):} Con el fin de garantizar una contribución equilibrada de todas las variables, las características se estandarizan de forma independiente para cada activo mediante transformación a media cero y desviación estándar unitaria. Este procedimiento evita que magnitudes extremas (como la curtosis) dominen el proceso de modelado y asegura la comparabilidad entre activos.
+
+\item \textbf{Normalización angular (feature map):} Posteriormente, dentro del circuito cuántico, cada característica estandarizada $x_i$ se normaliza mediante mapeo afín respecto a sus extremos históricos en una ventana temporal activa, transformándose en un ángulo $\theta_i \in [0, \alpha\pi]$ (véase Apéndice~\ref{ap:estimacion_ansatz}). Esta normalización min-max es específica del feature map y permite que el embedding cuántico se adapte a cambios de régimen de mercado.
+\end{itemize}
 
 
 \section{Representación cuántica mediante matrices de densidad}

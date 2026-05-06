@@ -37,12 +37,18 @@ Las características se almacenan en un tensor tridimensional con dimensiones:
 
 donde $N$ representa el número de activos, $T$ el número de observaciones temporales y $P=6$ el número de características consideradas. 
 
-Para cada activo se calculan ventanas móviles utilizando la librería \texttt{scipy.stats}. En lugar de indicadores técnicos tradicionales, se emplean los momentos de la distribución de retornos (media, varianza, asimetría y curtosis), permitiendo una representación matemática profunda del perfil de riesgo de cada activo.
+Para cada activo se calculan ventanas móviles (típicamente de 5 períodos) utilizando la librería \texttt{scipy.stats}. Las seis características se definen como: (1) retorno diario, (2) media móvil de retornos, (3) desviación estándar móvil, (4) retorno acumulado, (5) asimetría (\textit{skewness}) y (6) curtosis. En lugar de indicadores técnicos tradicionales, se emplean estos momentos estadísticos de la distribución de retornos, permitiendo una representación matemática profunda que captura tanto comportamiento central como características de cola y volatilidad del perfil de riesgo de cada activo.
 
-\subsection{Estandarización y control numérico}
+\subsection{Estandarización y normalización}
 \label{sec:estandarizacion_control}
 
-Con el objetivo de garantizar estabilidad numérica durante las etapas posteriores del análisis, especialmente antes del mapeo al circuito cuántico, las características se estandarizan de forma independiente. Este procedimiento evita la dominancia de magnitudes extremas (como la curtosis) y preserva la dinámica relativa de cada serie temporal.
+El procesamiento de características antes del circuito cuántico consta de dos etapas diferenciadas:
+
+\begin{itemize}
+\item \textbf{Estandarización estadística (pre-procesamiento):} Con el objetivo de garantizar estabilidad numérica durante las etapas posteriores del análisis y evitar la dominancia de magnitudes extremas (como la curtosis), las características se estandarizan de forma independiente para cada activo mediante transformación a media cero y desviación estándar unitaria. Este procedimiento preserva la dinámica relativa de cada serie temporal.
+
+\item \textbf{Normalización angular (dentro del feature map):} Posteriormente, antes de la codificación cuántica, cada característica estandarizada se normaliza mediante mapeo afín respecto a sus extremos históricos en una ventana temporal activa, transformándose en un ángulo $\theta_i \in [0, \alpha\pi]$ que parametriza las rotaciones del circuito. Esta normalización min-max adicional es específica del feature map y permite que el embedding cuántico se adapte dinámicamente a cambios de régimen de mercado (véase Apéndice~\ref{ap:estimacion_ansatz}).
+\end{itemize}
 
 \subsection{Implementación del modelo cuántico}
 \label{sec:implementacion_modelo_cuantico}
