@@ -1,5 +1,5 @@
 \chapter{Análisis y Metodología}
-\label{sec:analisis_metodologia}
+\label{cap:analisis_metodologia}
 En esta sección se presenta el marco metodológico empleado para analizar la estructura de dependencia entre activos financieros mediante técnicas de Hierarchical Risk Parity (HRP) y su extensión cuántica. El objetivo principal es estudiar las relaciones latentes del mercado utilizando métricas alternativas a la correlación tradicional, permitiendo una representación más rica y robusta de las interdependencias entre activos.
 
 \section{Representación multivariante de los activos}
@@ -22,7 +22,7 @@ Con el fin de garantizar una contribución equilibrada de todas las variables, l
 
 \section{Representación cuántica mediante matrices de densidad}
 \label{sec:representacion_cuantica}
-Para modelar relaciones no lineales entre activos, cada observación multivariante se embebe en un espacio cuántico mediante un mapeo de características cuántico. A partir de dicho mapeo, cada observación queda representada como un estado cuántico puro:
+Para modelar relaciones no lineales entre activos, cada observación multivariante se codifica en un estado cuántico mediante un feature map parametrizado. A partir de dicho mapeo, cada observación queda representada como un estado cuántico puro:
 
 \begin{equation}[eq:estado_cuantico_observacion]{Estado cuántico de una observación del activo i}
 \lvert\psi(\mathbf{x}_i^t)\rangle.
@@ -37,78 +37,7 @@ Posteriormente, para cada activo se construye una matriz de densidad promedio de
 
 Esta formulación permite capturar la distribución completa de las observaciones del activo en el espacio de Hilbert, proporcionando una representación más informativa que los estadísticos clásicos de segundo orden.
 
-\section{Justificación del ansatz cuántico}
-\label{sec:justificacion_ansatz}
-
-El circuito utilizado en este trabajo se interpreta explícitamente como un \textbf{ansatz de codificación} (feature map) que define un embedding de las entradas reales en un espacio de Hilbert. En lugar de plantear una arquitectura libremente optimizada, se adopta una estructura repetible compuesta por: puertas de un qubit parametrizadas por las características (rotaciones) y capas de dos qubits (entrelazadores) aplicadas sobre pares predefinidos.
-
-\subsection{Formalización: el feature map como embedding en el espacio de Hilbert}
-
-Sea $\mathbf{x}\in\mathbb{R}^P$ el vector de características de una observación. Definimos el mapeo de características cuántico (feature map) como una aplicación
-\begin{equation}[eq:feature_map_cuantico]{Mapeo cuántico de las características}
-\Phi:\;\mathbb{R}^P \longrightarrow \mathcal{H},
-\qquad
-\Phi(\mathbf{x}) = \lvert\psi(\mathbf{x})\rangle = U(\mathbf{x})\lvert 0\rangle^{\otimes P},
-\end{equation}
-donde $U(\mathbf{x})$ es la unidadaria del circuito parametrizada por las entradas y $\mathcal{H}\cong\mathbb{C}^{2^P}$ es el espacio de Hilbert compuesto de $P$ qubits. La representación de cada activo se obtiene como la matriz de densidad promedio
-\begin{equation}[eq:densidad_promedio_activo]{Definición de densidad promedio de un activo}
-\rho_i = \frac{1}{T}\sum_{t=1}^T \lvert\psi(\mathbf{x}_i^t)\rangle\langle\psi(\mathbf{x}_i^t)\rvert.
-\end{equation}
-
-Los operadores unitarios que construyen $U(\mathbf{x})$ se separan conceptualmente en dos bloques: (i) un bloque de operadores locales $U_{\mathrm{loc}}(\mathbf{x})=\bigotimes_{k=1}^P R_k(\theta_k(\mathbf{x}))$ que codifican las características en ángulos locales, y (ii) un bloque de entrelazadores globales $V_{\mathrm{ent}}$ que introducen correlaciones no locales. Así,
-\begin{equation}[eq:estado_feature_map_entrelazado]{Estado embebido con bloques local y entrelazador}
-\lvert\psi(\mathbf{x})\rangle = V_{\mathrm{ent}} U_{\mathrm{loc}}(\mathbf{x})\lvert 0\rangle^{\otimes P}.
-\end{equation}
-
-Nótese que operaciones locales $U_{\mathrm{loc}}$ por sí solas generan embeddings separables (producto tensorial de rotaciones) cuya geometría está determinada por la distancia entre estados locales; la inclusión de $V_{\mathrm{ent}}$ es la que introduce no separabilidad y, con ello, una geometría de distancias que refleja correlaciones entre componentes del vector original.
-
-\subsection{Efecto del entrelazamiento sobre separabilidad y geometría de distancias}
-
-Un estado puro es separable si puede factorizarse como un producto tensorial entre subsistemas; en presencia de entrelazamiento el estado no admite tal factorización. A nivel de matrices de densidad, un estado global separable es una combinación convexa de productos tensoriales, esto es,
-\begin{equation}[eq:estado_separable_mixto]{Forma general de un estado separable mixto}
-\rho_{\mathrm{sep}} = \sum_{\ell} p_{\ell} \bigotimes_{k=1}^P \rho_k^{(\ell)},
-\end{equation}
-donde $p_{\ell}\geq 0$ y $\sum_{\ell}p_{\ell}=1$.
-
-Un estado entrelazado, por el contrario, posee coherencias y correlaciones entre subsistemas que se manifiestan en componentes fuera de la estructura tensorial simple. Estas coherencias influyen directamente en medidas matriciales como la distancia de Frobenius o la fidelidad: pequeñas variaciones en $V_{\mathrm{ent}}$ pueden modificar elementos off-diagonal de $\rho_i$ y, por tanto, alterar $d_F(\rho_i,\rho_j)$.
-
-Desde un punto de vista operatorio, la aplicación de entrelazadores no locales hace que la métrica entre dos embeddings deje de depender únicamente de diferencias locales de ángulos y pase a incorporar términos de correlación entre qubits. En particular, las distancias son invariantes frente a transformaciones unitarias globales comunes (es decir, $d(U\rho_i U^{\dagger}, U\rho_j U^{\dagger})=d(\rho_i,\rho_j)$). Sin embargo, aunque $V_{\mathrm{ent}}$ es independiente de las entradas, su aplicación sobre estados que dependen de $\mathbf{x}$ mediante $U_{\mathrm{loc}}(\mathbf{x})$ hace que la manera en que las características se codifican y se mezclan sea no lineal, alterando significativamente la geometría resultante del espacio de embeddings.
-
-En síntesis: el entrelazamiento extiende la capacidad del feature map para codificar correlaciones entre características, y por ende modifica la topología y la métrica del espacio de estados $\{\lvert\psi(\mathbf{x})\rangle : \mathbf{x}\in\mathbb{R}^P\}$ sobre los que se calcula la distancia de comparación entre activos.
-
-\subsection{Comparación técnica: CNOT vs iSWAP}
-
-Aunque el trabajo de referencia ilustra el entrelazamiento con CNOT, la formulación admite otras puertas (CZ, SWAP, iSWAP, ...). Es conveniente precisar en qué sentido la elección concreta afecta al embedding.
-
-La acción en base computacional de CNOT y iSWAP sobre el subespacio de dos qubits puede escribirse como
-\begin{equation}[eq:matrices_cnot_iswap]{Matrices en base computacional de CNOT e iSWAP}
-\mathrm{CNOT} = \begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&0&1\\0&0&1&0\end{pmatrix},
-\qquad
-\mathrm{iSWAP} = \begin{pmatrix}1&0&0&0\\0&0&i&0\\0&i&0&0\\0&0&0&1\end{pmatrix}.
-\end{equation}
-
-CNOT implementa un flip condicionado en el segundo qubit y es particularmente adecuado para generar correlaciones tipo bit-flip (estados de Bell cuando se combina con Hadamard). En contraste, iSWAP intercambia amplitudes entre los estados $\lvert 01\rangle$ y $\lvert 10\rangle$ introduciendo además una fase relativa $i$. En términos de embedding, CNOT introduce correlaciones condicionadas que tienden a correlacionar valores de probabilidad en la base computacional, mientras que iSWAP mezcla amplitudes e introduce estructura de fase relativa. La elección de puerta afecta significativamente a la estructura de coherencias off-diagonal de $\rho$ y, por tanto, a la geometría del espacio de embeddings. Dependiendo del problema y de la métrica elegida (por ejemplo, si la métrica es sensible a fases coherentes), esta distinción puede modificar la separación observada entre activos. En nuestro caso, el uso de iSWAP es una elección operativa coherente con la implementación y puede influir en la estructura de coherencias y la codificación de correlaciones complejas; la tesis deja constancia de esta decisión y compara cualitativamente ambos efectos.
-
-\subsection{Papel del parámetro \texorpdfstring{$\alpha$}{alpha} y fenómenos de saturación}
-
-Las rotaciones locales se parametrizan mediante ángulos que dependen de las características normalizadas $s_k(\mathbf{x})\in[0,1]$; en la implementación se usa una escala global $\alpha$ para controlar el rango angular, por ejemplo
-\begin{equation}[eq:escala_angular_alpha]{Escalado angular de las características normalizadas}
-\theta_k(\mathbf{x}) = \alpha\,\pi\, s_k(\mathbf{x}).
-\end{equation}
-
-Cuando $\alpha$ es pequeño, las diferencias angulares entre observaciones son de baja magnitud y la resolución del embedding es limitada; cuando $\alpha$ crece, los ángulos pueden envolver varias vueltas (wrapping) y la representación puede saturarse o volverse altamente oscilatoria, reduciendo la interpretabilidad y, en presencia de ruido, amplificando efectos no deseados. Este comportamiento conecta con resultados sobre "expressibility" y problemas de optimización en circuitos parametrizados (véase, p.\,ej., McClean et al., 2018 sobre barren plateaus) y motiva fijar $\alpha$ en un rango balanceado y reportarlo explícitamente en los experimentos.
-
-\subsection{Profundidad de circuito y adecuación a entornos NISQ}
-
-La profundidad del circuito se elige buscando un compromiso entre expresividad (más capas de entrelazamiento) y robustez frente al ruido real de dispositivos NISQ. Estudios previos muestran que la fidelidad de estados disminuye rápidamente con la profundidad en hardware ruidoso (Preskill, 2018) y que la complejidad de paisaje de pérdida puede crecer con capas y parámetros (Cerezo et al., 2021). En los experimentos se emplea un número limitado pero efectivo de capas de entrelazamiento (típicamente dos o tres capas), suficiente para introducir correlaciones no triviales entre qubits pero contenido para mantener la reproducibilidad en simulación y factibilidad en dispositivos intermedios.
-
-\subsection{Reproducibilidad y precisión terminológica}
-
-En el paper de referencia, las capas de entrelazamiento se presentan como una \textbf{familia de opciones} (CNOT, CZ, SWAP, iSWAP, etc.), y la figura ilustrativa del circuito muestra CNOT como ejemplo concreto. En consecuencia, la contribución metodológica central no depende de una puerta única, sino de la combinación entre: (i) codificación angular de características y (ii) mezcla entre qubits mediante capas de entrelazamiento intercaladas.
-
-En esta implementación se adopta iSWAP en el pipeline principal para mantener consistencia con el código reproducido del proyecto y con la construcción de matrices de densidad utilizadas en los experimentos. Esta elección preserva la lógica del método (feature map + densidad promedio + distancia de Frobenius + clustering HRP), aunque induce una geometría de embedding distinta a la de una implementación estrictamente CNOT.
-
-El ansatz no se presenta como la arquitectura óptima universal, sino como una configuración metodológicamente consistente y reproducible para trasladar el problema financiero a un espacio cuántico de dimensión $2^P$ manteniendo interpretabilidad y trazabilidad. Desde el punto de vista de reproducibilidad, en este trabajo se distinguen explícitamente dos niveles: (i) circuito de referencia del paper (con CNOT en la figura de ejemplo) y (ii) circuito efectivamente usado en el pipeline base (con iSWAP). Esta separación evita ambigüedades al comparar resultados con la literatura y al justificar divergencias cuantitativas esperables.
+El feature map puede incluir capas de entrelazamiento mediante puertas de dos qubits (en este caso iSWAP), lo que permite capturar dependencias no lineales en el espacio de Hilbert.
 
 \section{Métrica de distancia cuántica}
 \label{sec:metrica_distancia_cuantica}
@@ -124,46 +53,50 @@ Esta métrica proporciona una medida geométrica natural en el espacio de operad
 \section{Construcción y ordenamiento jerárquico}
 \label{sec:construccion_ordenamiento}
 
-Las distancias cuánticas entre todos los pares de activos se organizan en una matriz de distancias simétrica. Dicha matriz se emplea como entrada para un procedimiento de clustering jerárquico basado en distancia mínima, a partir del cual se obtiene un dendrograma que describe la estructura de agrupación del mercado.
+Las distancias cuánticas entre todos los pares de activos se organizan en una matriz de distancias simétrica $D \in \mathbb{R}^{N \times N}$. Dicha matriz se emplea como entrada para un procedimiento de clustering jerárquico con enlace simple (\textit{single linkage}), que genera un dendrograma jerárquico a partir de una métrica de distancia entre clusters.
 
-El orden de los activos se extrae de las hojas del dendrograma y se utiliza para reorganizar las matrices de distancia. Este reordenamiento no altera los valores originales, pero permite revelar patrones estructurales y agrupaciones coherentes entre activos.
+Del dendrograma se extrae un ordenamiento de los activos, de forma que activos con menor distancia tienden a situarse próximos en la representación final. El reordenamiento de la matriz de distancias mediante este procedimiento no altera los valores originales, pero facilita su reorganización consistente con la estructura jerárquica.
 
-\section{Visualización de la estructura del mercado}
-\label{sec:visualizacion_estructura}
-Con el fin de analizar el impacto de las distintas métricas de similitud sobre la estructura jerárquica del mercado, se emplean representaciones visuales basadas en matrices de correlación y matrices de distancia. Estas visualizaciones permiten evaluar cómo el procedimiento de ordenamiento jerárquico del algoritmo HRP modifica la organización observable de los activos y hasta qué punto la métrica cuántica propuesta es compatible con dicho procedimiento.
+\section{Definición operativa de QHRP y diferenciación respecto a HRP clásico}
+\label{sec:qhrp_vs_hrp}
 
-\subsection{Comparación visual del efecto del ordenamiento}
+El algoritmo Hierarchical Risk Parity (HRP) clásico sigue el siguiente procedimiento: (1) calcula la matriz de correlación de retornos, (2) transforma la correlación en una métrica de distancia, (3) aplica clustering jerárquico y (4) ordena los activos según el dendrograma para construir la cartera.
 
-La Figura~\ref{FIG:CORR_MATRICES} muestra la matriz de correlación de retornos bajo tres configuraciones distintas: sin ordenamiento, con ordenamiento clásico HRP y con ordenamiento cuántico QHRP. El objetivo es estudiar cómo el clustering jerárquico reorganiza la estructura de dependencia entre activos y comparar las diferencias entre el enfoque clásico y el cuántico.
+En contraste, QHRP sustituye la construcción clásica de la matriz de distancias por una métrica derivada de embeddings cuánticos:
+\begin{itemize}
+    \item \textbf{HRP clásico:} Matriz de correlación $\Rightarrow$ Distancia clásica (ej. $1 - \text{corr}$) $\Rightarrow$ Clustering jerárquico.
+    \item \textbf{QHRP:} Feature map $\Rightarrow$ Matrices de densidad $\Rightarrow$ Distancia de Frobenius $\Rightarrow$ Clustering jerárquico.
+\end{itemize}
 
-El panel superior representa la matriz de correlación sin aplicar ningún tipo de ordenamiento. En esta disposición, los activos se encuentran organizados de forma arbitraria, lo que dificulta la identificación de patrones estructurales o agrupaciones coherentes. Esta representación constituye el punto de partida del algoritmo HRP y evidencia que la correlación, por sí sola, no revela una estructura jerárquica clara sin un procedimiento de ordenamiento.
+Las etapas de clustering jerárquico y construcción de jerarquía permanecen idénticas en ambos enfoques. Asimismo, una vez obtenida la estructura jerárquica, ambos métodos emplean el mismo procedimiento de \textbf{bisección recursiva} para la asignación de pesos. La diferencia fundamental radica, por tanto, en que la métrica de similitud entre activos proviene de la geometría de estados cuánticos en lugar de correlaciones clásicas.
 
-El panel inferior izquierdo muestra la misma matriz tras aplicar el ordenamiento obtenido mediante el algoritmo HRP clásico, basado en la distancia derivada de la correlación. Como resultado del reordenamiento, emerge una estructura aproximadamente cuasi-diagonal, caracterizada por la aparición de bloques a lo largo de la diagonal principal. Estos bloques reflejan grupos de activos con alta correlación interna y menor correlación entre grupos, lo que constituye una manifestación visual de la jerarquía inducida por el algoritmo HRP.
+\section{Parámetros del sistema}
+\label{sec:parametros_sistema}
 
-El panel inferior derecho presenta la matriz de correlación reordenada utilizando el orden inducido por la métrica cuántica del algoritmo QHRP. Aunque la estructura resultante no coincide exactamente con la obtenida mediante el enfoque clásico, se observa igualmente la formación de patrones jerárquicos. Esto sugiere que la métrica cuántica induce una organización alternativa del mercado, basada en una noción de similitud más rica que la correlación lineal.
+La implementación de QHRP se especifica mediante los siguientes parámetros:
 
-En conjunto, esta figura evidencia que el ordenamiento jerárquico es el elemento clave para revelar la estructura latente del mercado y que el enfoque cuántico produce una jerarquía distinta pero coherente de los activos, compatible con el procedimiento HRP.
+\begin{itemize}
+    \item \textbf{Número de qubits:} $P = 6$, correspondiente a las seis características por activo.
+    \item \textbf{Profundidad del circuito:} El feature map consta de bloques locales (rotaciones parametrizadas) intercalados con capas de entrelazamiento (típicamente 2-3 capas de puertas de dos qubits).
+    \item \textbf{Puertas de entrelazamiento:} Se utiliza iSWAP aplicada sobre pares predefinidos de qubits.
+    \item \textbf{Backend de simulación:} Simulación mediante simulador de estado vectorial (statevector), sin ruido, permitiendo acceso directo a la función de onda completa en el régimen ideal.
+    \item \textbf{Ventana temporal:} Los datos se agrupan en ventanas de 252 observaciones (aproximadamente un año de trading).
+    \item \textbf{Normalización de características:} Estandarización independiente por activo (media cero, desviación estándar uno).
+    \item \textbf{Número de activos ($N$):} Variable según el experimento, típicamente entre 5 y 20 activos del S\&P 500.
+\end{itemize}
 
-\begin{figure}[Ejemplo de uso de figure]{FIG:CORR_MATRICES}
-{Matriz de correlación de retornos bajo tres configuraciones: sin ordenar, con ordenamiento HRP clásico y con ordenamiento QHRP. El reordenamiento revela la estructura jerárquica latente del mercado.}
-    \image{13cm}{}{fig3-corr-matrices}
-\end{figure}
+\section{Pipeline completo}
+\label{sec:pipeline_completo}
 
+El proceso integral de análisis se estructura en las siguientes etapas:
 
-
-\subsection{Efecto del ordenamiento jerárquico en la métrica cuántica}
-
-La Figura~\ref{FIG:QHRP_ORDERED} ilustra el efecto del ordenamiento jerárquico aplicado a la matriz de distancias cuánticas empleada en el algoritmo QHRP, permitiendo evaluar directamente la compatibilidad de dicha métrica con la lógica del algoritmo HRP.
-
-El panel izquierdo muestra la matriz de distancias cuánticas sin ordenar. En esta representación, los activos se encuentran dispuestos de forma arbitraria, lo que impide identificar relaciones jerárquicas o agrupaciones coherentes. La ausencia de estructura visible refleja que la información contenida en la métrica cuántica no se manifiesta de forma inmediata sin un procedimiento de reorganización.
-
-El panel derecho presenta la misma matriz tras aplicar el ordenamiento obtenido mediante clustering jerárquico. Como resultado del reordenamiento, emerge una estructura cuasi-diagonal, caracterizada por la concentración de valores de menor distancia en torno a la diagonal principal y la aparición de bloques asociados a grupos de activos similares. Esta propiedad es fundamental en el algoritmo HRP y constituye una evidencia visual de que la métrica cuántica induce una jerarquía coherente entre activos.
-
-Las diferencias visuales respecto a las figuras del trabajo original son esperables, ya que dependen del conjunto de activos, del período temporal considerado y de detalles de implementación. El aspecto relevante no es la coincidencia exacta con el paper, sino la aparición de una estructura jerárquica tras el ordenamiento, lo que confirma que la distancia cuántica puede sustituir a la correlación clásica dentro del procedimiento HRP sin romper su lógica estructural.
-
-\begin{figure}[Ejemplo de uso de figure]{FIG:QHRP_ORDERED}
-{Matriz de distancia cuántica tras el ordenamiento jerárquico. El reordenamiento revela agrupaciones coherentes de activos, evidenciando la estructura latente del mercado capturada por la representación cuántica.}
-    \image{13cm}{}{fig4-best-match}
-\end{figure}
-
-
+\begin{enumerate}
+    \item \textbf{Preparación de datos:} Carga de series de precios, cálculo de retornos diarios y organización en ventanas temporales.
+    \item \textbf{Ingeniería de características:} Cálculo de momentos estadísticos mediante ventanas móviles.
+    \item \textbf{Normalización:} Estandarización independiente de cada característica por activo.
+    \item \textbf{Representación cuántica:} Aplicación del feature map parametrizado para generar matrices de densidad promedio de cada activo (Sección \ref{sec:representacion_cuantica}).
+    \item \textbf{Métrica de distancia:} Cálculo de la matriz de distancias de Frobenius entre pares de activos (Sección \ref{sec:metrica_distancia_cuantica}).
+    \item \textbf{Clustering jerárquico:} Aplicación del algoritmo de enlace simple y extracción del ordenamiento del dendrograma (Sección \ref{sec:construccion_ordenamiento}).
+    \item \textbf{Asignación de pesos (Recursive Bisection):} Distribución de capital entre los activos siguiendo la estructura jerárquica obtenida. Se aplica el algoritmo de bisección recursiva clásico sobre la matriz de covarianza para garantizar la paridad de riesgo basada en la nueva topología cuántica.
+    \item \textbf{Evaluación y Análisis:} Comparación de las carteras resultantes (pesos, estabilidad y métricas de riesgo) entre los enfoques clásicos y cuánticos.
+\end{enumerate}

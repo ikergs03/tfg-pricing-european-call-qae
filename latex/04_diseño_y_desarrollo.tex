@@ -1,7 +1,7 @@
 \chapter{Diseño y Desarrollo}
-\label{sec:diseno_desarrollo}
+\label{cap:diseno_desarrollo}
 
-En este capítulo se describe la implementación técnica del sistema desarrollado, así como la estructura del código empleada para la ejecución de los distintos experimentos. Cada sección del capítulo corresponde a un bloque funcional independiente, permitiendo una descripción clara y modular del proceso de desarrollo.
+En este capítulo se describe la implementación técnica del sistema desarrollado, así como la estructura del código empleada para la ejecución de los distintos experimentos. Cada sección del capítulo corresponde a un bloque funcional independiente, permitiendo una descripción clara y modular del proceso de desarrollo, incluyendo la justificación teórica y matemática de los operadores cuánticos seleccionados.
 
 \section{Implementación del análisis jerárquico cuántico}
 \label{sec:implementacion_analisis}
@@ -13,9 +13,9 @@ En esta sección se detalla el diseño y desarrollo del código utilizado para l
 El sistema se ha diseñado siguiendo una estructura modular con el objetivo de facilitar la mantenibilidad, la escalabilidad y la reproducibilidad de los experimentos. El flujo general del proceso se divide en tres bloques principales:
 
 \begin{itemize}
-    \item Preparación y preprocesamiento de datos (extracción de indicadores estadísticos).
-    \item Implementación del modelo de análisis (QHRP y distancias de Frobenius).
-    \item Generación de resultados y visualizaciones (Heatmaps de distancias).
+    \item Preparación y preprocesamiento de datos (extracción de indicadores estadísticos).
+    \item Implementación del modelo de análisis (QHRP y distancias de Frobenius).
+    \item Generación de resultados y visualizaciones (Heatmaps de distancias).
 \end{itemize}
 
 Cada uno de estos bloques se implementa mediante scripts y cuadernos de trabajo independientes, permitiendo ejecutar y modificar cada etapa sin afectar al resto del sistema.
@@ -51,6 +51,79 @@ El modelo cuántico se implementa mediante circuitos parametrizados. Cada observ
 
 Para cada activo, dichas matrices se agregan mediante un promedio temporal, obteniendo una matriz densidad representativa del comportamiento global del activo. Todas las operaciones se realizan mediante simuladores de estado (\texttt{statevector\_simulator}), garantizando un entorno reproducible.
 
+\subsection{Justificación del ansatz cuántico}
+\label{sec:justificacion_ansatz}
+
+El circuito utilizado en este trabajo se interpreta explícitamente como un \textbf{ansatz de codificación} (feature map) que define un embedding de las entradas reales en un espacio de Hilbert. En lugar de plantear una arquitectura libremente optimizada, se adopta una estructura repetible compuesta por: puertas de un qubit parametrizadas por las características (rotaciones) y capas de dos qubits (entrelazadores) aplicadas sobre pares predefinidos.
+
+\subsubsection{Formalización: el feature map como embedding en el espacio de Hilbert}
+
+Sea $\mathbf{x}\in\mathbb{R}^P$ el vector de características de una observación. Definimos el mapeo de características cuántico (feature map) como una aplicación
+\begin{equation}[eq:feature_map_cuantico]{Mapeo cuántico de las características}
+\Phi:\;\mathbb{R}^P \longrightarrow \mathcal{H},
+\qquad
+\Phi(\mathbf{x}) = \lvert\psi(\mathbf{x})\rangle = U(\mathbf{x})\lvert 0\rangle^{\otimes P},
+\end{equation}
+donde $U(\mathbf{x})$ es la unitaria del circuito parametrizada por las entradas y $\mathcal{H}\cong\mathbb{C}^{2^P}$ es el espacio de Hilbert compuesto de $P$ qubits. La representación de cada activo se obtiene como la matriz de densidad promedio
+\begin{equation}[eq:densidad_promedio_activo]{Definición de densidad promedio de un activo}
+\rho_i = \frac{1}{T}\sum_{t=1}^T \lvert\psi(\mathbf{x}_i^t)\rangle\langle\psi(\mathbf{x}_i^t)\rvert.
+\end{equation}
+
+Los operadores unitarios que construyen $U(\mathbf{x})$ se separan conceptualmente en dos bloques: (i) un bloque de operadores locales $U_{\mathrm{loc}}(\mathbf{x})=\bigotimes_{k=1}^P R_k(\theta_k(\mathbf{x}))$ que codifican las características en ángulos locales, y (ii) un bloque de entrelazadores globales $V_{\mathrm{ent}}$ que introducen correlaciones no locales. Así,
+\begin{equation}[eq:estado_feature_map_entrelazado]{Estado embebido con bloques local y entrelazador}
+\lvert\psi(\mathbf{x})\rangle = V_{\mathrm{ent}} U_{\mathrm{loc}}(\mathbf{x})\lvert 0\rangle^{\otimes P}.
+\end{equation}
+
+Nótese que operaciones locales $U_{\mathrm{loc}}$ por sí solas generan embeddings separables (producto tensorial de rotaciones) cuya geometría está determinada por la distancia entre estados locales; la inclusión de $V_{\mathrm{ent}}$ es la que introduce no separabilidad y, con ello, una geometría de distancias que refleja correlaciones entre componentes del vector original.
+
+\subsubsection{Efecto del entrelazamiento sobre separabilidad y geometría de distancias}
+
+Un estado puro es separable si puede factorizarse como un producto tensorial entre subsistemas; en presencia de entrelazamiento el estado no admite tal factorización. A nivel de matrices de densidad, un estado global separable es una combinación convexa de productos tensoriales, esto es,
+\begin{equation}[eq:estado_separable_mixto]{Forma general de un estado separable mixto}
+\rho_{\mathrm{sep}} = \sum_{\ell} p_{\ell} \bigotimes_{k=1}^P \rho_k^{(\ell)},
+\end{equation}
+donde $p_{\ell}\geq 0$ y $\sum_{\ell}p_{\ell}=1$.
+
+Un estado entrelazado, por el contrario, posee coherencias y correlaciones entre subsistemas que se manifiestan en componentes fuera de la estructura tensorial simple. Estas coherencias influyen directamente en medidas matriciales como la distancia de Frobenius o la fidelidad: pequeñas variaciones en $V_{\mathrm{ent}}$ pueden modificar elementos off-diagonal de $\rho_i$ y, por tanto, alterar $d_F(\rho_i,\rho_j)$.
+
+Desde un punto de vista operatorio, la aplicación de entrelazadores no locales hace que la métrica entre dos embeddings deje de depender únicamente de diferencias locales de ángulos y pase a incorporar términos de correlación entre qubits. En particular, las distancias son invariantes frente a transformaciones unitarias globales comunes (es decir, $d(U\rho_i U^{\dagger}, U\rho_j U^{\dagger})=d(\rho_i,\rho_j)$). Sin embargo, aunque $V_{\mathrm{ent}}$ es independiente de las entradas, su aplicación sobre estados que dependen de $\mathbf{x}$ mediante $U_{\mathrm{loc}}(\mathbf{x})$ hace que la manera en que las características se codifican y se mezclan sea no lineal, alterando significativamente la geometría resultante del espacio de embeddings.
+
+En síntesis: el entrelazamiento extiende la capacidad del feature map para codificar correlaciones entre características, y por ende modifica la topología y la métrica del espacio de estados $\{\lvert\psi(\mathbf{x})\rangle : \mathbf{x}\in\mathbb{R}^P\}$ sobre los que se calcula la distancia de comparación entre activos.
+
+\subsubsection{Comparación técnica: CNOT vs iSWAP}
+
+Aunque el trabajo de referencia ilustra el entrelazamiento con CNOT, la formulación admite otras puertas (CZ, SWAP, iSWAP, ...). Es conveniente precisar en qué sentido la elección concreta afecta al embedding.
+
+La acción en base computacional de CNOT y iSWAP sobre el subespacio de dos qubits puede escribirse como
+\begin{equation}[eq:matrices_cnot_iswap]{Matrices en base computacional de CNOT e iSWAP}
+\mathrm{CNOT} = \begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&0&1\\0&0&1&0\end{pmatrix},
+\qquad
+\mathrm{iSWAP} = \begin{pmatrix}1&0&0&0\\0&0&i&0\\0&i&0&0\\0&0&0&1\end{pmatrix}.
+\end{equation}
+
+CNOT implementa un flip condicionado en el segundo qubit y es particularmente adecuado para generar correlaciones tipo bit-flip (estados de Bell cuando se combina con Hadamard). En contraste, iSWAP intercambia amplitudes entre los estados $\lvert 01\rangle$ y $\lvert 10\rangle$ introduciendo además una fase relativa $i$. En términos de embedding, CNOT introduce correlaciones condicionadas que tienden a correlacionar valores de probabilidad en la base computacional, mientras que iSWAP mezcla amplitudes e introduce estructura de fase relativa. La elección de puerta afecta significativamente a la estructura de coherencias off-diagonal de $\rho$ y, por tanto, a la geometría del espacio de embeddings. Dependiendo del problema y de la métrica elegida (por ejemplo, si la métrica es sensible a fases coherentes), esta distinción puede modificar la separación observada entre activos. En nuestro caso, el uso de iSWAP es una elección operativa coherente con la implementación y puede influir en la estructura de coherencias y la codificación de correlaciones complejas; la memoria deja constancia de esta decisión y compara cualitativamente ambos efectos.
+
+\subsubsection{Papel del parámetro \texorpdfstring{$\alpha$}{alpha} y fenómenos de saturación}
+
+Las rotaciones locales se parametrizan mediante ángulos que dependen de las características normalizadas $s_k(\mathbf{x})\in[0,1]$; en la implementación se usa una escala global $\alpha$ para controlar el rango angular, por ejemplo
+\begin{equation}[eq:escala_angular_alpha]{Escalado angular de las características normalizadas}
+\theta_k(\mathbf{x}) = \alpha\,\pi\, s_k(\mathbf{x}).
+\end{equation}
+
+Cuando $\alpha$ es pequeño, las diferencias angulares entre observaciones son de baja magnitud y la resolución del embedding es limitada; cuando $\alpha$ crece, los ángulos pueden envolver varias vueltas (wrapping) y la representación puede saturarse o volverse altamente oscilatoria, reduciendo la interpretabilidad y, en presencia de ruido, amplificando efectos no deseados. Este comportamiento conecta con resultados sobre expresividad ("expressibility") y problemas de optimización en circuitos parametrizados y motiva fijar $\alpha$ en un rango balanceado y reportarlo explícitamente en los experimentos.
+
+\subsubsection{Profundidad de circuito y adecuación a entornos NISQ}
+
+La profundidad del circuito se elige buscando un compromiso entre expresividad (más capas de entrelazamiento) y robustez frente al ruido real de dispositivos NISQ. En los experimentos se emplea un número limitado pero efectivo de capas de entrelazamiento (típicamente dos o tres capas), suficiente para introducir correlaciones no triviales entre qubits pero contenido para mantener la reproducibilidad en simulación y factibilidad en dispositivos intermedios.
+
+\subsubsection{Reproducibilidad y precisión terminológica}
+
+En el paper de referencia, las capas de entrelazamiento se presentan como una \textbf{familia de opciones} (CNOT, CZ, SWAP, iSWAP, etc.), y la figura ilustrativa del circuito muestra CNOT como ejemplo concreto. En consecuencia, la contribución metodológica central no depende de una puerta única, sino de la combinación entre: (i) codificación angular de características y (ii) mezcla entre qubits mediante capas de entrelazamiento intercaladas.
+
+En esta implementación se adopta iSWAP en el pipeline principal para mantener consistencia con el código reproducido del proyecto y con la construcción de matrices de densidad utilizadas en los experimentos. Esta elección preserva la lógica del método (feature map + densidad promedio + distancia de Frobenius + clustering HRP), aunque induce una geometría de embedding distinta a la de una implementación estrictamente CNOT.
+
+El ansatz no se presenta como la arquitectura óptima universal, sino como una configuración metodológicamente consistente y reproducible para trasladar el problema financiero a un espacio cuántico de dimensión $2^P$ manteniendo interpretabilidad y trazabilidad. Desde el punto de vista de reproducibilidad, en este trabajo se distinguen explícitamente dos niveles: (i) circuito de referencia del paper (con CNOT en la figura de ejemplo) y (ii) circuito efectivamente usado en el pipeline base (con iSWAP). Esta separación evita ambigüedades al comparar resultados con la literatura y al justificar divergencias cuantitativas esperables.
+
 \subsection{Circuito cuántico reproducido del paper}
 \label{sec:circuito_reproducido_paper}
 
@@ -62,15 +135,15 @@ Esta representación se incorpora para dejar trazabilidad del diseño del ansatz
 
 Para evitar confusiones de interpretación, en este trabajo se separan dos circuitos complementarios:
 \begin{itemize}
-    \item \textbf{Circuito de referencia (Figura 1):} replica la narrativa del paper y usa CNOT como caso ilustrativo de entrelazamiento.
-    \item \textbf{Circuito del pipeline experimental QHRP:} usa la secuencia \texttt{H} -- \texttt{T} -- \texttt{RY/RX} con capas de \texttt{iSWAP} en pares predefinidos, consistente con el módulo de simulación que genera las matrices de densidad.
+    \item \textbf{Circuito de referencia (Figura 1):} replica la narrativa del paper y usa CNOT como caso ilustrativo de entrelazamiento.
+    \item \textbf{Circuito del pipeline experimental QHRP:} usa la secuencia \texttt{H} -- \texttt{T} -- \texttt{RY/RX} con capas de \texttt{iSWAP} en pares predefinidos, consistente con el módulo de simulación que genera las matrices de densidad.
 \end{itemize}
 
 Esta decisión metodológica permite, simultáneamente, (i) mantener fidelidad documental con la presentación del paper y (ii) preservar coherencia con la implementación reproducible que produce los resultados reportados. Es relevante subrayar que ambos circuitos no son equivalentes desde el punto de vista del embedding cuántico: la sustitución de CNOT por iSWAP modifica la estructura de coherencias y, por tanto, la geometría inducida en el espacio de estados.
 
 \begin{figure}[Circuito cuántico reproducido del paper]{FIG:CIRCUITO_PAPER_QHRP}
 {Circuito cuántico de 6 qubits reproducido a partir del paper. Se muestran compuertas de inicialización, codificación parametrizada, entrelazamiento y medición final.}
-    \image{16cm}{}{fig1-circuito-paper-qhrp}
+    \image{15cm}{}{fig1-circuito-paper-qhrp}
 \end{figure}
 
 El circuito confirma que cada una de las 6 características del activo se codifica en un qubit y se correlaciona mediante capas de entrelazamiento. Más precisamente, el feature map define una inmersión de vectores en un espacio de Hilbert de dimensión $2^6=64$ (para seis qubits), donde la información queda codificada en la geometría del espacio de estados y en su estructura de coherencias y correlaciones cuánticas.
@@ -82,8 +155,8 @@ En términos de reproducibilidad experimental, los resultados principales de est
 
 La reproducción documentada en el repositorio se organiza en dos niveles:
 \begin{itemize}
-    \item \textbf{Nivel didáctico/figura:} notebook de la Figura 1, que construye el circuito de referencia de seis qubits y permite visualizar su estructura (capas de codificación y entrelazamiento de ejemplo).
-    \item \textbf{Nivel experimental/pipeline:} módulo principal de QHRP (archivo \texttt{src/qhrp\_figure3\_4/src/quantum\_hrp.py}), donde se define el ansatz usado para calcular estados, matrices de densidad promedio y distancias de Frobenius.
+    \item \textbf{Nivel didáctico/figura:} notebook de la Figura 1, que construye el circuito de referencia de seis qubits y permite visualizar su estructura (capas de codificación y entrelazamiento de ejemplo).
+    \item \textbf{Nivel experimental/pipeline:} módulo principal de QHRP (archivo \texttt{src/qhrp\_figure3\_4/src/quantum\_hrp.py}), donde se define el ansatz usado para calcular estados, matrices de densidad promedio y distancias de Frobenius.
 \end{itemize}
 
 La trazabilidad queda garantizada porque el notebook documenta la arquitectura de referencia y el módulo del pipeline experimental implementa la configuración efectivamente utilizada en todos los resultados reportados. De este modo, es posible reproducir tanto la figura de referencia como los resultados cuantitativos del trabajo bajo el pipeline experimental utilizado.
@@ -93,35 +166,31 @@ La trazabilidad queda garantizada porque el notebook documenta la arquitectura d
 
 Con el objetivo de facilitar la réplica de los resultados, el proyecto mantiene dos ficheros de dependencias:
 \begin{itemize}
-    \item \texttt{requirements\_paper\_qiskit.txt}: entorno compatible con la versión usada para reproducir el pipeline del paper.
-    \item \texttt{requirements\_act\_qiskit.txt}: entorno actualizado para pruebas recientes y extensiones.
+    \item \texttt{requirements\_paper\_qiskit.txt}: entorno compatible con la versión usada para reproducir el pipeline del paper.
+    \item \texttt{requirements\_act\_qiskit.txt}: entorno actualizado para pruebas recientes y extensiones.
 \end{itemize}
 
-En particular, se documentan explícitamente las librerías clave de cálculo científico,
-de visualización y de computación cuántica utilizadas en los experimentos.
+En particular, se documentan explícitamente las librerías clave de cálculo científico, de visualización y de computación cuántica utilizadas en los experimentos.
 
-Para cálculo científico se emplean \texttt{numpy}, \texttt{scipy} y \texttt{pandas};
-para visualización, \texttt{matplotlib} y \texttt{seaborn};
-y para computación cuántica, \texttt{qiskit} y módulos asociados.
+Para cálculo científico se emplean \texttt{numpy}, \texttt{scipy} y \texttt{pandas}; para visualización, \texttt{matplotlib} y \texttt{seaborn}; y para computación cuántica, \texttt{qiskit} y módulos asociados.
 
-Para ejecutar el código en backend real de IBM, es necesario instalar 
-\texttt{qiskit-ibm-runtime} y proporcionar credenciales válidas de IBM Quantum.
+Para ejecutar el código en backend real de IBM, es necesario instalar \texttt{qiskit-ibm-runtime} y proporcionar credenciales válidas de IBM Quantum.
 
 La trazabilidad experimental se apoya en la separación entre:
 \begin{itemize}
-    \item Notebook principal de resultados y figuras metodológicas.
-    \item Notebook independiente para prueba en hardware real (sin alterar el flujo principal).
-    \item Módulo específico de hardware cuántico, separado del módulo de simulación.
+    \item Notebook principal de resultados y figuras metodológicas.
+    \item Notebook independiente para prueba en hardware real (sin alterar el flujo principal).
+    \item Módulo específico de hardware cuántico, separado del módulo de simulación.
 \end{itemize}
 
-Esta organización permite distinguir con claridad resultados en simulación ideal, resultados en ejecución hardware y resultados de comparación con el paper, reduciendo ambiguedades en la interpretación.
+Esta organización permite distinguir con claridad resultados en simulación ideal, resultados en ejecución hardware y resultados de comparación con el paper, reduciendo ambigüedades en la interpretación.
 
-\subsection{Cálculo de distancias y estructura jerárquica}
+\subsection{Cálculo de distancias, estructura jerárquica y asignación de pesos}
 \label{sec:calculo_distancias_estructura}
 
 Una vez obtenidas las matrices densidad promedio, se calcula la distancia de Frobenius entre todos los pares de activos. Estas distancias se almacenan en una matriz simétrica $D$.
 
-El orden de los activos se determina mediante técnicas de clustering jerárquico utilizando el método de enlace simple (\textit{single linkage}), siguiendo estrictamente la metodología HRP original. Este procedimiento permite identificar la estructura de grupos de activos basándose en la proximidad de sus estados cuánticos.
+El orden de los activos se determina mediante técnicas de clustering jerárquico utilizando el método de enlace simple (\textit{single linkage}), siguiendo estrictamente la metodología HRP original. Este procedimiento permite identificar la estructura de grupos de activos basándose en la proximidad de sus estados cuánticos. Finalmente, el sistema ejecuta el algoritmo de bisección recursiva clásico sobre la matriz de covarianza para calcular los pesos definitivos de la cartera, garantizando así la paridad de riesgo basada en la nueva topología cuántica.
 
 \subsection{Generación de visualizaciones}
 \label{sec:generacion_visualizaciones}
@@ -137,12 +206,12 @@ Las visualizaciones se generan mediante mapas de calor (\texttt{seaborn}) que re
 Para cada activo se construye un conjunto de seis características que describen la distribución de sus retornos, lo cual es fundamental para el enfoque de densidad cuántica:
 
 \begin{itemize}
-    \item \textbf{Retorno diario:} El valor puntual del retorno en el tiempo $t$.
-    \item \textbf{Media móvil:} El retorno promedio en la ventana seleccionada.
-    \item \textbf{Volatilidad:} La desviación estándar de los retornos (segundo momento).
-    \item \textbf{Retorno acumulado:} El producto de los retornos en la ventana.
-    \item \textbf{Asimetría (Skewness):} Medida de la falta de simetría en la distribución (tercer momento).
-    \item \textbf{Curtosis (Kurtosis):} Medida del apuntamiento y riesgo de cola (cuarto momento).
+    \item \textbf{Retorno diario:} El valor puntual del retorno en el tiempo $t$.
+    \item \textbf{Media móvil:} El retorno promedio en la ventana seleccionada.
+    \item \textbf{Volatilidad:} La desviación estándar de los retornos (segundo momento).
+    \item \textbf{Retorno acumulado:} El producto de los retornos en la ventana.
+    \item \textbf{Asimetría (Skewness):} Medida de la falta de simetría en la distribución (tercer momento).
+    \item \textbf{Curtosis (Kurtosis):} Medida del apuntamiento y riesgo de cola (cuarto momento).
 \end{itemize}
 
 Estas características se calculan mediante ventanas móviles, permitiendo capturar dinámicas estadísticas de corto y medio plazo que los modelos de correlación simple suelen ignorar.
