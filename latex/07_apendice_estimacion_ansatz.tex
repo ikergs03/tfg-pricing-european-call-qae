@@ -6,115 +6,81 @@ En este apéndice se describe cómo se calcula $\theta$ a partir de los datos y 
 \section[Cálculo del vector angular theta]{Cálculo del vector angular $\theta$}
 \label{ap:calculo_theta}
 
-Cada dato de entrada $\mathbf{x} = (x_1, \dots, x_P)$ se convierte en un ángulo. Para ello, se aplica una normalización afín de cada componente respecto a sus valores extremos en la ventana temporal considerada:
+Cada dato de entrada $\mathbf{x} = (x_1, \dots, x_P)$ se convierte en un vector angular $\boldsymbol{\theta}$ mediante normalización afín respecto a extremos históricos:
 
-\begin{equation}[eq:theta_qhrp]{Regla de codificación angular por característica}
+\begin{equation}[eq:theta_qhrp]{Regla de codificación angular (global)}
 \theta_i =
 \begin{cases}
 \alpha\,\pi\,\dfrac{x_i - x_i^{\min}}{x_i^{\max} - x_i^{\min}}, & \text{si } x_i^{\max} > x_i^{\min}, \\
-0, & \text{si } x_i^{\max} = x_i^{\min},
+0, & \text{en caso contrario},
 \end{cases}
-\quad i = 1, \dots, P.
+\quad i = 1, \dots, P,
 \end{equation}
 
-Es decir:
-\begin{itemize}
-  \item Si la característica $i$ tiene variación, $\theta_i$ indica en qué punto del rango $[x_i^{\min}, x_i^{\max}]$ cae el valor actual.
-  \item Si no hay variación (es decir, $x_i^{\max} = x_i^{\min}$), se fija $\theta_i = 0$ para evitar problemas numéricos.
-\end{itemize}
+donde $\alpha$ es un parámetro global de escala (aquí $\alpha=2.0$), $x_i^{\min}$ y $x_i^{\max}$ son los extremos históricos de la característica $i$, y $\boldsymbol{\theta}\in[0,\alpha\pi]^P$. En el caso degenerado donde $x_i^{\max}=x_i^{\min}$, la característica colapsa su dimensión informativa y se fija $\theta_i=0$ para evitar división por cero.
 
-El parámetro $\alpha$ controla la amplitud de esos ángulos. Como el factor normalizado está en el intervalo $[0,1]$, se cumple que $\theta_i \in [0, \alpha\pi]$. Por tanto, al usar $\alpha = 2.0$, el rango angular queda en $[0, 2\pi]$.
-
-\subsection[Por qué se fija alpha 2.0]{Por qué se fija $\alpha = 2.0$}
-
-En este trabajo se escoge $\alpha = 2.0$ para que el rango angular de codificación sea exactamente $[0,2\pi]$, es decir, una vuelta completa.
-
-\subsection[Uso de máximos/mínimos históricos y dinámica de re-evaluación]{Uso de máximos y mínimos históricos y dinámica de re-evaluación}
+\subsection[Extremos históricos y re-evaluación temporal]{Extremos históricos y re-evaluación temporal}
 \label{ap:extremos_reevaluacion}
 
-En la Ecuación~\eqref{eq:theta_qhrp} los valores $x_i^{\min}$ y $x_i^{\max}$ determinan la normalización de cada característica. En la práctica estos extremos se obtienen a partir de un conjunto histórico de observaciones del activo; la elección de la ventana histórica y la política de actualización condicionan tanto la estabilidad de $\theta$ como la respuesta del sistema cuando se introducen nuevos datos.
+En la Ecuación~\eqref{eq:theta_qhrp}, los extremos $x_i^{\min}$ y $x_i^{\max}$ dependen de la ventana temporal activa $W(t)$. Esta dependencia temporal introduce un feature map no estacionario:
 
-Definimos una ventana temporal de referencia $W(t)$ que contiene los índices de tiempo usados para calcular los extremos en el instante $t$. Por ejemplo, para una ventana deslizante de longitud $W$:
+Definimos una ventana temporal de referencia $W(t)$ que contiene los índices de tiempo usados para calcular los extremos en el instante $t$. Los extremos evolucionan como:
+
 \begin{equation}[eq:extremos_historiales]{Extremos históricos de la ventana temporal}
 x_i^{\min}(t) = \min_{s\in W(t)} x_i(s),\qquad x_i^{\max}(t) = \max_{s\in W(t)} x_i(s).
 \end{equation}
 
-Con esta notación la fórmula de codificación angular en el tiempo $t$ queda:
+Con lo que la codificación angular en el tiempo $t$ queda:
+
 \begin{equation}[eq:theta_qhrp_t]{Codificación angular dependiente del tiempo}
 \theta_i(t)=\begin{cases}
 \alpha\pi\dfrac{x_i(t)-x_i^{\min}(t)}{x_i^{\max}(t)-x_i^{\min}(t)}, & x_i^{\max}(t)>x_i^{\min}(t),\\
-0,&x_i^{\max}(t)=x_i^{\min}(t).
+0, & \text{en caso contrario}.
 \end{cases}
 \end{equation}
 
-Nótese que esta dependencia temporal induce un feature map no estacionario, ya que la transformación $x\mapsto\theta(t)$ varía con la ventana $W(t)$.
+Esta dependencia temporal induce un feature map no estacionario donde la transformación $x\mapsto\theta(t)$ varía con la ventana $W(t)$, lo que implica que el embedding depende de la distribución empírica de los datos en cada ventana, no solo de la secuencia temporal. Esta es una decisión de diseño deliberada: el objetivo no es invariancia temporal sino adaptación del embedding a cambios de régimen de mercado. Políticas habituales de mantenimiento de $W(t)$ incluyen ventana deslizante (recomendada online) para respuesta rápida, ventana acumulada (offline) para estabilidad, o percentiles robustos para mitigar outliers.
 
-Políticas habituales de mantenimiento de extremos:
-\begin{itemize}
-\item Ventana deslizante (recomendado en operación online): se calcula min/max sobre los últimos $W$ valores; al entrar un nuevo dato se elimina el más antiguo. Esto garantiza respuesta a cambios estructurales recientes pero puede introducir variabilidad si $W$ es pequeño.
-\item Ventana acumulada (offline): min/max sobre todo el historial disponible. Es más estable pero no refleja cambios recientes en la dinámica del activo.
-\item Estadística robusta: usar percentiles (p. ej. 1%/99%) en lugar de min/max para mitigar outliers.
-\end{itemize}
 
-Comportamiento del sistema al re-evaluar con un nuevo valor:
-\begin{itemize}
-\item \textbf{Cálculo determinista de $\theta$:} Con la política de extremos elegida, la transformación $x\mapsto\theta$ es determinista y reproducible: dadas las mismas observaciones y la misma ventana, el vector $\theta(t)$ será siempre idéntico.
+\subsubsection{Actualización del estado cuántico}
+Una vez calculado $\theta(t)$ mediante Eq.~\eqref{eq:theta_qhrp_t}, se construye el circuito (Sección~\ref{ap:estructura_ansatz}) y se obtiene el estado cuántico $\rho(t)$. En ventanas fijas de tamaño $T$, la densidad media puede actualizarse incrementalmente:
 
-\item \textbf{Reconstrucción del estado cuántico:} Una vez calculado $\theta(t)$ se construye el circuito (ver el fragmento en el código fuente) y se obtiene la densidad $\rho(t)$ mediante la instrucción que implementa el ansatz. En la implementación actual el código realiza una recomputación completa de la densidad por observación.
-
-\item \textbf{Actualización de la densidad media:} En el caso de ventana fija de tamaño $T$, la actualización puede realizarse de forma incremental para ahorrar cómputo. Si $\bar{\rho}_{t-1}$ es el promedio en el instante previo y se desplaza la ventana eliminando $\rho_{\text{out}}$ e incorporando $\rho_{\text{in}}$:
-
-\begin{equation}[eq:densidad_media_incremental]{Actualización incremental de la densidad media}
-\bar{\rho}_t = \bar{\rho}_{t-1} + \frac{1}{T}\big(\rho_{\text{in}} - \rho_{\text{out}}\big).
+\begin{equation}[eq:densidad_media_incremental]{Actualización incremental de densidad}
+\bar{\rho}_t = \bar{\rho}_{t-1} + \frac{1}{T}\big(\rho_{\text{nuevo}} - \rho_{\text{descartado}}\big),
 \end{equation}
-Alternativamente se puede usar un promedio exponencial:
-\begin{equation}[eq:densidad_media_exponencial]{Actualización exponencial de la densidad media}
-\bar{\rho}_t = (1-\beta)\,\bar{\rho}_{t-1} + \beta\,\rho(t),\qquad \beta\in(0,1],
+
+o exponencialmente:
+
+\begin{equation}[eq:densidad_media_exponencial]{Actualización exponencial de densidad}
+\bar{\rho}_t = (1-\beta)\,\bar{\rho}_{t-1} + \beta\,\rho(t), \quad \beta\in(0,1],
 \end{equation}
-que simplifica la gestión de memoria y da más peso a las observaciones recientes.
-\end{itemize}
 
-Consideraciones numéricas y de robustez:
-\begin{itemize}
-\item Normalización: tras operaciones numéricas conviene asegurar que las densidades mantengan la traza unitaria y la positividad (corregir por truncado numérico si procede).
-\item Casos degenerados: cuando $x_i^{\max}=x_i^{\min}$ se fija $\theta_i=0$ (como en la Ecuación~\eqref{eq:theta_qhrp}) para evitar divisiones por cero.
-\item Trazabilidad: para reproducibilidad registre, para cada procesamiento, la política de extremos usada (tipo de ventana, $W$), la semilla aleatoria, el valor de $\alpha$ y las versiones de los scripts. Guardar el vector $\theta(t)$ y la matriz $\rho(t)$ en disco facilita auditoría y reanálisis.
-\end{itemize}
-
-En resumen, en un esquema online cada nueva observación se incorpora a la ventana temporal activa, se recalculan los extremos para obtener el vector angular mediante la Ecuación~\eqref{eq:theta_qhrp}, se reconstruye el estado cuántico asociado y se actualizan las magnitudes agregadas (por ejemplo, la densidad media y, cuando proceda, las distancias y el ordenamiento). La elección entre recomputar completamente o actualizar incrementalmente es una compensación entre coste computacional y simplicidad/consistencia estadística; la implementación en \texttt{src/qhrp\_figure3\_4/src/quantum\_hrp.py} realiza recomputaciones completas por observación, pero el esquema presentado permite alternativas eficientes para despliegues online.
+que reduce memoria y prioriza observaciones recientes.
 
 \section{Estructura del ansatz de codificación}
 \label{ap:estructura_ansatz}
 
-Una vez calculado $\theta$, el circuito sigue una secuencia de pasos repetidos: se aplican rotaciones para cargar información y, entre medias, se conectan qubits para mezclar esa información. La tabla siguiente resume el proceso.
+El circuito implementa codificación angular mediante bloques de rotación e entrelazamiento. La secuencia es:
 
 \begin{table}[Bloques del ansatz]{TB:ANSATZ_BLOQUES}{Secuencia de bloques del ansatz de codificación.}
-\begin{tabular}{p{2.0cm}p{3.5cm}p{8.0cm}}
-    \textbf{Bloque} & \textbf{Qué se aplica} & \textbf{Explicación breve} \\
+\begin{tabular}{p{2.5cm}p{10.0cm}}
+    \textbf{Bloque} & \textbf{Operación} \\
     \hline
-    B0 & Inicialización & Se aplica $H$ a todos los qubits para preparar un estado de superposición. \\
-    B1 & Primera carga & En cada qubit: $T$ y después $R_y(\theta_i)$. \\
-    B2 & Primera conexión & Se aplican compuertas iSWAP entre pares de qubits predefinidos. \\
-    B3 & Segunda carga & En cada qubit: $T$ y después $R_x(\theta_i)$. \\
-    B4 & Segunda conexión & Se repite el bloque iSWAP sobre los mismos pares. \\
-    B5 & Tercera carga & En cada qubit: $T$ y después $R_y(\theta_i)$. \\
-    B6 & Tercera conexión & Se vuelve a aplicar iSWAP sobre los mismos pares. \\
-    B7 & Cierre & En cada qubit: $T$ y $H$ para cerrar el ansatz y preparar el estado final. \\
+    Preparación (B0) & Aplicar $H$ a todos los qubits para preparar superposición uniforme. \\
+    Encoding (B1, B3, B5) & Aplicar $T$ seguido de rotaciones $R_y(\theta_i)$ o $R_x(\theta_i)$ en cada qubit, alternando ejes. \\
+    Entrelazamiento (B2, B4, B6) & Aplicar iSWAP entre pares predefinidos $(i,j)$ para mezclar información. \\
+    Cierre (B7) & Aplicar $T$ y $H$ en cada qubit para preparar readout. \\
 \end{tabular}
 \end{table}
 
-Los pares de qubits que se conectan en la implementación son:
+La alternancia de ejes de rotación entre bloques de encoding ($R_y$ en B1, $R_x$ en B3, $R_y$ en B5) introduce no conmutatividad efectiva en la codificación angular, incrementando la capacidad expresiva del ansatz mediante interacciones no lineales.
 
-\begin{equation}[eq:pairs_ansatz_qhrp]{Conjunto de pares de qubits entrelazados}
-\mathcal{E} = \{(0,1), (0,5), (2,4), (0,4), (2,3), (1,2)\}.
-\end{equation}
+Los pares de qubits entrelazados son $\mathcal{E} = \{(0,1), (0,5), (2,4), (0,4), (2,3), (1,2)\}$. Esta configuración define un grafo de interacción parcial que induce correlaciones no locales sin recurrir a conectividad completa, optimizando profundidad de circuito para dispositivos NISQ. Si el número de qubits es menor (p. ej. 5), un par $(i,j)$ solo se usa cuando ambos índices existen.
 
-Si se trabaja con menos qubits (por ejemplo, de 6 a 5), un par $(i,j)$ solo se usa cuando ambos índices existen en ese circuito.
-
-\section{Código de referencia en formato de listado}
+\section{Implementación en código}
 \label{ap:codigo_theta_ansatz}
 
-Para dejar claro de dónde sale todo, los Códigos~\ref{COD:THETA_QHRP} y~\ref{COD:ANSATZ_QHRP} muestran líneas del archivo original del proyecto (\texttt{src/qhrp\_figure3\_4/src/quantum\_hrp.py}): primero el cálculo de $\theta$ y después la construcción del circuito.
+Los fragmentos de referencia del cálculo de $\theta$ y construcción del circuito se incluyen a continuación, extraídos del archivo \texttt{src/qhrp\_figure3\_4/src/quantum\_hrp.py}:
 
 \PythonCode[COD:THETA_QHRP]{Calculo de theta en QHRP.}{Fragmento del archivo original con el cálculo de los ángulos theta.}{../../src/qhrp_figure3_4/src/quantum_hrp.py}{62}{70}{62}
 
