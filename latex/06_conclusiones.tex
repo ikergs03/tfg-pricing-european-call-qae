@@ -24,7 +24,7 @@ El experimento preliminar en hardware IBM (Tabla~\ref{TB:PILOTO_BC}, $N=40$, $P=
 \subsection{Implicaciones teóricas y prácticas}
 
 \subsubsection{La representación cuántica captura estructura jerárquica}
-La geometría de Hilbert de dimensión $2^P$ de la codificación cuántica es suficientemente expresiva para capturar relaciones de similitud que complementan correlación lineal. Extiende información lineal mediante transformación no lineal. Esto es consistente con el papel conocido de kernels cuánticos en machine learning, donde espacios de mayor dimensión permiten separar estructuras que en baja dimensión parecen entrecruzadas.
+La geometría de Hilbert de dimensión $2^P$ de la codificación cuántica es suficientemente expresiva para capturar relaciones de similitud que complementan correlación lineal. Extiende información lineal mediante transformación no lineal. Esto es consistente con el paper conocido de kernels cuánticos en machine learning, donde espacios de mayor dimensión permiten separar estructuras que en baja dimensión parecen entrecruzadas.
 
 \subsubsection{El trade-off rendimiento--coste es crítico}
 La Tabla~\ref{TB:COSTECOMPUTACIONAL} revela una brecha de ~32 minutos (QHRP) frente a menos de 0.1 segundos (HRP clásico) por ventana. Este factor de $2.8 \times 10^4$ es principalmente atribuible a la simulación clásica del estado cuántico, no al algoritmo HRP en sí. Para aplicaciones offline o análisis estratégico, este coste puede ser asumible. Para rebalanceos frecuentes en producción, la limitación actual es computacional, no de calidad de solución. La escalabilidad con el número de características presenta dinámicas exponenciales que sugieren que QHRP es más viable en problemas de tamaño pequeño a medio (20-50 activos).
