@@ -3,7 +3,7 @@
 
 \section{Experimentos}
 \label{sec:experimentos}
-En este capítulo se evalúa el comportamiento fuera de muestra de las estrategias construidas con la metodología del Capítulo~\ref{cap:analisis_metodologia}. El objetivo no es solo comparar rentabilidad ajustada por riesgo, sino también analizar el coste computacional de cada enfoque para estudiar el compromiso entre calidad de solución y tiempo de ejecución.
+En este capítulo se evalúa el comportamiento fuera de muestra de las estrategias construidas con la metodología del Capítulo~\ref{cap:metodologia}. El objetivo no es solo comparar rentabilidad ajustada por riesgo, sino también analizar el coste computacional de cada enfoque para estudiar el compromiso entre calidad de solución y tiempo de ejecución.
 
 \subsection{Diseño experimental}
 La evaluación se realiza mediante un esquema \textit{walk-forward} con ventanas deslizantes:
@@ -112,8 +112,8 @@ La lectura conjunta de las Tablas~\ref{TB:WALKFORWARD} y~\ref{TB:SHARPEAGREGADO}
 
 Además, la ventaja agregada de QHRP frente a Pesos Iguales es positiva pero moderada, por lo que su adopción práctica debe evaluarse junto al coste computacional reportado en la Tabla~\ref{TB:COSTECOMPUTACIONAL}.
 
-\subsection{Relación entre estructura visual y desempeño}
-La comparación de matrices ordenadas y no ordenadas del Capítulo~\ref{cap:analisis_metodologia} ayuda a interpretar por qué en algunos casos el panel derecho ofrece mejor desempeño que el izquierdo. El panel ordenado concentra activos similares en bloques cuasi-diagonales, lo que favorece particiones más coherentes en la bisección recursiva de HRP. En consecuencia, se reduce la mezcla de activos poco afines dentro de subcarteras y mejora la asignación de riesgo.
+\subsection{Relación entre estructura visual y desempeño} //REVISAR si es capítulo metodología
+La comparación de matrices ordenadas y no ordenadas del Capítulo~\ref{cap:metodologia} ayuda a interpretar por qué en algunos casos el panel derecho ofrece mejor desempeño que el izquierdo. El panel ordenado concentra activos similares en bloques cuasi-diagonales, lo que favorece particiones más coherentes en la bisección recursiva de HRP. En consecuencia, se reduce la mezcla de activos poco afines dentro de subcarteras y mejora la asignación de riesgo.
 
 No obstante, esta relación no es determinista: una estructura visual más definida no garantiza necesariamente un mejor rendimiento financiero. Sin embargo, sí indica que el método de distancia está capturando estructura jerárquica relevante y económicamente significativa.
 

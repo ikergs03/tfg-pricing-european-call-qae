@@ -1,6 +1,190 @@
 \chapter{Estado del Arte}
 \label{cap:estado_arte}
 
+\section{Fundamentos de computación cuántica}
+\label{sec:fundamentos_cuantica}
+
+En computación clásica, la unidad básica de información es el \textbf{bit}, que puede tomar únicamente uno de dos valores: 0 o 1. Todo cálculo clásico se reduce, en última instancia, a operaciones sobre secuencias de bits. La computación cuántica, en cambio, se basa en una unidad de información diferente, el \textbf{qubit}, cuyas propiedades se derivan de la mecánica cuántica y permiten formas de procesamiento sin análogo clásico.
+
+\subsection{El qubit y la superposición de estados}
+\label{subsec:qubit_superposicion}
+
+Un qubit es un sistema cuántico de dos niveles. A diferencia de un bit clásico, que se encuentra necesariamente en el estado 0 o en el estado 1, un qubit puede existir en una \textbf{superposición lineal} de ambos estados base. Matemáticamente, el estado general de un qubit se escribe como:
+
+\begin{equation}[eq:qubit]{Estado general de un qubit}
+\ket{\psi} = \alpha \ket{0} + \beta \ket{1},
+\end{equation}
+
+donde $\alpha$ y $\beta$ son números complejos denominados \textbf{amplitudes de probabilidad}, que satisfacen la condición de normalización:
+
+\begin{equation}[eq:normalizacion]{Condición de normalización del qubit}
+|\alpha|^2 + |\beta|^2 = 1.
+\end{equation}
+
+Esta condición garantiza que las probabilidades de obtener cada resultado al medir sumen la unidad: $|\alpha|^2$ representa la probabilidad de obtener 0 y $|\beta|^2$ la de 1. Como $\alpha$ y $\beta$ son complejos, el estado codifica además información de fase relativa, esencial para los algoritmos cuánticos; la superposición no implica que el qubit "esté en ambos estados a la vez" en sentido clásico, sino que no tiene un valor definido hasta la medición.
+
+\begin{figure}[Esfera de Bloch]{FIG:BLOCHSPHERE}
+{Representación geométrica de un qubit en la esfera de Bloch.
+El polo norte corresponde al estado $\ket{0}$, el polo sur al estado $\ket{1}$,
+y cualquier punto de la superficie representa un estado puro de superposición
+$\ket{\psi} = \alpha\ket{0} + \beta\ket{1}$. Los ángulos $\theta$ y $\phi$
+parametrizan la amplitud y la fase relativa del estado.}
+		\image{7cm}{}{bloch-sphere}
+\end{figure}
+
+\subsection{Representación en la esfera de Bloch}
+\label{subsec:esfera_bloch}
+
+El estado de un qubit admite una representación geométrica intuitiva conocida como la \textbf{esfera de Bloch}. Dado que la fase global del estado no es observable, el estado de la ecuación~\eqref{eq:qubit} puede reescribirse utilizando dos parámetros angulares $\theta \in [0, \pi]$ y $\phi \in [0, 2\pi)$:
+
+\begin{equation}[eq:bloch]{Parametrización del qubit en la esfera de Bloch}
+\ket{\psi} = \cos\frac{\theta}{2}\,\ket{0} + e^{i\phi}\sin\frac{\theta}{2}\,\ket{1}.
+\end{equation}
+
+En esta representación, cada estado puro del qubit corresponde a un punto en la superficie de una esfera unitaria. El polo norte ($\theta = 0$) representa el estado $\ket{0}$, el polo sur ($\theta = \pi$) el estado $\ket{1}$, y los puntos del ecuador representan superposiciones con igual probabilidad de medir 0 o 1, diferenciándose únicamente en la fase relativa $\phi$.
+
+La esfera de Bloch constituye una herramienta conceptual fundamental para visualizar el efecto de las puertas cuánticas, que se corresponden con rotaciones sobre los distintos ejes de la esfera. El estado físico pertenece al espacio proyectivo complejo, puesto que la fase global no es observable y no altera las probabilidades de medida.
+
+\subsection{Espacio de Hilbert y sistemas de múltiples qubits}
+\label{subsec:espacio_hilbert}
+
+El estado de un qubit vive en un espacio vectorial complejo de dimensión 2, denominado \textbf{espacio de Hilbert} $\mathcal{H} = \mathbb{C}^2$. Cuando se consideran sistemas de múltiples qubits, el espacio de estados se construye mediante el \textbf{producto tensorial} de los espacios individuales:
+
+\begin{equation}[eq:producto_tensorial]{Espacio de Hilbert de un sistema de n qubits}
+\mathcal{H}_n = \underbrace{\mathbb{C}^2 \otimes \mathbb{C}^2 \otimes \cdots \otimes \mathbb{C}^2}_{n \text{ veces}} = \mathbb{C}^{2^n}.
+\end{equation}
+
+Esto significa que un sistema de $n$ qubits habita un espacio de dimensión $2^n$. El crecimiento es \textbf{exponencial}: mientras que 1 qubit vive en un espacio de dimensión 2, un sistema de 6 qubits reside en un espacio de $2^6 = 64$ dimensiones. Esta propiedad es precisamente la que se explota en este trabajo: las 6 características financieras de cada activo se codifican en 6 qubits, lo que permite potencialmente representar las relaciones entre estas características en un espacio de 64 dimensiones y proporciona un espacio de representación más expresivo, capaz de capturar correlaciones complejas que serían difíciles de modelar clásicamente.
+
+El estado general de un sistema de $n$ qubits se escribe como:
+
+\begin{equation}[eq:estadonqubits]{Estado general de un sistema de n qubits}
+\ket{\psi} = \sum_{k=0}^{2^{n} - 1} {\alpha}_{k} \ket{k}, \quad \text{con} \quad \sum_{k=0}^{2^{n} - 1} |{\alpha}_{k}|^{2} = 1,
+\end{equation}
+
+donde cada $\ket{k}$ denota un estado de la base computacional (por ejemplo, $\ket{000}, \ket{001}, \ldots, \ket{111}$ para 3 qubits). El hecho de que un sistema de $n$ qubits pueda existir en una superposición de $2^n$ estados base simultáneamente constituye la base del llamado \textbf{paralelismo cuántico}: una operación cuántica actúa sobre todos los componentes de la superposición de forma simultánea.
+
+\subsection{Entrelazamiento cuántico}
+\label{subsec:entrelazamiento}
+
+El entrelazamiento es un fenómeno exclusivamente cuántico que surge cuando el estado de un sistema de múltiples qubits no puede descomponerse como producto de estados individuales. Un ejemplo de estado entrelazado es el estado de Bell:
+
+\begin{equation}[eq:bell]{Estado de Bell Phi mas}
+\ket{\Phi^+} = \frac{1}{\sqrt{2}}\left(\ket{00} + \ket{11}\right).
+\end{equation}
+
+En este estado, los dos qubits están correlacionados de forma que al medir uno de ellos, el resultado del otro queda inmediatamente determinado, independientemente de la distancia que los separe. Esta correlación no tiene análogo clásico y constituye un recurso computacional fundamental.
+
+En el contexto de los circuitos cuánticos, el entrelazamiento se genera mediante puertas que actúan sobre dos o más qubits, como la puerta CNOT. La capacidad de crear y manipular entrelazamiento es lo que permite a los circuitos cuánticos explorar correlaciones entre variables de forma más eficiente que los métodos clásicos.
+
+\begin{figure}[Estado de Bell]{FIG:ENTRELAZAMIENTO}
+{Circuito cuántico que genera el estado de Bell $\ket{\Phi^+}$.
+Se aplica una puerta Hadamard al primer qubit seguida de una puerta CNOT
+controlada por el primer qubit sobre el segundo.}
+		\image{8cm}{}{circuito-bell}
+\end{figure}
+
+\section{Circuitos cuánticos y puertas cuánticas}
+\label{sec:circuitos_puertas}
+
+Un ordenador cuántico procesa información mediante secuencias de operaciones sobre qubits. A diferencia de la programación clásica, donde las instrucciones se ejecutan de forma secuencial sobre registros de bits, la computación cuántica se estructura en forma de \textbf{circuitos cuánticos}. Un circuito cuántico describe la evolución de un conjunto de qubits desde un estado inicial hasta un estado final, mediante la aplicación sucesiva de operaciones unitarias.
+
+Las operaciones que se aplican a los qubits se denominan \textbf{puertas cuánticas} y son el equivalente cuántico de las puertas lógicas clásicas (AND, OR, NOT, etc.). Sin embargo, existe una diferencia fundamental: todas las puertas cuánticas son \textbf{transformaciones unitarias}, lo que implica que son \textbf{reversibles}. Formalmente, una puerta cuántica que actúa sobre $n$ qubits es una matriz unitaria $U \in \mathbb{C}^{2^n \times 2^n}$ que satisface:
+
+\begin{equation}[eq:unitaria]{Condición de unitariedad de una puerta cuántica}
+U U^\dagger = U^\dagger U = I,
+\end{equation}
+
+donde $U^\dagger$ denota la conjugada transpuesta de $U$ e $I$ es la matriz identidad. Esta propiedad de reversibilidad es una consecuencia directa de la mecánica cuántica: la evolución temporal de un sistema cuántico cerrado es siempre unitaria.
+
+\subsection{Puertas de un solo qubit}
+\label{subsec:puertasunqubit}
+
+Las puertas de un solo qubit transforman el estado de un qubit individual. Geométricamente, corresponden a rotaciones en la esfera de Bloch. Las más relevantes para este trabajo son:
+
+\paragraph{Puerta Hadamard ($H$).} Crea una superposición equiprobable a partir de un estado base. Su acción sobre los estados base es:
+
+\begin{equation}{Acción de la puerta Hadamard sobre la base computacional}
+H\ket{0} = \frac{1}{\sqrt{2}}(\ket{0} + \ket{1}), \quad
+H\ket{1} = \frac{1}{\sqrt{2}}(\ket{0} - \ket{1}).
+\end{equation}
+
+La matriz asociada es:
+
+\begin{equation}{Matriz de la puerta Hadamard}
+H = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}.
+\end{equation}
+
+\paragraph{Puertas de rotación ($R_x$, $R_y$, $R_z$).} Realizan rotaciones de un ángulo $\theta$ alrededor de los ejes $x$, $y$ y $z$ de la esfera de Bloch, respectivamente. Sus matrices son:
+
+\begin{equation}{Matrices de rotación Rx Ry y Rz}
+R_x(\theta) = \begin{pmatrix} \cos\frac{\theta}{2} & -i\sin\frac{\theta}{2} \\ -i\sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}, \quad
+R_y(\theta) = \begin{pmatrix} \cos\frac{\theta}{2} & -\sin\frac{\theta}{2} \\ \sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}, \quad
+R_z(\theta) = \begin{pmatrix} e^{-i\theta/2} & 0 \\ 0 & e^{i\theta/2} \end{pmatrix}.
+\end{equation}
+
+Estas puertas parametrizadas son especialmente relevantes en los circuitos cuánticos variacionales, donde los ángulos de rotación se determinan a partir de los datos de entrada. En el circuito empleado en este trabajo, las rotaciones $R_y$ y $R_x$ se utilizan para codificar las características financieras de cada activo en el ansatz empleado por QHRP. Aunque se incluye $R_z$ por completitud teórica, en este trabajo se emplean principalmente $R_y$ y $R_x$ en el diseño práctico del ansatz.
+
+\paragraph{Puerta de fase ($P$).} Aplica una fase relativa $\phi$ al estado $\ket{1}$ sin modificar $\ket{0}$:
+
+\begin{equation}{Matriz de la puerta de fase}
+P(\phi) = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\phi} \end{pmatrix}.
+\end{equation}
+
+\subsection{Puertas de múltiples qubits}
+\label{subsec:puertasmultiplesqubits}
+
+Las puertas que actúan sobre dos o más qubits permiten generar entrelazamiento entre los qubits del sistema. La más fundamental es:
+
+\paragraph{Puerta CNOT (Controlled-NOT).} Actúa sobre dos qubits: un qubit de \textit{control} y un qubit \textit{objetivo}. Invierte el estado del qubit objetivo si y solo si el qubit de control se encuentra en el estado $\ket{1}$:
+
+\begin{equation}{Matriz de la puerta CNOT}
+\text{CNOT} = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{pmatrix}.
+\end{equation}
+
+La puerta CNOT es esencial para crear entrelazamiento. Por ejemplo, aplicar una puerta Hadamard seguida de CNOT a dos qubits inicializados en $\ket{00}$ produce el estado de Bell de la ecuación~\eqref{eq:bell}.
+
+\paragraph{Puerta CZ (Controlled-Z).} Aplica una fase de $-1$ al estado del qubit objetivo cuando el qubit de control está en $\ket{1}$:
+
+\begin{equation}{Matriz de la puerta CZ}
+\text{CZ} = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & -1 \end{pmatrix}.
+\end{equation}
+
+Las puertas de dos qubits, combinadas con las puertas de un qubit, forman un conjunto \textbf{universal}: cualquier operación unitaria sobre $n$ qubits puede descomponerse en una secuencia de puertas de uno y dos qubits.
+
+\subsection{Medición}
+\label{subsec:medicion}
+
+Al final de un circuito cuántico se realiza la \textbf{medición}, que constituye la interfaz entre el mundo cuántico y el clásico. Al medir un qubit en superposición, el estado cuántico colapsa a uno de los estados base y se obtiene un resultado clásico (0 o 1). Para un qubit en el estado $\ket{\psi}=\alpha\ket{0}+\beta\ket{1}$ se tiene
+
+\begin{equation}{Probabilidades de medición de un qubit}
+P(0)=|\alpha|^2, \quad P(1)=|\beta|^2,
+\end{equation}
+
+y, en un sistema de $n$ qubits, la probabilidad de observar una cadena $k$ viene dada por $|{\alpha}_k|^2$ (ec.~\eqref{eq:estadonqubits}). Dada la naturaleza probabilística de la medición, en la práctica el circuito se ejecuta múltiples veces (\textit{shots}) y se analiza la distribución de resultados para estimar cantidades de interés. En el contexto de QHRP se repite la ejecución del circuito y se agregan las estimaciones estadísticas para construir medidas de correlación entre activos, aprovechando el espacio de 64 dimensiones resultante de codificar 6 características por activo.
+
+\section{Comparación entre computación clásica y cuántica}
+\label{sec:comparacionclasicacuantica}
+
+La siguiente tabla resume las diferencias conceptuales fundamentales entre ambos paradigmas de computación:
+
+\begin{table}[Comparación clásica vs cuántica]{TB:COMPARACION}{Comparación entre computación clásica y cuántica.}
+	\begin{tabular}{lll}
+		\hline
+		\textbf{Concepto} & \textbf{Clásico} & \textbf{Cuántico} \\
+		\hline \hline
+		Unidad de información & Bit (0 o 1) & Qubit ($\alpha\ket{0} + \beta\ket{1}$) \\
+		Estado & Determinista & Superposición probabilística \\
+		Espacio de estados ($n$ unidades) & $n$ dimensiones & $2^n$ dimensiones \\
+		Operaciones & Puertas lógicas (irreversibles) & Puertas unitarias (reversibles) \\
+		Correlación entre unidades & Independencia & Entrelazamiento \\
+		Resultado & Determinista & Probabilístico (requiere medición) \\
+		\hline
+	\end{tabular}
+\end{table}
+
+El aspecto más relevante para este trabajo es el crecimiento exponencial del espacio de estados. Mientras que representar 6 variables clásicas requiere un vector en $\mathbb{R}^6$, codificar esas mismas 6 variables en qubits permite trabajar en un espacio de Hilbert de dimensión $2^6 = 64$. Este espacio exponencialmente mayor proporciona un espacio de representación más expresivo de las relaciones entre las características financieras de cada activo, lo que constituye la motivación principal del enfoque cuántico adoptado en este trabajo.
+
 
 \section{Método Clásico}
 \label{sec:metodo_clasico}
