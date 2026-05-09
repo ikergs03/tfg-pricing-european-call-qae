@@ -54,7 +54,7 @@ El estado de un qubit vive en un espacio vectorial complejo de dimensión 2, den
 \mathcal{H}_n = \underbrace{\mathbb{C}^2 \otimes \mathbb{C}^2 \otimes \cdots \otimes \mathbb{C}^2}_{n \text{ veces}} = \mathbb{C}^{2^n}.
 \end{equation}
 
-Esto significa que un sistema de $n$ qubits habita un espacio de dimensión $2^n$. El crecimiento es \textbf{exponencial}: mientras que 1 qubit vive en un espacio de dimensión 2, un sistema de 6 qubits reside en un espacio de $2^6 = 64$ dimensiones. Esta propiedad es precisamente la que se explota en este trabajo: las 6 características financieras de cada activo se codifican en 6 qubits, lo que permite potencialmente representar las relaciones entre estas características en un espacio de 64 dimensiones y proporciona un espacio de representación más expresivo, capaz de capturar correlaciones complejas que serían difíciles de modelar clásicamente.
+Esto significa que un sistema de $n$ qubits habita un espacio de dimensión $2^n$. El crecimiento es \textbf{exponencial}: mientras que un qubit vive en un espacio de dimensión 2, sistemas de varios qubits residen en espacios de dimensión exponencial. En aplicaciones de modelado financiero y aprendizaje cuántico, esta propiedad permite codificar características de los activos en estados cuánticos y operar en espacios de representación capaces de capturar correlaciones complejas que serían difíciles de modelar mediante relaciones lineales clásicas.
 
 El estado general de un sistema de $n$ qubits se escribe como:
 
@@ -84,8 +84,17 @@ controlada por el primer qubit sobre el segundo.}
 		\image{8cm}{}{circuito-bell}
 \end{figure}
 
-\section{Circuitos cuánticos y puertas cuánticas}
-\label{sec:circuitos_puertas}
+
+\section{Modelos de computación cuántica y circuitos}
+\label{sec:modelos_computacion_cuantica}
+Al margen del contenido precedente, es importante situar brevemente los dos grandes paradigmas de la computación cuántica que aparecen en la literatura aplicada a problemas de optimización y representación de datos. Por un lado está la computación basada en circuitos (gate-based), que modela la evolución mediante secuencias de puertas unitarias y constituye el enfoque predominante en buena parte de la literatura de aprendizaje cuántico y finanzas cuánticas. Por otro lado existe el paradigma de quantum annealing, utilizado por plataformas como D-Wave, que busca soluciones minimizando Hamiltonianos mediante procesos de relajación cuántica; este método ha sido aplicado con éxito en problemas de optimización combinatoria, pero presenta diferencias conceptuales y técnicas (hardware y formulación de problemas) que lo distinguen claramente del enfoque gate-based. En los métodos vinculados a QHRP, el marco de circuitos resulta natural por su uso de mapas de características cuánticos, ansatz variacionales y medidas derivadas de matrices de densidad.
+
+En este contexto, un \textbf{ansatz} se define formalmente como una estructura parametrizada de circuito cuántico diseñada para representar estados cuánticos útiles para resolver un problema concreto. La elección del ansatz determina la capacidad expresiva del modelo y el compromiso entre profundidad del circuito, entrenabilidad y robustez frente al ruido.
+
+De forma complementaria, los \textbf{mapas de características cuánticos} son transformaciones que codifican datos clásicos en estados cuánticos mediante puertas parametrizadas por las variables de entrada. Esta codificación induce una noción de similitud en el espacio de Hilbert (por ejemplo, a través de fidelidades o productos internos), base de los quantum kernels y de diversas métricas cuánticas empleadas para comparar observaciones.
+
+\subsection{Circuitos cuánticos y puertas cuánticas}
+\label{subsec:circuitos_puertas}
 
 Un ordenador cuántico procesa información mediante secuencias de operaciones sobre qubits. A diferencia de la programación clásica, donde las instrucciones se ejecutan de forma secuencial sobre registros de bits, la computación cuántica se estructura en forma de \textbf{circuitos cuánticos}. Un circuito cuántico describe la evolución de un conjunto de qubits desde un estado inicial hasta un estado final, mediante la aplicación sucesiva de operaciones unitarias.
 
@@ -97,10 +106,10 @@ U U^\dagger = U^\dagger U = I,
 
 donde $U^\dagger$ denota la conjugada transpuesta de $U$ e $I$ es la matriz identidad. Esta propiedad de reversibilidad es una consecuencia directa de la mecánica cuántica: la evolución temporal de un sistema cuántico cerrado es siempre unitaria.
 
-\subsection{Puertas de un solo qubit}
-\label{subsec:puertasunqubit}
+\subsubsection{Puertas de un solo qubit}
+\label{subsubsec:puertasunqubit}
 
-Las puertas de un solo qubit transforman el estado de un qubit individual. Geométricamente, corresponden a rotaciones en la esfera de Bloch. Las más relevantes para este trabajo son:
+Las puertas de un solo qubit transforman el estado de un qubit individual. Geométricamente, corresponden a rotaciones en la esfera de Bloch. Entre las más relevantes en circuitos variacionales se encuentran:
 
 \paragraph{Puerta Hadamard ($H$).} Crea una superposición equiprobable a partir de un estado base. Su acción sobre los estados base es:
 
@@ -123,7 +132,7 @@ R_y(\theta) = \begin{pmatrix} \cos\frac{\theta}{2} & -\sin\frac{\theta}{2} \\ \s
 R_z(\theta) = \begin{pmatrix} e^{-i\theta/2} & 0 \\ 0 & e^{i\theta/2} \end{pmatrix}.
 \end{equation}
 
-Estas puertas parametrizadas son especialmente relevantes en los circuitos cuánticos variacionales, donde los ángulos de rotación se determinan a partir de los datos de entrada. En el circuito empleado en este trabajo, las rotaciones $R_y$ y $R_x$ se utilizan para codificar las características financieras de cada activo en el ansatz empleado por QHRP. Aunque se incluye $R_z$ por completitud teórica, en este trabajo se emplean principalmente $R_y$ y $R_x$ en el diseño práctico del ansatz.
+Estas puertas parametrizadas son especialmente relevantes en los circuitos cuánticos variacionales, donde los ángulos de rotación se determinan a partir de los datos de entrada. En aplicaciones de codificación de datos, las rotaciones $R_y$ y $R_x$ se emplean con frecuencia para construir mapas de características y ansatz por su implementación directa y su buena capacidad de representación. Aunque se incluye $R_z$ por completitud teórica, en muchas implementaciones prácticas predominan $R_y$ y $R_x$ en el diseño del circuito.
 
 \paragraph{Puerta de fase ($P$).} Aplica una fase relativa $\phi$ al estado $\ket{1}$ sin modificar $\ket{0}$:
 
@@ -131,8 +140,8 @@ Estas puertas parametrizadas son especialmente relevantes en los circuitos cuán
 P(\phi) = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\phi} \end{pmatrix}.
 \end{equation}
 
-\subsection{Puertas de múltiples qubits}
-\label{subsec:puertasmultiplesqubits}
+\subsubsection{Puertas de múltiples qubits}
+\label{subsubsec:puertasmultiplesqubits}
 
 Las puertas que actúan sobre dos o más qubits permiten generar entrelazamiento entre los qubits del sistema. La más fundamental es:
 
@@ -152,8 +161,8 @@ La puerta CNOT es esencial para crear entrelazamiento. Por ejemplo, aplicar una 
 
 Las puertas de dos qubits, combinadas con las puertas de un qubit, forman un conjunto \textbf{universal}: cualquier operación unitaria sobre $n$ qubits puede descomponerse en una secuencia de puertas de uno y dos qubits.
 
-\subsection{Medición}
-\label{subsec:medicion}
+\subsubsection{Medición}
+\label{subsubsec:medicion}
 
 Al final de un circuito cuántico se realiza la \textbf{medición}, que constituye la interfaz entre el mundo cuántico y el clásico. Al medir un qubit en superposición, el estado cuántico colapsa a uno de los estados base y se obtiene un resultado clásico (0 o 1). Para un qubit en el estado $\ket{\psi}=\alpha\ket{0}+\beta\ket{1}$ se tiene
 
@@ -161,10 +170,10 @@ Al final de un circuito cuántico se realiza la \textbf{medición}, que constitu
 P(0)=|\alpha|^2, \quad P(1)=|\beta|^2,
 \end{equation}
 
-y, en un sistema de $n$ qubits, la probabilidad de observar una cadena $k$ viene dada por $|{\alpha}_k|^2$ (ec.~\eqref{eq:estadonqubits}). Dada la naturaleza probabilística de la medición, en la práctica el circuito se ejecuta múltiples veces (\textit{shots}) y se analiza la distribución de resultados para estimar cantidades de interés. En el contexto de QHRP se repite la ejecución del circuito y se agregan las estimaciones estadísticas para construir medidas de correlación entre activos, aprovechando el espacio de 64 dimensiones resultante de codificar 6 características por activo.
+y, en un sistema de $n$ qubits, la probabilidad de observar una cadena $k$ viene dada por $|{\alpha}_k|^2$ (ec.~\eqref{eq:estadonqubits}). Dada la naturaleza probabilística de la medición, en la práctica el circuito se ejecuta múltiples veces (\textit{shots}) y se analiza la distribución de resultados para estimar cantidades de interés. Este procedimiento resulta especialmente útil cuando la información de los activos se ha codificado previamente en estados cuánticos y se desea extraer medidas agregadas a partir de la distribución observada.
 
-\section{Comparación entre computación clásica y cuántica}
-\label{sec:comparacionclasicacuantica}
+\subsection{Comparación entre computación clásica y cuántica}
+\label{subsec:comparacionclasicacuantica}
 
 La siguiente tabla resume las diferencias conceptuales fundamentales entre ambos paradigmas de computación:
 
@@ -174,7 +183,7 @@ La siguiente tabla resume las diferencias conceptuales fundamentales entre ambos
 		\textbf{Concepto} & \textbf{Clásico} & \textbf{Cuántico} \\
 		\hline \hline
 		Unidad de información & Bit (0 o 1) & Qubit ($\alpha\ket{0} + \beta\ket{1}$) \\
-		Estado & Determinista & Superposición probabilística \\
+		Estado & Determinista & Superposición cuántica \\
 		Espacio de estados ($n$ unidades) & $n$ dimensiones & $2^n$ dimensiones \\
 		Operaciones & Puertas lógicas (irreversibles) & Puertas unitarias (reversibles) \\
 		Correlación entre unidades & Independencia & Entrelazamiento \\
@@ -183,26 +192,24 @@ La siguiente tabla resume las diferencias conceptuales fundamentales entre ambos
 	\end{tabular}
 \end{table}
 
-El aspecto más relevante para este trabajo es el crecimiento exponencial del espacio de estados. Mientras que representar 6 variables clásicas requiere un vector en $\mathbb{R}^6$, codificar esas mismas 6 variables en qubits permite trabajar en un espacio de Hilbert de dimensión $2^6 = 64$. Este espacio exponencialmente mayor proporciona un espacio de representación más expresivo de las relaciones entre las características financieras de cada activo, lo que constituye la motivación principal del enfoque cuántico adoptado en este trabajo.
+Un aspecto especialmente relevante en este contexto es el crecimiento exponencial del espacio de estados. Mientras que representar variables clásicas requiere espacios vectoriales de dimensión lineal, codificarlas en qubits permite trabajar en espacios de Hilbert de dimensión exponencial $2^n$. Este crecimiento supone una ventaja conceptual para la representación de relaciones complejas y motiva el estudio de métricas cuánticas para la comparación entre activos.
 
+\section{Métodos clásicos en optimización de carteras}
+\label{sec:metodos_clasicos_optimizacion}
 
-\section{Método Clásico}
-\label{sec:metodo_clasico}
-El análisis y construcción de carteras eficientes ha sido un área central en las finanzas 
-cuantitativas desde la propuesta original de Markowitz\cite{markowitz1952}, donde se formalizó la 
-optimización media–varianza como problema fundamental de selección de activos. A pesar de su 
-relevancia histórica, numerosos autores han demostrado que estos modelos clásicos sufren 
-importantes limitaciones en entornos reales: inestabilidad numérica, sensibilidad extrema al ruido 
-en las estimaciones de la matriz de covarianza y falta de robustez en presencia de correlaciones 
-cambiantes. López de Prado muestra en \cite{lopezdeprado2019frontier} que estos métodos suelen 
-amplificar el error de estimación en la matriz de covarianza en lugar de mitigarlo, lo que provoca 
-carteras inestables y poco realistas. Estas limitaciones motivan el desarrollo de enfoques 
-alternativos como HRP.
+\subsection{Optimización clásica de carteras y problemas de robustez}
+\label{subsec:optimizacion_clasica_robustez}
+El análisis y la construcción de carteras eficientes constituyen un pilar de las finanzas cuantitativas desde la formulación clásica de Markowitz\cite{markowitz1952}, que formaliza la optimización media–varianza como problema central en la selección de activos. En este marco, los pesos óptimos de una cartera se obtienen resolviendo un problema cuadrático sujeto a restricciones lineales, y la matriz de covarianza de los rendimientos desempeña un papel central, pues codifica la dependencia entre activos y determina la curva de frontera eficiente.
 
-\section{HRP Clásico y Variantes No-Cuánticas}
-\label{sec:hrp_clas_y_variantes_no_cuanticas}
-Estas limitaciones dieron lugar al desarrollo de alternativas más robustas como el Hierarchical 
-Risk Parity (HRP)\cite{lopezdeprado2016hrp}. HRP evita la inversión de la matriz de covarianza y 
+Sin embargo, en aplicaciones reales la estimación y el uso de la matriz de covarianza afrontan dificultades significativas. En muestras finitas la covarianza empírica puede ser ruidosa y presentar problemas de condicionamiento; la inversión directa de una matriz mal condicionada magnifica errores numéricos, de modo que pequeñas variaciones en las entradas de la matriz producen grandes cambios en los pesos óptimos. Además, las series financieras exhiben correlaciones no estacionarias: la estructura de dependencia entre activos puede variar en el tiempo por cambios en el régimen de mercado, volatilidad y eventos exógenos. En periodos de estrés o crisis financieras, dichas correlaciones tienden además a incrementarse de forma simultánea entre múltiples activos, reduciendo la diversificación efectiva y deteriorando la estabilidad de las soluciones. En conjunto, estas fuentes de error se amplifican en la optimización media–varianza por la dependencia explícita de la inversa de la covarianza, provocando inestabilidad y sobreajuste en estimaciones basadas en datos históricos limitados.
+
+Por estas razones se han desarrollado múltiples estrategias para robustecer la optimización clásica: regularización de la matriz de covarianza, técnicas de shrinkage, modelos de factores y métodos basados en reescalado o restricciones adicionales. No obstante, muchas de estas correcciones requieren supuestos adicionales o introducen nuevos parámetros que deben calibrarse.
+
+En este contexto surge Hierarchical Risk Parity (HRP)\cite{lopezdeprado2016hrp} como una alternativa que evita la inversión explícita de la matriz de covarianza. HRP construye una estructura jerárquica de activos mediante clustering sobre una métrica derivada de la correlación y reparte el riesgo mediante una bisección recursiva que genera carteras más estables y menos sensibles al ruido en las estimaciones. La motivación de HRP es explícita: explorar representaciones estructuradas de las relaciones entre activos que reduzcan la dependencia de estimaciones directas e inestables de la covarianza empírica.
+
+\subsection{HRP Clásico y Variantes No-Cuánticas}
+\label{subsec:hrp_clas_y_variantes_no_cuanticas}
+HRP evita la inversión de la matriz de covarianza y 
 utiliza en cambio técnicas de clustering jerárquico para organizar los activos según distancias 
 obtenidas a partir de la correlación. Una vez construida la estructura jerárquica, el riesgo se 
 reparte mediante un procedimiento de asignación por bisección recursiva (recursive bisection) que 
@@ -213,8 +220,8 @@ Desde su presentación, numerosas extensiones se han propuesto, incluyendo varia
 restricciones\cite{pfitzinger2019constrainedhrp}, métricas de distancia alternativas 
 \cite{salasmolina2025hrpdist} y métodos no lineales basados en kernels.
 
-\section{KHRP}
-\label{sec:khrp}
+\subsection{KHRP}
+\label{subsec:khrp}
 Una de estas extensiones es el Kernel HRP (KHRP), que sustituye la correlación estándar por 
 distancias derivadas de embeddings no lineales mediante kernels (p. ej. RBF) y métricas inducidas 
 como MMD. El uso de kernels permite capturar relaciones complejas entre activos que la correlación 
@@ -223,50 +230,53 @@ la elección de la métrica de distancia influye de forma decisiva en la estruct
 HRP y en el rendimiento de la cartera\cite{salasmolina2025hrpdist}, lo que ha impulsado la búsqueda 
 de representaciones más expresivas.
 
-\section{Computación Cuántica en Finanzas}
-\label{sec:computacion_cuantica_en_finanzas}
-Paralelamente, la investigación en computación cuántica aplicada a las finanzas ha experimentado un 
-crecimiento significativo en los últimos años. Los primeros trabajos, como \cite{rebentrost2018quantumportfolio}, 
-demostraron que algoritmos cuánticos como Quantum Amplitude Estimation (QAE) permiten acelerar 
-ciertos cálculos financieros, especialmente los basados en Monte Carlo. Egger y Woerner 
-\cite{egger2019creditrisk} aplicaron estas técnicas al análisis de riesgo de crédito siguiendo el 
-marco de Basilea II, estableciendo así una conexión directa entre computación cuántica y 
-metodologías cuantitativas tradicionales. Otros avances, como Real-QAE \cite{manzano2023rqae} o el 
-análisis del sesgo en QAE iterativa \cite{miyamoto2024iqae}, han contribuido a disponer de 
-herramientas cuánticas más estables y adecuadas para hardware NISQ. Una revisión sistemática de 
-este campo puede encontrarse en \cite{naik2023quantumfinance}. En general, estos trabajos se 
-centran en tareas de estimación y valoración financiera, más que en la estructuración jerárquica 
-de carteras del tipo HRP.
-Sin embargo, la mayoría de estos enfoques se encuentran limitados por las restricciones del 
-hardware NISQ, incluyendo ruido, baja fidelidad y número reducido de qubits.
 
-\section{QHRP}
-\label{sec:qhrp}
+\section{Computación cuántica en finanzas y QHRP}
+\label{sec:computacion_cuantica_finanzas_qhrp}
+
+\subsection{Computación Cuántica en Finanzas}
+\label{subsec:computacion_cuantica_en_finanzas}
+La investigación en computación cuántica aplicada a las finanzas ha crecido notablemente y hoy abarca varias líneas complementarias. Una primera línea se centra en la aceleración de cálculos de estimación y valoración financiera mediante algoritmos como Quantum Amplitude Estimation (QAE) y sus variantes, que pueden mejorar la eficiencia de métodos basados en Monte Carlo\cite{rebentrost2018quantumportfolio,egger2019creditrisk,manzano2023rqae,miyamoto2024iqae}. Una segunda línea, particularmente relevante para los métodos jerárquicos de cartera, explora representaciones y algoritmos para capturar relaciones complejas entre activos.
+
+En esta segunda línea de trabajo destacan varios enfoques relevantes para la construcción y evaluación de carteras. Una primera familia de métodos se basa en el uso de ansatz variacionales y algoritmos híbridos tipo VQE (Variational Quantum Eigensolver). VQE proporciona un marco práctico en hardware NISQ para optimizar parámetros de circuitos parametrizados mediante la interacción con un optimizador clásico. En finanzas, los ansatz variacionales pueden emplearse para formular problemas de optimización de carteras o para aprender transformaciones de los datos que mejoren la discriminación entre activos.
+
+De forma complementaria, los quantum kernels y mapas de características cuánticos ofrecen un mecanismo para capturar no linealidades. Mediante circuitos parametrizados que mapean vectores de características clásicas a estados cuánticos, se define un kernel cuántico a partir de la fidelidad o del producto interno entre estados. Estos kernels pueden ser usados en modelos kernel-based (SVM, clustering, etc.) y resultan particularmente atractivos cuando la estructura de los datos financieros exige mayor capacidad de representación que los kernels clásicos convencionales.
+
+Asimismo, existen formulaciones de optimización cuántica y problemas QUBO que traducen problemas de asignación de pesos o selección de activos a problemas cuadráticos binarios susceptibles de tratamiento mediante técnicas de annealing o heurísticas cuánticas, aportando una perspectiva distinta a la formulación continua clásica.
+
+En paralelo, una línea de investigación particularmente relevante para QHRP se centra en representaciones mediante matrices de densidad y medidas de similitud cuántica. Varios trabajos proponen codificar observaciones financieras como estados (puros o mixtos) y emplear métricas cuánticas (fidelidad, distancia de Bures, distancia de traza (\textit{trace distance})) para definir medidas de similitud o distancia entre activos. En lugar de depender exclusivamente de la correlación lineal, se construyen matrices de distancia en el espacio de Hilbert que pueden revelar relaciones no lineales y estructurales entre activos.
+
+Es importante subrayar que, aunque muchas de estas propuestas han mostrado resultados prometedores en estudios teóricos y experimentos con simuladores, la aplicación práctica en hardware real se ve condicionada por las limitaciones de los dispositivos NISQ (ruido, número limitado de qubits y fidelidad). Por ello, gran parte de la validación empírica y comparativa se realiza en simulación, y los trabajos recientes suelen combinar experimentos en simuladores con pruebas exploratorias en dispositivos de pocos qubits cuando es posible\cite{naik2023quantumfinance}.
+
+Finalmente, trabajos recientes que conectan explícitamente estas ideas con la construcción jerárquica de carteras son especialmente relevantes para esta línea de investigación. En particular, Arian et al.\cite{arian2025qhrp} proponen un método —QHRP— que integra mapas de características cuánticos para codificar atributos de activos, construye matrices de densidad promedio y deriva distancias cuánticas que alimentan un procedimiento jerárquico análogo al HRP clásico, mostrando mejoras en estabilidad y robustez en los escenarios analizados.
+
+\subsection{QHRP}
+\label{subsec:qhrp}
 En este contexto surge el trabajo más reciente de Arian et al.\cite{arian2025qhrp}, Quantum Hierarchical Risk 
 Parity (QHRP), que constituye el punto central del presente Trabajo de Fin de Grado. QHRP 
 reinterpreta la etapa fundamental del HRP, la construcción de la matriz de distancias entre 
-activos, a través de un enfoque cuántico basado en feature maps cuánticos y matrices de densidad 
-promedio. En lugar de medir correlaciones o distancias clásicas, QHRP calcula distancias cuánticas 
-obtenidas del grado de similitud entre estados cuánticos codificados a partir de los datos 
-financieros. Este enfoque proporciona una métrica definida en el espacio de estados cuánticos (espacio de Hilbert), 
-con mayor capacidad para capturar relaciones no lineales entre activos que sus alternativas clásicas. 
-Según los experimentos reportados por los autores y en 
-los escenarios considerados, QHRP supera a HRP clásico y KHRP en términos de estabilidad, Sharpe 
-ratio y robustez, utilizando datos reales de mercado. Otro aspecto clave del trabajo es que 
-proporciona un repositorio GitHub con código completamente reproducible, lo que facilita su 
-implementación y la experimentación práctica.
+activos, a través de un enfoque cuántico basado en mapas de características cuánticos y matrices de densidad 
+promedio. En la práctica, cada activo se codifica en un estado cuántico y la similitud entre activos 
+se evalúa a partir de sus matrices de densidad asociadas; sobre esa base pueden definirse medidas 
+como la fidelidad, la distancia de Bures o la distancia de traza, que sustituyen a la correlación 
+clásica como criterio de proximidad. Este planteamiento proporciona una métrica definida en el espacio 
+de estados cuánticos capaz de captar relaciones no lineales entre activos con mayor flexibilidad que 
+las alternativas clásicas. Según los experimentos reportados por los autores y en los escenarios 
+considerados, QHRP supera a HRP clásico y KHRP en términos de estabilidad, Sharpe ratio y robustez, 
+utilizando datos reales de mercado. Otro aspecto clave del trabajo es que proporciona un repositorio 
+GitHub con código completamente reproducible, lo que facilita su implementación y la experimentación 
+práctica.
 
 \section{Herramientas Cuánticas Utilizadas}
 \label{sec:herramientas_cuanticas_utilizadas}
-Por último, dado que QHRP se basa en técnicas cuánticas inspiradas en el modelo gate-based, 
-la herramienta de referencia para la construcción y simulación de circuitos cuánticos es Qiskit. 
-Esta librería de IBM se ha convertido en el estándar de facto para la programación cuántica debido 
-a su acceso directo a hardware real, su comunidad activa y la amplia documentación disponible. En 
-particular, el ecosistema incluye simuladores como Aer, que resultan fundamentales para validar y 
-comparar circuitos en condiciones controladas antes de su ejecución en dispositivos físicos. 
-Qiskit, además, incluye módulos específicos para finanzas que implementan algoritmos como QAE o 
-modelos de riesgo crediticio, constituyendo un entorno adecuado para familiarizarse con los 
-conceptos necesarios para comprender QHRP en el contexto actual de hardware NISQ. Por este motivo, 
-y siguiendo la práctica habitual en la comunidad, se utilizará Qiskit como entorno de simulación y 
-experimentación cuántica en este proyecto.
+Por último, dado que QHRP se basa en técnicas cuánticas inspiradas en el modelo gate-based, Qiskit es una herramienta de referencia para la construcción y simulación de circuitos cuánticos. Esta librería de IBM ofrece un ecosistema maduro para diseñar, simular y ejecutar circuitos, incluyendo simuladores de alto rendimiento (Aer) y conectividad con la infraestructura IBM Quantum para acceso a dispositivos reales. Qiskit dispone además de módulos y ejemplos aplicados a finanzas que facilitan la reproducción y adaptación de experimentos.
 
+Más allá de Qiskit, existen otros proveedores y entornos relevantes que conviene mencionar de forma descriptiva. IBM Quantum ofrece acceso a distintas familias de qubits superconductores; IonQ y Honeywell/Quantinuum emplean trampas de iones; Rigetti trabaja también con hardware superconducting; y Microsoft Azure Quantum actúa como capa de acceso a varios proveedores y backends. Estas plataformas difieren en arquitectura, número de qubits, conectividad física y perfiles de ruido.
+
+La distinción entre simuladores clásicos y hardware real es esencial en la investigación aplicada: los simuladores permiten validar diseños y realizar comparativas controladas a escala, mientras que el hardware real proporciona una evaluación experimental bajo restricciones NISQ. Debido a las limitaciones actuales —ruido, número limitado de qubits, tiempos de coherencia finitos y costes de acceso—, gran parte de la literatura realiza la mayoría de sus experimentos en simulación y recurre al hardware real para pruebas complementarias y validación empírica en pequeña escala. En paralelo, el paradigma de annealing, representado de forma destacada por D-Wave, sigue una lógica de optimización distinta a los circuitos gate-based y se emplea principalmente en formulaciones específicas de tipo Ising/QUBO.
+
+Cabe mencionar que, más allá del ecosistema internacional, existen iniciativas españolas relevantes en el desarrollo de tecnologías y soluciones cuánticas. El Barcelona Supercomputing Center (BSC) y empresas como Kilimanjaro Quantum Tech contribuyen al avance de la computación cuántica desde perspectivas de hardware, software y aplicaciones prácticas.
+
+En este tipo de estudios se prioriza con frecuencia el uso de simuladores para el desarrollo y la evaluación, con ejecución selectiva en dispositivos reales cuando se requieren comprobaciones experimentales. Se explicitan habitualmente las condiciones experimentales (simulador vs dispositivo, número de shots, técnicas de mitigación de error), y los experimentos de pequeña escala con pocos qubits resultan actualmente viables para validar hipótesis y contrastar tendencias bajo condiciones NISQ.
+
+En conjunto, la literatura reciente muestra un creciente interés por el uso de representaciones cuánticas y métricas definidas en el espacio de Hilbert para problemas financieros. Sin embargo, muchas propuestas continúan evaluándose principalmente en simulación y existe todavía un margen amplio para estudiar la estabilidad, reproducibilidad y comportamiento práctico de estos métodos bajo distintas configuraciones experimentales. Esta línea de trabajo es la que contextualiza el desarrollo de QHRP frente a enfoques clásicos como HRP y KHRP.
