@@ -18,11 +18,8 @@ El uso de una representación multivariante permite superar las limitaciones del
 \section{Normalización de características}
 \label{sec:normalizacion_caracteristicas}
 
-El preprocesamiento visible en el pipeline se centra en la normalización angular del feature map; no se documenta aquí una estandarización previa adicional a las seis características ya calculadas.
-
-\begin{itemize}
-\item \textbf{Normalización angular (feature map):} Dentro del circuito cuántico, cada característica $x_i$ se normaliza mediante mapeo afín respecto a sus extremos históricos en una ventana temporal activa, transformándose en un ángulo $\theta_i \in [0, \alpha\pi]$ (véase Apéndice~\ref{ap:estimacion_ansatz}). Esta normalización min-max es específica del feature map y permite que el embedding cuántico se adapte a cambios de régimen de mercado.
-\end{itemize}
+La adecuación de las características financieras al dominio cuántico se realiza mediante una normalización angular integrada en el \textit{feature map}. Cada una de las seis variables $x_i$ se transforma, mediante un mapeo afín de tipo min-max respecto a sus extremos históricos en la ventana temporal activa, en un ángulo $\theta_i \in [0, \alpha\pi]$ (véase Apéndice~\ref{ap:estimacion_ansatz}).
+Este procedimiento permite que el \textit{embedding} cuántico se adapte dinámicamente a los cambios de régimen de mercado sin requerir estandarizaciones clásicas adicionales. Al mapear los datos al rango operativo de las puertas de rotación, se asegura que la información quede codificada correctamente en el espacio de Hilbert para su posterior análisis.
 
 
 \section{Representación cuántica mediante matrices de densidad}
@@ -40,7 +37,7 @@ Posteriormente, para cada activo se construye una matriz de densidad promedio de
 \lvert\psi(\mathbf{x}_i^t)\rangle\langle\psi(\mathbf{x}_i^t)\rvert.
 \end{equation}
 
-Esta formulación permite capturar la distribución completa de las observaciones del activo en el espacio de Hilbert, proporcionando una representación más informativa que los estadísticos clásicos de segundo orden.
+Esta representación mediante matrices de densidad permite que el modelo sea sensible no solo al valor medio de las características, sino a la distribución completa y estructura de la nube de puntos en el espacio de Hilbert. Al tratar al activo como un estado mixto de sus observaciones históricas, se proporciona una representación más informativa que los estadísticos clásicos de segundo orden, capturando dependencias que la correlación lineal ignora.
 
 El feature map puede incluir capas de entrelazamiento mediante puertas de dos qubits (en este caso iSWAP), lo que permite capturar dependencias no lineales en el espacio de Hilbert.
 
@@ -106,5 +103,32 @@ El proceso integral de análisis se estructura en las siguientes etapas:
     \item \textbf{Métrica de distancia:} Cálculo de la matriz de distancias de Frobenius entre pares de activos (Sección \ref{sec:metrica_distancia_cuantica}).
     \item \textbf{Clustering jerárquico:} Aplicación del criterio jerárquico correspondiente y extracción del ordenamiento del dendrograma (Sección \ref{sec:construccion_ordenamiento}).
     \item \textbf{Asignación de pesos (Recursive Bisection):} Distribución de capital entre los activos siguiendo la estructura jerárquica obtenida. Se aplica el algoritmo de bisección recursiva clásico sobre la matriz de covarianza para garantizar la paridad de riesgo basada en la nueva topología cuántica.
-    \item \textbf{Evaluación y Análisis:} Comparación de las carteras resultantes (pesos, estabilidad y métricas de riesgo) entre los enfoques clásicos y cuánticos.
+    \item \textbf{Evaluación y Análisis:} Comparación de las carteras resultantes mediante métricas de rendimiento ajustado por riesgo (Sharpe, PSR y MinTRL) entre los enfoques clásicos y cuánticos.
 \end{enumerate}
+
+\section{Métricas de evaluación del rendimiento}
+\label{sec:metricas_evaluacion}
+Para evaluar y comparar el rendimiento de las estrategias de inversión resultantes de los enfoques clásico y cuántico, se emplearán métricas estandarizadas que consideran tanto la rentabilidad obtenida como el riesgo asumido.
+
+\subsection{Sharpe Ratio}
+\label{subsec:sharpe_ratio}
+El \textbf{Sharpe Ratio} es la métrica de referencia en la industria para medir el rendimiento de una cartera ajustado por riesgo. Representa el exceso de retorno por unidad de desviación estándar (volatilidad).
+
+\begin{equation}
+    SR = \frac{E[R_p - R_f]}{\sigma_p}
+\end{equation}
+
+Donde $R_p$ es el retorno de la cartera, $R_f$ es la tasa libre de riesgo y $\sigma_p$ es la volatilidad de los retornos de la cartera.
+
+\begin{itemize}
+    \item \textbf{Interpretación:} Un Sharpe Ratio más alto indica una gestión más eficiente, sugiriendo que la rentabilidad no es fruto de una exposición excesiva al riesgo.
+    \item \textbf{Limitaciones:} Su principal debilidad es que asume que los retornos siguen una distribución normal. En mercados financieros, donde existen eventos de "cola ancha" (\textit{fat tails}) y asimetría, el Sharpe Ratio puede subestimar el riesgo real.
+\end{itemize}
+
+\subsection{Probabilistic Sharpe Ratio (PSR)}
+\label{subsec:probabilistic_sharpe_ratio}
+Dado que el Sharpe Ratio es una estimación estadística sujeta a ruido, se utilizará el \textbf{Probabilistic Sharpe Ratio (PSR)} para evaluar la significación de los resultados. El PSR corrige los sesgos introducidos por la asimetría (\textit{skewness}) y la curtosis de la distribución de retornos, calculando la probabilidad de que el Sharpe Ratio observado sea superior a un valor de referencia (benchmark). Esta métrica es fundamental en este trabajo para validar si la mejora del QHRP es estadísticamente robusta o producto del azar.
+
+\subsection{Otras métricas de riesgo}
+\label{subsec:otras_metricas_riesgo}
+Complementariamente, se incorpora la métrica \textbf{MinTRL} (\textit{Minimum Track Record Length}) para las variantes HRP, como indicador de robustez estadística de la señal. En esta implementación, el análisis cuantitativo principal de rendimiento se centra en Sharpe y PSR; la estabilidad se interpreta a partir de la dispersión interventana de dichas métricas.
