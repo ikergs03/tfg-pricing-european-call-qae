@@ -344,11 +344,213 @@ El crecimiento con el número de características presenta dinámicas distintas 
 
 Esto sugiere que la aplicabilidad práctica del enfoque cuántico está actualmente limitada por restricciones computacionales más que por su calidad financiera.
 
+
+\subsection{Análisis de segmentación jerárquica: coherencia económica de los grupos}
+\label{subsec:analisis_segmentacion}
+
+Más allá del rendimiento financiero, resulta de interés evaluar si los métodos HRP (clásico y cuántico) identifican grupos de activos que tengan sentido económico y sean estables frente a cambios de régimen. Este análisis complementa la evaluación de Sharpe, ya que una segmentación coherente constituye una base sólida para una optimización de carteras robusta.
+
+\subsubsection{Metodología: pureza y entropía sectorial}
+\label{subsubsec:metodologia_pureza_entropia}
+
+Para cada grupo detectado por la jerarquía, se calculan dos métricas de composición:
+
+\begin{itemize}
+	\item \textbf{Purity (Pureza):} fracción de activos que pertenecen al sector dominante en ese grupo. Un valor cercano a 1.0 indica homogeneidad sectorial; valores bajos (~0.13) indican mezcla de múltiples sectores.
+	
+	\item \textbf{Entropy (Entropía de Shannon):} medida de diversidad sectorial dentro del grupo. $H = -\sum_i p_i \log p_i$, donde $p_i$ es la proporción de activos en el sector $i$. Valores cercanos a 0 indican uniformidad; valores altos (~0.86) indican que los activos están distribuidos uniformemente entre muchos sectores.
+\end{itemize}
+
+Estas métricas permiten evaluar objetivamente si un método agrupa activos que comparten características macroeconómicas o si, por el contrario, mezcla indiscriminadamente factores de riesgo distintos.
+
+\subsubsection{HRP Clásico: Grupo principal más grande}
+\label{subsubsec:hrp_clasico_megagrupo}
+
+En el análisis del HRP clásico, el grupo más grande contiene 147 activos (de 169 totales), con las siguientes características:
+
+\begin{table}[HRP Clásico — Mega-grupo]{TB:HRP_CLASSICAL_MAIN}{Estadísticas del grupo principal en HRP Clásico (\(N=147\)).}
+\begin{tabular}{lc}
+\hline
+\textbf{Métrica} & \textbf{Valor} \\
+\hline
+Tamaño & 147 activos \\
+Sectores distintos & 23 \\
+Purity & 0.129 \\
+Entropy & 0.866 \\
+Sector dominante & Consumer Cyclical (12.9\%) \\
+\hline
+\end{tabular}
+\end{table}
+
+Este resultado revela un problema fundamental de la ordenación clásica: agrupa un ``mega-grupo'' heterogéneo que contiene simultáneamente:
+
+\begin{itemize}
+	\item \textbf{Renta variable:} acciones tecnológicas (AAPL, MSFT, NVDA), industriales (BA, CAT, GE), retail (TJX, HD, NKE) y financieras (JPM, WFC, BAC).
+	
+	\item \textbf{Renta fija:} 15 ETFs de bonos (AGG, BND, TLT, LQD, SCHZ, VCIT...) que, en condiciones normales, están negativamente correlacionados con la renta variable.
+	
+	\item \textbf{Commodities:} 9 ETFs de materias primas (DBC, PDBC, GLD, SLV, COPX...) que actúan como coberturas ante inflación.
+\end{itemize}
+
+Aunque la métrica de correlación histórica agrupa estos activos bajo un único dendograma, sus dinámicas económicas son heterogéneas. Cuando ocurren shocks de mercado o cambios de régimen, las correlaciones convergen hacia 1.0 (risk-off) o divergen según el factor de riesgo prevalente (ej., rentas variables vs. bonos). En consecuencia, este mega-grupo es frágil para optimización de carteras, ya que su estructura interna puede colapsar rápidamente ante perturbaciones externas.
+
+\subsubsection{HRP Clásico: Grupo crypto}
+\label{subsubsec:hrp_clasico_crypto}
+
+En contraste, el grupo de criptomonedas (9 activos: BTC, ETH, SOL, BNB, AVAX, XRP, DOGE, ADA, DOT) presenta estadísticas ideales:
+
+\begin{table}[HRP Clásico — Grupo Crypto]{TB:HRP_CLASSICAL_CRYPTO}{Estadísticas del grupo crypto en HRP Clásico.}
+\begin{tabular}{lc}
+\hline
+\textbf{Métrica} & \textbf{Valor} \\
+\hline
+Tamaño & 9 activos \\
+Sectores distintos & 1 \\
+Purity & 1.000 \\
+Entropy & 0.000 \\
+Sector dominante & Crypto (100\%) \\
+\hline
+\end{tabular}
+\end{table}
+
+Este grupo homogéneo indica que los métodos jerárquicos sí pueden captar agrupamientos significativos cuando existe un factor de riesgo uniforme y dominante. El grupo crypto actúa como validación de que una Purity~=~1.0 es alcanzable y económicamente interpretable.
+
+\subsubsection{QHRP Cuántico: Grupo de Diversificadores/Coberturas}
+\label{subsubsec:qhrp_diversificadores}
+
+En el análisis del QHRP, uno de los grupos principales (31 activos) corresponde a una familia de diversificadores y coberturas:
+
+\begin{table}[QHRP — Grupo de Diversificadores]{TB:QHRP_DIVERSIFIERS}{Estadísticas del grupo de Diversificadores en QHRP (\(N=31\)).}
+\begin{tabular}{lc}
+\hline
+\textbf{Métrica} & \textbf{Valor} \\
+\hline
+Tamaño & 31 activos \\
+Sectores distintos & 12 \\
+Purity & 0.290 \\
+Entropy & 0.845 \\
+Sector dominante & Fixed Income (29\%) \\
+\hline
+\end{tabular}
+\end{table}
+
+A diferencia del mega-grupo del HRP clásico, este grupo está explícitamente compuesto por activos que tienen funciones de cobertura complementarias:
+
+\begin{itemize}
+	\item \textbf{Renta fija (9 activos):} AGG, BND, TLT, LQD, SCHZ, VCIT... Actúan como ancla de valor cuando caen las rentas variables (comportamiento anti-cíclico).
+	
+	\item \textbf{Materias primas (7 activos):} DBC, PDBC, GLD, SLV, COPX, KRBN, PPLT. Generan retornos desacoplados de rentas variables y actúan como coberturas ante inflación.
+	
+	\item \textbf{Renta variable de mercados emergentes:} VWO, EEM, IEMG. Valuaciones bajas y correlación reducida con rentas variables estadounidenses; tienden a recuperarse primero tras ventas de pánico.
+	
+	\item \textbf{Outliers estratégicos:} PFE (farmacéutico), BA (defensa), AMD (semiconductores), OXY y SLB (oil E\&P). Cada uno tiene dinámicas propias que los hacen útiles en carteras diversificadas.
+\end{itemize}
+
+La clave es que QHRP no agrupa por similitud sectorial estricta, sino por \textbf{coherencia de factores de riesgo}. Estos 31 activos co-varían internamente como bloque de ``protección contra rentas variables'', pero se mueven opuestamente a la renta variable pura en escenarios de estrés.
+
+\subsubsection{QHRP Cuántico: Grupo de Renta Variable Pura}
+\label{subsubsec:qhrp_equities}
+
+Otro grupo principal de QHRP (25 activos) agrupa la renta variable sistemática:
+
+\begin{table}[QHRP — Grupo de Renta Variable]{TB:QHRP_EQUITIES}{Estadísticas del grupo de Renta Variable en QHRP (\(N=25\)).}
+\begin{tabular}{lc}
+\hline
+\textbf{Métrica} & \textbf{Valor} \\
+\hline
+Tamaño & 25 activos \\
+Sectores distintos & Múltiples \\
+Pureza (\textit{Purity}) & 0.400 \\
+Entropía (\textit{Entropy}) & 0.825 \\
+Sector dominante & ETFs de renta variable diversificada (40\%) \\
+\hline
+\end{tabular}
+\end{table}
+
+Este grupo contiene:
+
+\begin{itemize}
+	\item \textbf{ETFs amplios (14 activos):} SPY, VOO, IVV, QQQ, VTI, EFA, VEA, SPDW, SCHF, ACWI... Con correlaciones ~0.99 entre ellos.
+	
+	\item \textbf{Acciones individuales (11 activos):} XOM, VLO (Energy), PEP (Consumer), MCD (Retail), HON, HD, BYDDF, XLB, XLK, XLV, XLU, XLY... Componentes de los índices que replican los ETFs amplios.
+	
+	\item \textbf{Materias primas de riesgo sistémico (2 activos):} USO, UGA (oil, agriculture). En el período analizado, mostraron correlación positiva con rentas variables.
+\end{itemize}
+
+El factor común es que todos responden al ``apetito por riesgo global'': cuando sube la tolerancia al riesgo, todos suben; cuando hay pánico, todos caen. La Purity más baja (0.40) es aceptable porque el grupo está definido por su respuesta macroeconómica común, no por homogeneidad sectorial.
+
+\subsubsection{Análisis multinivel: Granularidad creciente}
+\label{subsubsec:analisis_multinivel}
+
+El análisis jerárquico permite refinar la segmentación en tres niveles:
+
+\begin{table}[Segmentación multinivel en QHRP]{TB:QHRP_MULTILEVEL}{Estadísticas de segmentación a diferentes niveles de granularidad en QHRP.}
+\begin{tabular}{lccccc}
+\hline
+\textbf{Nivel} & \textbf{Grupos} & \textbf{Tamaño medio} & \textbf{Purity media} & \textbf{Entropy media} & \textbf{Sectores/grupo} \\
+\hline
+MAIN & 11 & 15.3 & 0.273 & 0.941 & 8.3 \\
+SUB & 31 & 5.3 & 0.448 & 0.863 & 3.7 \\
+MICRO & 45 & 3.2 & 0.504 & 0.859 & 2.6 \\
+\hline
+\end{tabular}
+\end{table}
+
+La tendencia es clara: a medida que aumenta la granularidad (de MAIN a SUB a MICRO), los grupos se vuelven más homogéneos (Purity sube de 0.27 a 0.50), más compactos (tamaño baja de 15.3 a 3.2) y más especializados (sectores/grupo baja de 8.3 a 2.6). 
+
+Esta progresión indica que la segmentación cuántica es jerárquicamente coherente: cada refinamiento agrega información significativa sin contradecir el nivel anterior. En contraste, si la segmentación fuera arbitraria, la Purity no mostraría mejora consistente al refinar la granularidad.
+
+\subsubsection{Comparación: ¿Cuántico vs. Clásico?}
+\label{subsubsec:comparacion_quantico_clasico}
+La tabla comparativa resume las diferencias conceptuales:
+
+\begin{table}[Comparación de segmentación: HRP Clásico vs QHRP]{TB:COMP_SEGMENTATION}{Resumen de diferencias en estrategia de segmentación.}
+\begin{tabular}{lll}
+\hline
+\textbf{Aspecto} & \textbf{HRP Clásico} & \textbf{QHRP Cuántico} \\
+\hline
+Base matemática & Correlación lineal & Matrices de densidad cuántica \\
+\hline
+Criterio de agrupamiento & Similitud en dendograma & Similitud en firmas cuánticas \\
+\hline
+Grupo más grande & 147 activos, Purity=0.129 & 31 activos, Purity=0.290 \\
+\hline
+Interpretación & Mezcla heterogénea & Familias de factores de riesgo \\
+\hline
+Robustez ante shocks & Baja (correlaciones colapsan) & Alta (factores de riesgo coherentes) \\
+\hline
+Rendimiento financiero & Sharpe agregado: 1.238 & Sharpe agregado: 1.444 \\
+\hline
+\end{tabular}
+\end{table}
+
+El resultado principal es que QHRP no solo obtiene mejor rendimiento financiero (Sharpe 1.444 vs. 1.238), sino que además produce segmentaciones más económicamente coherentes. Los grupos cuánticos responden a factores de riesgo interpretables (rentas variables, diversificadores, coberturas), mientras que los clásicos mezclan indiscriminadamente activos con dinámicas opuestas.
+
+Esta coherencia sugiere que la representación cuántica está capturando estructura no lineal real de las dependencias entre activos, más allá de meras correlaciones de segundo orden.
+
+\subsubsection{Implicaciones para optimización y diversificación}
+\label{subsubsec:implicaciones_optimizacion_diversificacion}
+
+Una segmentación coherente tiene implicaciones prácticas significativas:
+
+\begin{enumerate}
+	\item \textbf{Asignación de riesgo más estable:} si cada grupo representa un factor de riesgo diferente, la ponderación dentro del grupo es más robusta a cambios de régimen que si el grupo es heterogéneo.
+	
+	\item \textbf{Identificación de coberturas reales:} el aislamiento de materias primas y renta fija como grupo aparte permite construir subcarteras con objetivos específicos (ej., cartera de riesgo con renta variable, cartera de coberturas con diversificadores).
+	
+	\item \textbf{Reducción de error de estimación:} estimar covarianzas dentro de un grupo de 5-6 activos coherentes produce matrices más estables que estimar dentro de un mega-grupo de 147 activos heterogéneos.
+\end{enumerate}
+
+En conclusión, el análisis de segmentación sugiere que la ventaja de QHRP frente a HRP clásico no solo es empírica (mejor Sharpe), sino también estructural (mejor coherencia económica). Esta coherencia constituye una razón adicional para preferir el enfoque cuántico en contextos donde la estabilidad de la segmentación es crítica.
+
 \subsection{Síntesis}
 Los resultados muestran que no existe un método universalmente dominante: 
 la elección depende del equilibrio deseado entre expresividad del modelo y coste computacional. 
 El enfoque cuántico aporta una representación más rica de dependencias no lineales; 
 el clásico aporta eficiencia extrema; y el kernel se sitúa como compromiso intermedio. 
-En consecuencia, la elección del método no es puramente técnica, sino dependiente del contexto operativo en el que se pretenda aplicar.
-Esta lectura conjunta (rendimiento + coste) es la base para la discusión final del capítulo de conclusiones.
+
+Adicionalmente, el análisis de segmentación revela que QHRP produce agrupamientos coherentes con factores económicos reales (diversificadores, renta variable pura, coberturas), mientras que HRP clásico tiende a crear mega-grupos heterogéneos. Esta coherencia estructural, combinada con el mejor rendimiento financiero (Sharpe agregado 1.444 vs. 1.238), sugiere que la representación cuántica captura estructura significativa que trasciende la correlación lineal.
+
+En consecuencia, la elección del método no es puramente técnica, sino dependiente del contexto operativo en el que se pretenda aplicar y del peso que se le dé a la interpretabilidad y robustez de la segmentación.
+Esta lectura conjunta (rendimiento + coste + coherencia estructural) es la base para la discusión final del capítulo de conclusiones.
 
