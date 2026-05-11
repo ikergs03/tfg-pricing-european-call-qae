@@ -5,53 +5,17 @@
 \label{sec:experimentos}
 En este capítulo se evalúa el comportamiento fuera de muestra de las estrategias construidas con la metodología del Capítulo~\ref{cap:metodologia}. El objetivo no es solo comparar rentabilidad ajustada por riesgo, sino también analizar el coste computacional de cada enfoque para estudiar el compromiso entre calidad de solución y tiempo de ejecución.
 
-\subsection{Diseño experimental}
-La evaluación se realiza mediante un esquema \textit{walk-forward} con ventanas deslizantes:
+\subsection{Marco Experimental}
 
-\begin{itemize}
-	\item Ventana de entrenamiento: 756 días de mercado (aprox. 3 años).
-	\item Ventana de test: 21 días (aprox. 1 mes).
-	\item Número de ventanas evaluadas: 18.
-\end{itemize}
+La evaluación se realiza mediante un esquema \textit{walk-forward} con ventanas deslizantes de 756 días (aprox. 3 años) para entrenamiento y 21 días (aprox. 1 mes) para test, evaluando 18 ventanas en total. En cada ventana, los pesos se estiman con datos de entrenamiento y se evalúan exclusivamente en el bloque temporal posterior, evitando fuga de información y reproduciendo un uso operativo realista.
 
-En cada ventana, los pesos se estiman con datos de entrenamiento y se evalúan exclusivamente en el bloque temporal posterior. Este protocolo evita fuga de información y reproduce un uso operativo realista.
+Se comparan cinco estrategias: \textbf{HRP Cuántico (QHRP)} (ordenación jerárquica a partir de distancias entre matrices de densidad); \textbf{HRP Clásico} (ordenación jerárquica basada en distancia de correlación); \textbf{HRP Kernel} (ordenación jerárquica basada en distancia MMD gaussiana); \textbf{Markowitz} (asignación proporcional al inverso de la varianza diagonal); y \textbf{Pesos Iguales (1/N)} (cartera equiponderada como línea base).
 
-\subsection{Métodos comparados}
-Se comparan cinco estrategias:
-
-\begin{itemize}
-	\item \textbf{HRP Cuántico (QHRP):} ordenación jerárquica a partir de distancias entre matrices densidad.
-	\item \textbf{HRP Clásico:} ordenación jerárquica basada en distancia de correlación.
-	\item \textbf{HRP Kernel:} ordenación jerárquica basada en distancia MMD gaussiana.
-	\item \textbf{Markowitz (varianza inversa):} asignación proporcional al inverso de la varianza diagonal.
-	\item \textbf{Pesos Iguales (1/N):} cartera equiponderada como línea base.
-\end{itemize}
-
-\subsection{Métricas de evaluación}
-Para cada método y cada ventana se computan:
-
-\begin{itemize}
-	\item \textbf{Sharpe ratio anualizado}, como medida principal de rendimiento ajustado por riesgo.
-	\item \textbf{PSR (Probabilistic Sharpe Ratio)}, para cuantificar la probabilidad de superar un Sharpe objetivo.
-	\item \textbf{MinTRL}, reportado para las variantes HRP como indicador de robustez estadística de la señal.
-\end{itemize}
-
-Adicionalmente, se agregan todos los retornos fuera de muestra por método para obtener un Sharpe global acumulado.
+Para cada método y cada ventana se computan: \textbf{Sharpe ratio anualizado} (medida principal de rendimiento ajustado por riesgo), \textbf{PSR (Probabilistic Sharpe Ratio)} (probabilidad de superar un Sharpe objetivo), y \textbf{MinTRL} (indicador de robustez estadística de la señal). Adicionalmente, se agregan todos los retornos fuera de muestra por método para obtener un Sharpe global acumulado.
 
 
 \section{Resultados}
 \label{sec:resultados}
-
-\subsection{Lectura de tablas y figuras}
-Las salidas se presentan en tres niveles complementarios:
-
-\begin{itemize}
-	\item \textbf{Tabla 1:} resume estadísticas por ventana (media y dispersión de Sharpe/PSR).
-	\item \textbf{Tabla 2:} resume el Sharpe agregado fuera de muestra para todo el horizonte.
-	\item \textbf{Tabla 3:} resume coste computacional por etapa y por método.
-\end{itemize}
-
-Las figuras asociadas (histogramas y barras) permiten interpretar la distribución de resultados, no solo su media.
 
 \begin{table}[Rendimiento walk-forward]{TB:WALKFORWARD}{Rendimiento walk-forward por ventana (18 ventanas).}
 \begin{tabular}{lccc}
@@ -83,7 +47,7 @@ Pesos Iguales & 1.3193 \\
 \end{tabular}
 \end{table}
 
-La Tabla~\ref{TB:SHARPEAGREGADO} revela que al concatenar todo el periodo fuera de muestra, QHRP queda primero (1.4441), lo que sugiere que su ventaja no depende de un mes aislado, sino de una mejor acumulación riesgo-retorno. Que Pesos Iguales sea ligeramente mejor en media por ventana pero peor en Sharpe agregado pone de manifiesto que la optimización basada en medias de Sharpe por ventana puede inducir conclusiones erróneas sobre el rendimiento global. Esto ocurre porque el Sharpe agregado depende de la secuencia completa de retornos y de la volatilidad conjunta del periodo, no de la media aritmética de Sharpes mensuales.
+La Tabla~\ref{TB:WALKFORWARD} y la Tabla~\ref{TB:SHARPEAGREGADO} muestran que QHRP lidera en términos agregados, mientras que la variabilidad mensual impide declarar un ganador estadísticamente robusto a corto plazo. En consecuencia, la comparación debe hacerse en dos niveles: estabilidad local por ventana y rendimiento global acumulado. La Tabla~\ref{TB:COSTECOMPUTACIONAL} completa la lectura al mostrar que la mejora financiera de QHRP viene acompañada de un coste computacional muy superior.
 
 \begin{table}[Coste computacional]{TB:COSTECOMPUTACIONAL}{Coste computacional medio por ventana ($N=169$, $P=6$).}
 \begin{tabular}{lcc}
@@ -104,51 +68,16 @@ TOTAL HRP Kernel & 510.007 & 119.269 \\
 \end{tabular}
 \end{table}
 
-La Tabla~\ref{TB:COSTECOMPUTACIONAL} muestra que el coste de QHRP está concentrado casi por completo en la construcción de matrices de densidad (1903.279 s de 1909.566 s), mientras que la ordenación jerárquica en sí es prácticamente instantánea. El cuello de botella no reside en el algoritmo HRP, sino en la construcción de la representación cuántica previa (simulada en este trabajo). Esto ocurre porque hay que procesar muchos estados en un espacio que crece exponencialmente con $2^P$, por lo que QHRP es viable sobre todo en análisis offline o con tamaños de problema más contenidos.
-
-La Tabla~\ref{TB:WALKFORWARD} permite comparar estabilidad y dispersión por ventana, mientras que la Tabla~\ref{TB:SHARPEAGREGADO} resume el rendimiento acumulado fuera de muestra. La Tabla~\ref{TB:COSTECOMPUTACIONAL} cuantifica el coste de cada enfoque y hace explícito el compromiso rendimiento--coste.
-
-La lectura conjunta de las Tablas~\ref{TB:WALKFORWARD} y~\ref{TB:SHARPEAGREGADO} muestra dos mensajes complementarios: (i) por ventana hay alta variabilidad y diferencias moderadas entre métodos, y (ii) al agregar todo el periodo fuera de muestra, QHRP queda en primera posición en Sharpe acumulado. En consecuencia, la comparación debe hacerse en dos niveles (local y global), no solo con medias por ventana.
-
-Además, la ventaja agregada de QHRP frente a Pesos Iguales es positiva pero moderada, por lo que su adopción práctica debe evaluarse junto al coste computacional reportado en la Tabla~\ref{TB:COSTECOMPUTACIONAL}.
+La Tabla~\ref{TB:COSTECOMPUTACIONAL} muestra que el cuello de botella de QHRP está en la simulación de las matrices de densidad, con un coste aproximadamente $2.8\times 10^4$ veces superior al clásico. La fase de ordenación es marginal frente a esa simulación, así que la limitación real del método es su escalabilidad en entornos de rebalanceo frecuente.
 
 \subsection{Relación entre estructura visual y desempeño}
 La comparación de matrices ordenadas y no ordenadas del Capítulo~\ref{cap:metodologia} ayuda a interpretar por qué en algunos casos el panel derecho ofrece mejor desempeño que el izquierdo. El panel ordenado concentra activos similares en bloques cuasi-diagonales, lo que favorece particiones más coherentes en la bisección recursiva de HRP. En consecuencia, se reduce la mezcla de activos poco afines dentro de subcarteras y mejora la asignación de riesgo.
 
 No obstante, esta relación no es determinista: una estructura visual más definida no garantiza necesariamente un mejor rendimiento financiero. Sin embargo, sí indica que el método de distancia está capturando estructura jerárquica relevante y económicamente significativa.
 
-\subsection{Validación por permutación de activos (\textit{shuffled})}
-Como comprobación de robustez, se realizó un experimento adicional permutando aleatoriamente el orden de los activos en la entrada. Esta prueba no cambia la información financiera subyacente, pero sí altera la disposición visual inicial de las matrices.
+\subsection{Robustez frente a permutaciones de activos}
 
-El resultado esperado es doble:
-
-\begin{itemize}
-	\item En matrices \textbf{sin ordenar}, la apariencia visual cambia al cambiar el orden de filas y columnas.
-	\item En matrices \textbf{ordenadas} mediante HRP/QHRP, la estructura de bloques debe mantenerse esencialmente equivalente, ya que el clustering depende de distancias y no del índice original de cada activo.
-\end{itemize}
-
-\begin{figure}[Validación shuffled en correlación]{FIG:SHUFFLED_CORR}
-{Test de permutación para matrices de correlación. Al permutar activos, los paneles sin ordenar cambian, mientras que los paneles ordenados conservan la estructura jerárquica esperada.}
-	\image{13cm}{}{fig3-shuffled}
-\end{figure}
-
-La Figura~\ref{FIG:SHUFFLED_CORR} muestra que la estructura ordenada se mantiene aunque cambie el orden inicial de los activos, lo que valida que el resultado no es un artefacto visual. Esto significa que el patrón jerárquico proviene de las relaciones de similitud entre activos y no de su posición en la matriz. En términos metodológicos, la ordenación clásica es invariante al reetiquetado de entrada.
-
-\begin{figure}[Validación shuffled en distancia cuántica]{FIG:SHUFFLED_QDIST}
-{Test de permutación para matrices de distancia cuántica. La permutación afecta la representación no ordenada, pero la ordenación jerárquica recupera patrones de bloques coherentes.}
-	\image{13cm}{}{fig4-shuffled}
-\end{figure}
-
-La Figura~\ref{FIG:SHUFFLED_QDIST} muestra que la misma invarianza aparece en la distancia cuántica, por lo que los bloques de QHRP tampoco dependen del índice inicial de cada activo. Esto ocurre porque la permutación solo recoloca filas y columnas, pero no altera las distancias pareadas. Por tanto, la mejora observada al pasar del panel izquierdo (sin ordenar) al derecho (ordenado) no es un artefacto del orden inicial de columnas, sino una consecuencia del procedimiento jerárquico de ordenación, y la señal estructural de QHRP resulta ser robusta y reproducible.
-
-\subsection{Cinco desordenaciones distintas: resultado cuantitativo}
-Para reforzar la validación por permutación, se repitió el experimento con cinco semillas distintas. La Tabla~\ref{TB:FIVEPERMS} resume las métricas obtenidas:
-
-\begin{itemize}
-	\item \textbf{gain\_classical}: incremento de estructura de bloques tras ordenar por HRP clásico respecto a la matriz sin ordenar.
-	\item \textbf{gain\_quantum}: incremento de estructura de bloques tras ordenar por QHRP respecto a la matriz sin ordenar.
-	\item \textbf{sim\_\*\_vs\_ref}: similitud estructural frente a la referencia original ordenada.
-\end{itemize}
+Para validar que la estructura jerárquica es invariante al orden inicial de los activos, se realizó un experimento permutando aleatoriamente el orden de entrada en cinco ocasiones. La Tabla~\ref{TB:FIVEPERMS} resume los resultados:
 
 \begin{table}[Cinco permutaciones de activos]{TB:FIVEPERMS}{Resultados del test con cinco desordenaciones distintas de activos.}
 \begin{tabular}{cccccc}
@@ -166,19 +95,15 @@ Para reforzar la validación por permutación, se repitió el experimento con ci
 \end{tabular}
 \end{table}
 
-La Tabla~\ref{TB:FIVEPERMS} muestra que la similitud 1.0000 en las cinco corridas indica estabilidad máxima del ordenamiento frente a permutaciones de entrada. Los \textit{gain} positivos en todos los casos confirman que ordenar siempre mejora la estructura respecto al caso sin ordenar. Que \textit{gain\_classical} sea mayor que \textit{gain\_quantum} no implica superioridad global del clásico: esa métrica de \textit{blockiness} está definida sobre correlación y, por construcción, favorece más al método clásico.
+La similitud 1.0000 en todas las corridas indica que la estructura de bloques se recupera idénticamente independientemente del orden inicial de activos. Los \textit{gains} positivos confirman que ambos métodos mejoran consistentemente. La Figura~\ref{FIG:PERMUTACIONES_CORR} y Figura~\ref{FIG:PERMUTACIONES_QUANTUM} muestran que en matrices sin ordenar la estructura se pierde, pero tras aplicar HRP/QHRP se recuperan patrones cuasi-diagonales equivalentes. Esto valida que los resultados no son artefactos visuales sino consecuencias del procedimiento jerárquico de ordenación.
 
-Estos resultados confirman una conclusión central: la reorganización jerárquica es robusta a desordenaciones de entrada. La similitud estructural perfecta (1.0) en las cinco corridas tanto para HRP clásico como para QHRP indica invarianza del ordenamiento respecto al índice inicial de los activos, mientras que los \textit{gain} positivos refuerzan que ambas ordenaciones producen mejoras consistentes.
+\begin{figure}[Invarianza frente a permutaciones: correlación]{FIG:PERMUTACIONES_CORR}{Ejemplo: matrices de correlación sin ordenar y tras HRP clásico en una permutación representativa de activos.}
+	\image{9cm}{}{fig3-shuffled}
+\end{figure}
 
-\subsection{Comparativa entre enfoques clásico, kernel y cuántico}
-El enfoque clásico ofrece un coste muy bajo y buena robustez operativa, pero se basa en correlación lineal. El enfoque kernel introduce no linealidad sin recurrir a simulación cuántica, actuando como alternativa intermedia. El enfoque cuántico extiende la representación a un espacio de Hilbert de dimensión $2^P$, permitiendo modelar relaciones de mayor complejidad entre características.
-
-Desde el punto de vista empírico, la comparación debe hacerse en dos ejes:
-
-\begin{itemize}
-	\item \textbf{Calidad financiera:} Sharpe, PSR y estabilidad por ventana.
-	\item \textbf{Coste computacional:} tiempo total por ventana y escalabilidad con el número de características.
-\end{itemize}
+\begin{figure}[Invarianza frente a permutaciones: cuántica]{FIG:PERMUTACIONES_QUANTUM}{Ejemplo: matrices de distancia cuántica sin ordenar y tras QHRP en una permutación representativa de activos.}
+	\image{9cm}{}{fig4-shuffled}
+\end{figure}
 
 \subsection{Comparación con el paper original}
 Para evaluar el grado de reproducibilidad, se comparan los resultados de este trabajo con los reportados por el paper original de QHRP en tres dimensiones: (i) ranking relativo entre métodos, (ii) magnitud de Sharpe fuera de muestra y (iii) comportamiento visual de las matrices ordenadas.
@@ -221,13 +146,7 @@ Pesos Iguales & 1.3193 & 1.1983 \\
 \end{tabular}
 \end{table}
 
-La Tabla~\ref{TB:COMPARACIONPAPER_T2} permite observar que el mensaje principal del paper se mantiene (QHRP competitivo y en primera posición), aunque cambie el ranking intermedio. Esto indica que la metodología es reproducible en lo esencial, pero no garantiza coincidencia exacta en todos los métodos cuando cambian datos y decisiones de preprocesado. Los métodos con rendimiento cercano entre sí son especialmente sensibles a estas variaciones.
-
-\begin{figure}[Comparación visual Fig. 3 (paper)]{FIG:COMP_PAPER_FIG3_PAPER}{Figura de correlaciones reordenadas reportada en el paper original.}
-	\image{12.5cm}{}{paper-fig3}
-\end{figure}
-
-La Figura~\ref{FIG:COMP_PAPER_FIG3_PAPER} fija el patrón de referencia que debe reproducir la metodología: aparición de bloques cuasi-diagonales tras ordenar. Su valor está en definir el criterio visual de validación estructural, no en demostrar por sí sola mejor rendimiento financiero.
+Como muestran las Tablas~\ref{TB:COMPARACIONPAPER_T1} y~\ref{TB:COMPARACIONPAPER_T2}, el pipeline es reproducible en dinámica estadística y ranking global, con variaciones menores en el orden intermedio debido a la sensibilidad de la muestra.
 
 \begin{figure}[Comparación visual Fig. 3 (este trabajo)]{FIG:COMP_PAPER_FIG3_THIS}{Figura de correlaciones reordenadas obtenida en este trabajo con el mismo esquema metodológico.}
 	\image{12.5cm}{}{fig3-corr-matrices}
@@ -235,31 +154,13 @@ La Figura~\ref{FIG:COMP_PAPER_FIG3_PAPER} fija el patrón de referencia que debe
 
 La Figura~\ref{FIG:COMP_PAPER_FIG3_THIS} muestra que al recuperar bloques y separación entre grupos, se valida que la implementación reproduce la lógica económica del paper (activos similares quedan próximos en el ordenamiento). Las diferencias finas de contraste o tamaño son esperables por cambios en muestra y normalización, y no invalidan la réplica metodológica.
 
-\begin{figure}[Comparación visual Fig. 4 (paper)]{FIG:COMP_PAPER_FIG4_PAPER}{Figura de distancias cuánticas reportada en el paper original.}
-	\image{12.5cm}{}{paper-fig4}
-\end{figure}
-
-La Figura~\ref{FIG:COMP_PAPER_FIG4_PAPER} muestra que la distancia cuántica no es solo una transformación matemática, sino una geometría útil para ordenar activos jerárquicamente. El enfoque cuántico produce información estructural aprovechable por HRP.
-
 \begin{figure}[Comparación visual Fig. 4 (este trabajo)]{FIG:COMP_PAPER_FIG4_THIS}{Figura de distancias cuánticas obtenida en este trabajo.}
 	\image{12.5cm}{}{fig4-best-match}
 \end{figure}
 
 La Figura~\ref{FIG:COMP_PAPER_FIG4_THIS} confirma que la presencia de bloques también en esta réplica muestra que QHRP mantiene poder de organización estructural fuera del contexto exacto del paper. La no coincidencia celda a celda es secundaria; lo relevante es conservar la separación jerárquica entre grupos de activos.
 
-En comparación directa con el paper, los resultados son consistentes: QHRP mantiene la primera posición en Sharpe agregado. Sin embargo, aparecen diferencias en el ranking intermedio.
-
-En este trabajo, Pesos Iguales y HRP Clásico superan a HRP Kernel en Sharpe agregado. En el paper original, HRP Kernel queda por encima de ambos. La diferencia de QHRP respecto al paper es moderada (+0.0466 en Sharpe agregado). Esta variación es razonable dadas las diferencias en muestra, preprocesado e implementación.
-
-Se realiza una comparación visual entre este trabajo y el paper.
-
-Para la Figura 3 se contrastan: la Figura~\ref{FIG:COMP_PAPER_FIG3_PAPER} (paper) frente a la Figura~\ref{FIG:COMP_PAPER_FIG3_THIS} (este trabajo). Para la Figura 4 se contrastan: la Figura~\ref{FIG:COMP_PAPER_FIG4_PAPER} (paper) frente a la Figura~\ref{FIG:COMP_PAPER_FIG4_THIS} (este trabajo).
-
-El patrón cualitativo principal se conserva: al pasar de la matriz sin ordenar a la ordenada aparecen bloques cuasi-diagonales y estructura jerárquica más clara.
-
-La forma exacta, tamaño y contraste de los bloques no coincide punto a punto con el paper. Esta discrepancia es esperable y no invalida la reproducción metodológica.
-
-Para evaluar esta parte visual, se adopta un criterio estructural:
+La comparación visual se conserva como validación cualitativa, pero basta con las figuras reproducidas en este trabajo para mostrar el patrón cuasi-diagonal y la separación jerárquica; no hace falta duplicar las imágenes del paper original. Para esta parte visual se adopta un criterio estructural:
 
 \begin{itemize}
 	\item \textbf{Compatibilidad jerárquica:} agrupaciones estables y coherentes en la ordenación.
@@ -267,20 +168,9 @@ Para evaluar esta parte visual, se adopta un criterio estructural:
 	\item \textbf{Consistencia:} alineación entre estructura visual y resultados cuantitativos (Sharpe/PSR).
 \end{itemize}
 
-Bajo estos criterios, las imágenes obtenidas en este trabajo son comparables a las del paper en términos metodológicos, aunque presenten diferencias estéticas o de granularidad local.
+Bajo estos criterios, las imágenes obtenidas en este trabajo son comparables a las del paper en términos metodológicos, aunque presenten diferencias estéticas o de granularidad local. Las discrepancias pueden explicarse principalmente por: (i) diferencias en universo temporal (tickers, fechas, regímenes de mercado) que alteran correlaciones y volatilidades, (ii) decisiones de preprocesado y parametrización del modelo ($\alpha$, normalización, criterio MMD), y (iii) detalles de implementación jerárquica (método de enlace, tratamiento de empates en dendrogramas).
 
-Las diferencias entre este trabajo y el paper pueden explicarse, de forma no excluyente, por:
-
-\begin{itemize}
-	\item \textbf{Universo de activos y periodo temporal:} pequeñas variaciones en tickers o fechas cambian la estructura de correlaciones y volatilidades.
-	\item \textbf{Preprocesado de datos:} política de \texttt{dropna}, alineamiento temporal y normalización afectan de forma directa a covarianzas y distancias.
-	\item \textbf{Definición de características:} cambios en la ingeniería de \textit{features} (momentos estadísticos frente a transformaciones previas) alteran la geometría en el espacio de estados.
-	\item \textbf{Parámetros del modelo:} elección de $\alpha$ en el mapeo cuántico, factor de escala en Frobenius y $\sigma$ del kernel MMD.
-	\item \textbf{Detalles de implementación HRP:} método de enlace jerárquico y tratamiento de empates/orden de hojas en el dendrograma.
-	\item \textbf{Simulación cuántica vs ejecución nativa:} en este trabajo se usa simulación clásica de circuitos, lo que puede introducir diferencias numéricas y de coste respecto a otros entornos.
-\end{itemize}
-
-Por tanto, si los valores absolutos difieren pero se conserva el patrón cualitativo (QHRP competitivo y estructura cuasi-diagonal tras ordenación), la reproducción puede considerarse satisfactoria desde el punto de vista metodológico.
+Por tanto, si los valores absolutos difieren pero se conserva el patrón cualitativo, la reproducción puede considerarse satisfactoria desde el punto de vista metodológico.
 
 \subsection{Piloto en hardware IBM con 40 activos}
 Para reforzar la validación experimental en entorno real, se diseñó un piloto en hardware IBM con una pregunta operativa explícita: dado un subconjunto fijo de activos y el mismo pipeline QHRP, \textbf{¿se conserva la mejora estructural que aporta la ordenación cuántica al pasar de simulación ideal a hardware real?}
@@ -314,37 +204,6 @@ El criterio visual (bloques cuasi-diagonales en mapas de calor) se utiliza como 
 
 Por último, para asegurar reproducibilidad operativa, se guardó una copia local de la matriz de distancias de hardware y se habilitó recuperación desde trabajos ya completados en la plataforma de IBM. Esto permite rehacer figuras comparativas sin relanzar ejecuciones costosas tras reiniciar el kernel.
 
-\subsection{Coste computacional y escalabilidad}
-La Figura~\ref{FIG:TIME_COST} se lee de forma sencilla en dos pasos. A la izquierda se ve el desglose del tiempo por etapa: ahí se identifica en qué parte del pipeline se va el coste. A la derecha no hay etapas; hay métodos. Cada punto es una ventana \textit{walk-forward} y cada línea es el tiempo total de un método en esa ventana (QHRP, Kernel o Clásico). El eje vertical está en escala logarítmica, así que la lectura correcta es por órdenes de magnitud.
-
-En la configuración evaluada ($N=169$, $P=6$), el tiempo medio por ventana es aproximadamente:
-
-\begin{itemize}
-	\item HRP Cuántico: \(\sim 1910\,\mathrm{s}\)
-	\item HRP Kernel: \(\sim 510\,\mathrm{s}\)
-	\item HRP Clásico: \(\sim 0.07\,\mathrm{s}\)
-\end{itemize}
-
-Con estas cifras, QHRP tarda alrededor de 32 minutos por ventana, HRP Kernel unos 8.5 minutos y HRP Clásico menos de una décima de segundo. La razón aproximada cuántico/clásico es \(\sim 2.8\times 10^4\). El panel izquierdo muestra que, dentro de QHRP, el tiempo se concentra casi por completo en la fase cuántica previa (construcción de matrices de densidad), no en la ordenación HRP. El panel derecho confirma que esta diferencia no es un caso aislado: la línea de QHRP permanece siempre en miles de segundos, la de Kernel en cientos y la del Clásico en centésimas. En este trabajo ese coste se mide con simulación clásica de circuitos; en hardware cuántico nativo el perfil temporal puede cambiar.
-
-\begin{figure}[Coste computacional]{FIG:TIME_COST}
-{Comparativa de tiempo por método y por ventana. Izquierda: desglose por etapa para localizar el cuello de botella. Derecha: tiempo total por ventana de cada método (no por etapa), en escala logarítmica, para verificar que la brecha de coste se mantiene en todo el experimento.}
-	\image{15cm}{}{tabla3-tiempos-computacionales}
-\end{figure}
-
-La limitación práctica de QHRP en este entorno es computacional, no financiera. Un coste de ~1910 s por ventana (unos 32 minutos) puede ser asumible en investigación offline, pero dificulta rebalanceos frecuentes en producción. Por tanto, para uso operativo más frecuente, hay que reducir la fase cuántica previa mediante aproximaciones, paralelización o hardware cuántico más eficiente.
-
-El crecimiento con el número de características presenta dinámicas distintas según el método:
-
-\begin{itemize}
-	\item \textbf{Clásico:} depende principalmente de estimar correlaciones/covarianzas y clustering sobre \(N\).
-	\item \textbf{Kernel:} aumenta con las comparaciones MMD entre series multivariantes.
-	\item \textbf{Cuántico:} la dimensión de estado crece exponencialmente como \(2^P\), por lo que el coste de simulación se convierte en el factor crítico al aumentar \(P\).
-\end{itemize}
-
-Esto sugiere que la aplicabilidad práctica del enfoque cuántico está actualmente limitada por restricciones computacionales más que por su calidad financiera.
-
-
 \subsection{Análisis de segmentación jerárquica: coherencia económica de los grupos}
 \label{subsec:analisis_segmentacion}
 
@@ -366,23 +225,7 @@ Estas métricas permiten evaluar objetivamente si un método agrupa activos que 
 \subsubsection{HRP Clásico: Grupo principal más grande}
 \label{subsubsec:hrp_clasico_megagrupo}
 
-En el análisis del HRP clásico, el grupo más grande contiene 147 activos (de 169 totales), con las siguientes características:
-
-\begin{table}[HRP Clásico — Mega-grupo]{TB:HRP_CLASSICAL_MAIN}{Estadísticas del grupo principal en HRP Clásico (\(N=147\)).}
-\begin{tabular}{lc}
-\hline
-\textbf{Métrica} & \textbf{Valor} \\
-\hline
-Tamaño & 147 activos \\
-Sectores distintos & 23 \\
-Purity & 0.129 \\
-Entropy & 0.866 \\
-Sector dominante & Consumer Cyclical (12.9\%) \\
-\hline
-\end{tabular}
-\end{table}
-
-Este resultado revela un problema fundamental de la ordenación clásica: agrupa un ``mega-grupo'' heterogéneo que contiene simultáneamente:
+En el análisis del HRP clásico, el grupo más grande contiene 147 activos (de 169 totales, con 23 sectores distintos, Purity=0.129, Entropy=0.866), revelando un problema fundamental de la ordenación clásica: agrupa un ``mega-grupo'' heterogéneo que contiene simultáneamente:
 
 \begin{itemize}
 	\item \textbf{Renta variable:} acciones tecnológicas (AAPL, MSFT, NVDA), industriales (BA, CAT, GE), retail (TJX, HD, NKE) y financieras (JPM, WFC, BAC).
@@ -397,44 +240,12 @@ Aunque la métrica de correlación histórica agrupa estos activos bajo un únic
 \subsubsection{HRP Clásico: Grupo crypto}
 \label{subsubsec:hrp_clasico_crypto}
 
-En contraste, el grupo de criptomonedas (9 activos: BTC, ETH, SOL, BNB, AVAX, XRP, DOGE, ADA, DOT) presenta estadísticas ideales:
-
-\begin{table}[HRP Clásico — Grupo Crypto]{TB:HRP_CLASSICAL_CRYPTO}{Estadísticas del grupo crypto en HRP Clásico.}
-\begin{tabular}{lc}
-\hline
-\textbf{Métrica} & \textbf{Valor} \\
-\hline
-Tamaño & 9 activos \\
-Sectores distintos & 1 \\
-Purity & 1.000 \\
-Entropy & 0.000 \\
-Sector dominante & Crypto (100\%) \\
-\hline
-\end{tabular}
-\end{table}
-
-Este grupo homogéneo indica que los métodos jerárquicos sí pueden captar agrupamientos significativos cuando existe un factor de riesgo uniforme y dominante. El grupo crypto actúa como validación de que una Purity~=~1.0 es alcanzable y económicamente interpretable.
+En contraste, el grupo de criptomonedas (9 activos: BTC, ETH, SOL, BNB, AVAX, XRP, DOGE, ADA, DOT) presenta estadísticas ideales (Purity=1.0, Entropy=0.0, sector único), indicando que los métodos jerárquicos sí pueden captar agrupamientos significativos cuando existe un factor de riesgo uniforme y dominante. El grupo crypto actúa como validación de que una Purity~=~1.0 es alcanzable y económicamente interpretable.
 
 \subsubsection{QHRP Cuántico: Grupo de Diversificadores/Coberturas}
 \label{subsubsec:qhrp_diversificadores}
 
-En el análisis del QHRP, uno de los grupos principales (31 activos) corresponde a una familia de diversificadores y coberturas:
-
-\begin{table}[QHRP — Grupo de Diversificadores]{TB:QHRP_DIVERSIFIERS}{Estadísticas del grupo de Diversificadores en QHRP (\(N=31\)).}
-\begin{tabular}{lc}
-\hline
-\textbf{Métrica} & \textbf{Valor} \\
-\hline
-Tamaño & 31 activos \\
-Sectores distintos & 12 \\
-Purity & 0.290 \\
-Entropy & 0.845 \\
-Sector dominante & Fixed Income (29\%) \\
-\hline
-\end{tabular}
-\end{table}
-
-A diferencia del mega-grupo del HRP clásico, este grupo está explícitamente compuesto por activos que tienen funciones de cobertura complementarias:
+En el análisis del QHRP, uno de los grupos principales (31 activos con 12 sectores, Purity=0.290, Entropy=0.845) corresponde a una familia de diversificadores y coberturas. A diferencia del mega-grupo del HRP clásico, este grupo está explícitamente compuesto por activos que tienen funciones de cobertura complementarias:
 
 \begin{itemize}
 	\item \textbf{Renta fija (9 activos):} AGG, BND, TLT, LQD, SCHZ, VCIT... Actúan como ancla de valor cuando caen las rentas variables (comportamiento anti-cíclico).
@@ -451,23 +262,7 @@ La clave es que QHRP no agrupa por similitud sectorial estricta, sino por \textb
 \subsubsection{QHRP Cuántico: Grupo de Renta Variable Pura}
 \label{subsubsec:qhrp_equities}
 
-Otro grupo principal de QHRP (25 activos) agrupa la renta variable sistemática:
-
-\begin{table}[QHRP — Grupo de Renta Variable]{TB:QHRP_EQUITIES}{Estadísticas del grupo de Renta Variable en QHRP (\(N=25\)).}
-\begin{tabular}{lc}
-\hline
-\textbf{Métrica} & \textbf{Valor} \\
-\hline
-Tamaño & 25 activos \\
-Sectores distintos & Múltiples \\
-Pureza (\textit{Purity}) & 0.400 \\
-Entropía (\textit{Entropy}) & 0.825 \\
-Sector dominante & ETFs de renta variable diversificada (40\%) \\
-\hline
-\end{tabular}
-\end{table}
-
-Este grupo contiene:
+Otro grupo principal de QHRP (25 activos con Purity=0.400, Entropy=0.825) agrupa la renta variable sistemática. Este grupo contiene:
 
 \begin{itemize}
 	\item \textbf{ETFs amplios (14 activos):} SPY, VOO, IVV, QQQ, VTI, EFA, VEA, SPDW, SCHF, ACWI... Con correlaciones ~0.99 entre ellos.
@@ -502,7 +297,6 @@ Esta progresión indica que la segmentación cuántica es jerárquicamente coher
 
 \subsubsection{Comparación: ¿Cuántico vs. Clásico?}
 \label{subsubsec:comparacion_quantico_clasico}
-La tabla comparativa resume las diferencias conceptuales:
 
 \begin{table}[Comparación de segmentación: HRP Clásico vs QHRP]{TB:COMP_SEGMENTATION}{Resumen de diferencias en estrategia de segmentación.}
 \begin{tabular}{lll}
@@ -524,7 +318,7 @@ Rendimiento financiero & Sharpe agregado: 1.238 & Sharpe agregado: 1.444 \\
 \end{tabular}
 \end{table}
 
-El resultado principal es que QHRP no solo obtiene mejor rendimiento financiero (Sharpe 1.444 vs. 1.238), sino que además produce segmentaciones más económicamente coherentes. Los grupos cuánticos responden a factores de riesgo interpretables (rentas variables, diversificadores, coberturas), mientras que los clásicos mezclan indiscriminadamente activos con dinámicas opuestas.
+Como muestra la Tabla~\ref{TB:COMP_SEGMENTATION}, el resultado principal es que QHRP no solo obtiene mejor rendimiento financiero (Sharpe 1.444 vs. 1.238), sino que además produce segmentaciones más económicamente coherentes. Los grupos cuánticos responden a factores de riesgo interpretables (rentas variables, diversificadores, coberturas), mientras que los clásicos mezclan indiscriminadamente activos con dinámicas opuestas.
 
 Esta coherencia sugiere que la representación cuántica está capturando estructura no lineal real de las dependencias entre activos, más allá de meras correlaciones de segundo orden.
 

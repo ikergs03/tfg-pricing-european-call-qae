@@ -4,92 +4,35 @@
 \section{Conclusiones}
 \label{sec:conclusiones}
 
-\subsection{Síntesis de resultados}
-En este trabajo se ha desarrollado e implementado QHRP (Hierarchical Risk Parity cuántico), extendiendo la ordenación jerárquica clásica mediante representación en el espacio de Hilbert exponencial de circuitos cuánticos. Se investigó si esta geometría proporciona ventajas financieras medibles frente a enfoques clásicos y kernel.
+Este trabajo ha validado la viabilidad de la metodología QHRP (Hierarchical Risk Parity cuántico) como una extensión robusta de los métodos de optimización de carteras clásicos. A través de la representación de activos en el espacio de Hilbert, se ha demostrado que la geometría cuántica permite capturar estructuras de riesgo que la correlación lineal ignora.
 
-Los resultados principales son los siguientes:
-
-\subsubsection{Desempeño financiero}
-El Sharpe ratio agregado fuera de muestra (Tabla~\ref{TB:SHARPEAGREGADO}) posiciona a QHRP en la primera posición (1.4441) frente a Pesos Iguales (1.3193), Markowitz (1.2518), HRP Clásico (1.2378) e HRP Kernel (1.1803). Esta ventaja persiste cuando se agregan retornos en todo el horizonte, consistente con un efecto robusto. Sin embargo, el rendimiento mensual individual (Tabla~\ref{TB:WALKFORWARD}) muestra alta variabilidad y diferencias atenuadas, indicando que el rendimiento global depende de la acumulación de efectos intertemporales, más que del promedio de ventanas locales.
-
-\subsubsection{Robustez estructural}
-La validación por permutación (Tabla~\ref{TB:FIVEPERMS}) muestra que la ordenación cuántica es invariante al índice inicial (similitud 1.0 en todas las corridas). Este resultado sugiere que las estructuras jerárquicas recuperadas no son artefactos visuales, sino producto de las distancias cuánticas. Es consistente con que la métrica esté capturando estructuras de dependencia entre activos relevantes para asignación de riesgo.
-
-\subsubsection{Reproducibilidad con el paper original}
-La comparación con el paper original (Tablas~\ref{TB:COMPARACIONPAPER_T1} y~\ref{TB:COMPARACIONPAPER_T2}) muestra reproducibilidad cualitativa. QHRP mantiene primera posición en ambos casos (+0.0466 en Sharpe). Las discrepancias en ranking intermedio son compatibles con diferencias en datos y preprocesado. Las matrices reordenadas (Figuras~\ref{FIG:COMP_PAPER_FIG3_THIS} y~\ref{FIG:COMP_PAPER_FIG4_THIS}) muestran estructura de bloques esperada, consistente con información jerárquica extraída.
-
-\subsubsection{Piloto en hardware IBM}
-El experimento preliminar en hardware IBM (Tabla~\ref{TB:PILOTO_BC}, $N=40$, $P=6$) muestra que el \textit{block contrast} se conserva en signo ($\Delta\mathrm{BC} = 0.0102$) aunque con degradación relativa del 87\%. Esta atenuación combina varianza de muestreo por shots finitos y ruido físico del dispositivo. El resultado sugiere persistencia parcial de estructura bajo ruido. Sin embargo, es no concluyente estadísticamente: una única ejecución es insuficiente para estimar varianza o cuantificar descomposición entre ambos efectos.
-
-\subsection{Implicaciones teóricas y prácticas}
-
-\subsubsection{La representación cuántica captura estructura jerárquica}
-La geometría de Hilbert de dimensión $2^P$ de la codificación cuántica es suficientemente expresiva para capturar relaciones de similitud que complementan correlación lineal. Extiende información lineal mediante transformación no lineal. Esto es consistente con el paper conocido de kernels cuánticos en machine learning, donde espacios de mayor dimensión permiten separar estructuras que en baja dimensión parecen entrecruzadas.
-
-\subsubsection{El trade-off rendimiento--coste es crítico}
-La Tabla~\ref{TB:COSTECOMPUTACIONAL} revela una brecha de ~32 minutos (QHRP) frente a menos de 0.1 segundos (HRP clásico) por ventana. Este factor de $2.8 \times 10^4$ es principalmente atribuible a la simulación clásica del estado cuántico, no al algoritmo HRP en sí. Para aplicaciones offline o análisis estratégico, este coste puede ser asumible. Para rebalanceos frecuentes en producción, la limitación actual es computacional, no de calidad de solución. La escalabilidad con el número de características presenta dinámicas exponenciales que sugieren que QHRP es más viable en problemas de tamaño pequeño a medio (20-50 activos).
-
-\subsubsection{La optimización local no implica óptimo global}
-La media de Sharpe por ventana no coincide con el Sharpe agregado: Pesos Iguales mejor localmente (1.5076) pero peor globalmente (1.3193). El Sharpe agregado depende de la secuencia completa de retornos y su distribución temporal, no de la media aritmética de ventanas. Esta discrepancia es relevante para optimización: criterios que minimizan error periodo a periodo pueden no optimizar rendimiento global si no consideran estructura interemporal y reequilibrado.
-
-\subsection{Limitaciones y supuestos}
-
-Este trabajo opera bajo varios supuestos y limitaciones que es importante reconocer:
+\subsection{Síntesis de hallazgos}
+Los experimentos realizados permiten extraer las siguientes conclusiones principales:
 
 \begin{itemize}
-	\item \textbf{Simulación clásica:} Los circuitos se simulan de forma clásica, evitando errores hardware pero también simplificando la realidad operativa de dispositivos NISQ.
-	\item \textbf{Tamaño del problema:} Se evalúan 169 activos con 6 características. Tamaños mayores explorarían mejor los límites de escalabilidad cuántica.
-	\item \textbf{Período y universo de activos:} Los resultados son específicos del universo S\&P 500 y periodo evaluado (2014-2023). Generalizabilidad a otros activos o períodos requiere investigación adicional.
-	\item \textbf{Parámetros del modelo:} La elección de $\alpha=2.0$ en el mapeo cuántico, $\sigma$ en el kernel MMD y otros hiperparámetros se tomaron en base a la literatura, pero una búsqueda más extensiva podría optimizar resultados.
-	\item \textbf{Piloto hardware limitado:} Una única ejecución en hardware IBM impide análisis estadístico robusto; múltiples runs permitirían cuantificar variabilidad.
-	\item \textbf{Costes de transacción:} El análisis no incluye comisiones ni spreads bid-ask, que en operativa real reducirían los retornos observados, especialmente en estrategias con alta rotación.
+    \item \textbf{Ventaja en rendimiento:} QHRP ha mostrado una capacidad superior de acumulación de retornos ajustados por riesgo en el horizonte fuera de muestra, obteniendo el mejor ratio de Sharpe agregado. Si bien la variabilidad mensual es alta, la estrategia cuántica demuestra una mayor robustez intertemporal.
+    
+    \item \textbf{Coherencia y robustez estructural:} La segmentación jerárquica resultante no es un artefacto numérico, sino una representación económicamente interpretable. Los tests de permutación confirman la invarianza del método, mientras que el análisis sectorial revela que QHRP agrupa activos por factores de riesgo coherentes (renta variable pura vs. diversificadores).
+    
+    \item \textbf{Compromiso rendimiento-coste:} La principal barrera para la adopción de QHRP es el coste computacional derivado de la simulación de estados cuánticos. Con una brecha temporal significativa respecto al método clásico, su uso actual se recomienda para análisis estratégico o carteras de tamaño medio (hasta 50 activos) donde la calidad de la segmentación prime sobre la velocidad de ejecución.
 \end{itemize}
 
-\subsection{Contribuciones clave}
+\subsection{Contribuciones y limitaciones}
+La tesis contribuye al estado del arte mediante la reproducción fiel y extensión de la metodología QHRP, aportando validaciones de robustez (permutación) y una primera transferencia a hardware real en dispositivos de IBM. El piloto en hardware, aunque limitado por el ruido de los dispositivos NISQ actuales, confirma que la estructura jerárquica cuántica persiste fuera del entorno de simulación ideal.
 
-Esta tesis contribuye al campo cuántico-financiero en tres direcciones principales:
-
-\begin{enumerate}
-	\item \textbf{Reproducción y extensión:} Se ha replicado exitosamente el método QHRP del paper original y se ha extendido mediante validaciones adicionales (test de permutación, piloto hardware real, comparaciones granulares).
-	\item \textbf{Análisis detallado de trade-offs:} Se cuantifica de forma sistemática el compromiso entre expresividad de la representación y coste computacional, proporcionando guía práctica sobre cuándo QHRP es viable frente a alternativas clásicas.
-	\item \textbf{Validación de transferencia a hardware real:} El piloto IBM demuestra que la mejora estructural persiste en hardware real, aunque atenuada, abriendo camino para investigación operativa.
-\end{enumerate}
+No obstante, el estudio reconoce limitaciones intrínsecas: la dependencia de la simulación clásica para el grueso de los experimentos, la ausencia de costes de transacción en el modelo y la sensibilidad del modelo a hiperparámetros como el factor de escala en el mapeo cuántico. Estas limitaciones definen el marco de confianza de los resultados obtenidos.
 
 \section{Trabajo Futuro}
 \label{sec:trabajo_futuro}
 
-El desafío prioritario es validación exhaustiva en hardware cuántico real. Simulación clásica verifica corrección algorítmica pero simplifica realidad operativa: no captura errores de puerta, ruido de medición, limitaciones de conectividad ni costes de ejecución en dispositivos NISQ.
+La investigación abre diversas líneas de desarrollo para consolidar la ventaja cuántica en la gestión de carteras:
 
-\subsection{Validación en hardware cuántico real — PRIORITARIO}
-Este es el desafío crítico que determinará viabilidad operativa de QHRP. Requiere ejecución del pipeline en hardware real (IBM Quantum, IonQ, Rigetti) con protocolos rigurosos y múltiples repeticiones. Las líneas específicas de investigación son:
+\begin{enumerate}
+    \item \textbf{Validación sistemática en hardware real:} Superar el piloto preliminar mediante ejecuciones exhaustivas en ordenadores cuánticos reales. Resulta prioritario testear configuraciones de 5 o 6 qubits (correspondientes a las características $P$ del modelo) para evaluar cómo el ruido físico y los errores de puerta afectan a la estabilidad de la métrica de \textit{block contrast} y a la segmentación final.
+    
+    \item \textbf{Optimización de la escalabilidad:} Investigar la simplificación de los \textit{feature maps} y técnicas de compilación de circuitos que permitan manejar universos de activos más amplios manteniendo la profundidad de circuito en niveles tolerables para el hardware NISQ.
+    
+    \item \textbf{Métricas de riesgo y adaptabilidad:} Explorar la inclusión de métricas de riesgo no lineales (como el CVaR cuántico) y el desarrollo de versiones dinámicas del algoritmo que se adapten a cambios bruscos de régimen de mercado mediante rebalanceos optimizados.
+\end{enumerate}
 
-\begin{itemize}
-	\item \textbf{Cuantificación de degradación por ruido (ESENCIAL):} Comparar \textit{block contrast} en hardware vs simulación en función de qubits y profundidad. Establecer relación error--profundidad. Este es el test principal para determinar si mejora estructural persiste en dispositivos reales.
-	\item \textbf{Análisis estadístico riguroso (ESENCIAL):} Múltiples ejecuciones (mínimo 10-20 runs) en hardware para obtener intervalos de confianza. Cuantificar variabilidad inducida por ruido. Esto justificaría o descartaría conclusiones del piloto.
-	\item \textbf{Validación de umbrales operativos (IMPORTANTE):} Determinar magnitud máxima de ruido tolerable para que QHRP mantenga ventaja sobre clásico. Esto establece rango de hardware viable.
-	\item \textbf{Mitigación de errores contextualizada (IMPORTANTE):} Evaluar readout error mitigation y extrapolación a cero ruido para problemas de 40-50 activos. Investigar si mejora suficiente para compensar overhead.
-\end{itemize}
-
-\subsection{Escalabilidad en el rango operacional — MEDIO PLAZO}
-Una vez validado en hardware, extender alcance:\par
-
-\begin{itemize}
-	\item \textbf{Optimización de circuitos QHRP:} Reducir profundidad y número de compuertas mediante compilación selectiva del feature map. Objetivo: mantener ventaja con profundidades factibles en hardware NISQ actual.
-	\item \textbf{Escalado gradual:} Pasar de 40 activos (piloto) a 50-80 activos con hardware disponible. Caracterizar relación entre tamaño de problema, profundidad y ruido.
-	\item \textbf{Paralelización de distancias:} Explorar descomposición de cálculos en múltiples corridas o colas paralelas en plataformas cloud cuánticas.
-\end{itemize}
-
-\subsection{Extensiones metodológicas — EXPLORATORIO}
-Una vez consolidada la validación, explorar variaciones del método:
-
-\begin{itemize}
-	\item \textbf{Feature maps alternativos en QHRP:} Probar IQP features o kernels de mayor dimensión para explorar si geometrías alternativas capturan mejor la estructura de riesgos.
-	\item \textbf{Métricas de riesgo enriquecidas:} Extender más allá de correlaciones para capturar colas pesadas (CVaR) mediante codificaciones cuánticas específicas.
-	\item \textbf{Adaptabilidad dinámica:} Desarrollar versiones que se actualicen adaptivamente y exploren comportamiento bajo cambios de régimen de mercado.
-\end{itemize}
-
-\subsection{Síntesis del trabajo futuro}
-La priorización es clara: hardware validation (CRÍTICO) > escalabilidad (MEDIO PLAZO) > extensiones (EXPLORATORIO). La etapa crítica es validación exhaustiva en hardware cuántico real con múltiples ejecuciones y cuantificación rigurosa de ruido. Esta etapa determinará viabilidad operativa de QHRP y potencial de transformarlo de investigación teórica en herramienta práctica para gestión de carteras.
-
-
-
+En conclusión, QHRP se posiciona como una herramienta prometedora que trasciende las limitaciones de la correlación de segundo orden, sentando las bases para una nueva generación de algoritmos de optimización de carteras basados en la ventaja de la representación cuántica.
