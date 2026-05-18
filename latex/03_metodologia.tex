@@ -10,7 +10,7 @@ En este capítulo se presenta el marco metodológico empleado para analizar la e
 
 Cada activo financiero se representa mediante un conjunto de características económicas que describen distintos aspectos de su comportamiento dinámico. Para cada activo $i$ se construye una matriz de observaciones:
 
-\begin{equation}[eq:matriz_observaciones]{Matriz de observaciones del activo i}
+\begin{equation}[eq:matriz_observaciones]{Matriz de observaciones de un activo individual}
 X_i \in \mathbb{R}^{T \times P},
 \end{equation}
 
@@ -22,14 +22,14 @@ El uso de una representación multivariante permite superar las limitaciones del
 \label{subsec:normalizacion_caracteristicas}
 
 La adecuación de las características financieras al dominio cuántico se realiza mediante una normalización angular integrada en el mapa de características (en inglés, \textit{feature map}). Cada una de las seis variables $x_i$ se transforma, mediante un mapeo afín de tipo min-max respecto a sus extremos históricos en la ventana temporal activa, en un ángulo $\theta_i \in [0, \alpha\pi]$, que actúa directamente como parámetro de las puertas de rotación cuánticas $R_y$ y $R_x$ del circuito (véase Apéndice~\ref{ap:subsubsec:puertasunqubit} para la definición de las puertas de rotación y Apéndice~\ref{ap:estimacion_ansatz} para los detalles del ansatz).
-Este procedimiento permite que el \textit{embedding} cuántico se adapte dinámicamente a los cambios de régimen de mercado sin requerir estandarizaciones clásicas adicionales. Al mapear los datos al rango operativo de las puertas de rotación, se asegura que la información quede codificada correctamente en el espacio de Hilbert para su posterior análisis.
+Este procedimiento permite que el codificación cuántica se adapte dinámicamente a los cambios de régimen de mercado sin requerir estandarizaciones clásicas adicionales. Al mapear los datos al rango operativo de las puertas de rotación, se asegura que la información quede codificada correctamente en el espacio de Hilbert para su posterior análisis.
 
 
 \subsection{Representación cuántica mediante matrices de densidad}
 \label{subsec:representacion_cuantica}
 Para modelar relaciones no lineales entre activos, cada observación multivariante se codifica en un estado cuántico mediante un mapa de características parametrizado. A partir de dicho mapeo, cada observación queda representada como un estado cuántico puro:
 
-\begin{equation}[eq:estado_cuantico_observacion]{Estado cuántico de una observación del activo i}
+\begin{equation}[eq:estado_cuantico_observacion]{Estado cuántico de una observación de un activo individual}
 \lvert\psi(\mathbf{x}_i^t)\rangle.
 \end{equation}
 
@@ -60,7 +60,7 @@ Esta métrica proporciona una medida geométrica natural en el espacio de operad
 
 Las distancias cuánticas entre todos los pares de activos se organizan en una matriz de distancias simétrica $D \in \mathbb{R}^{N \times N}$. Dicha matriz se emplea como entrada para un procedimiento de \textit{clustering} jerárquico, que genera un dendrograma jerárquico a partir de una métrica de distancia entre \textit{clusters}.
 
-En la implementación experimental comparada en este TFG, el \gls{HRP} clásico y el \gls{KHRP} emplean enlace simple para la construcción jerárquica, mientras que la ordenación cuántica evaluada con distancias de Frobenius utiliza Ward. El \textbf{enlace simple} (\textit{single linkage}) mide la distancia entre dos grupos como la distancia entre los dos activos más cercanos de cada grupo, lo que puede dar lugar a estructuras alargadas en el dendrograma. El \textbf{criterio de Ward} en cambio fusiona en cada paso los dos grupos cuya unión provoca el menor aumento de varianza interna, tendiendo a formar grupos más compactos y equilibrados. Esta diferencia afecta únicamente a la fase de ordenamiento; el esquema de asignación de pesos mediante bisección recursiva se mantiene común.
+En la implementación experimental comparada en este TFG, el \gls{HRP} clásico y el \gls{KHRP} emplean enlace simple para la construcción jerárquica, mientras que la ordenación cuántica evaluada con distancias de Frobenius utiliza Ward. El \textbf{enlace simple} (en inglés \textit{single linkage}) mide la distancia entre dos grupos como la distancia entre los dos activos más cercanos de cada grupo, lo que puede dar lugar a estructuras alargadas en el dendrograma. El \textbf{criterio de Ward} en cambio fusiona en cada paso los dos grupos cuya unión provoca el menor aumento de varianza interna, tendiendo a formar grupos más compactos y equilibrados. Esta diferencia afecta únicamente a la fase de ordenamiento; el esquema de asignación de pesos mediante bisección recursiva se mantiene común.
 
 Del dendrograma se extrae un ordenamiento de los activos, de forma que activos con menor distancia tienden a situarse próximos en la representación final. El reordenamiento de la matriz de distancias mediante este procedimiento no altera los valores originales, pero facilita su reorganización consistente con la estructura jerárquica.
 
@@ -92,7 +92,7 @@ La implementación de \gls{QHRP} se especifica mediante los siguientes parámetr
     \item \textbf{Prototipo hardware:} Subconjunto de $N = 40$ activos para la validación exploratoria en hardware cuántico real.
     \item \textbf{Profundidad del circuito:} El mapa de características consta de bloques locales (rotaciones parametrizadas) intercalados con capas de entrelazamiento.
     \item \textbf{Puertas de entrelazamiento:} Se utiliza iSWAP aplicada sobre pares predefinidos de qubits.
-    \item \textbf{Backend de simulación:} Simulación mediante simulador de vector de estado (statevector), sin ruido, permitiendo acceso directo a la función de onda completa en el régimen ideal.
+    \item \textbf{Backend de simulación:} Simulación mediante simulador de vector de estado (en inglés \textit{statevector}), sin ruido, permitiendo acceso directo a la función de onda completa en el régimen ideal.
     \item \textbf{Normalización de características:} Normalización angular min-max dentro del mapa de características.
 \end{itemize}
 
@@ -106,7 +106,7 @@ El proceso integral de análisis se estructura en las siguientes etapas:
     \item \textbf{Ingeniería de características:} Cálculo de momentos estadísticos mediante ventanas móviles.
     \item \textbf{Normalización:} Normalización angular min-max dentro del mapa de características.
     \item \textbf{Representación cuántica:} Aplicación del mapa de características parametrizado para generar matrices de densidad promedio de cada activo descrito en la Sección \ref{subsec:representacion_cuantica}.
-    \item \textbf{Métrica de distancia:} Cálculo de la matriz de distancias de Frobenius entre pares de activos (Sección \ref{subsec:metrica_distancia_cuantica}).
+    \item \textbf{Métrica de distancia:} Cálculo de la matriz de distancias de Frobenius entre pares de activos, descrito en la Sección~\ref{subsec:metrica_distancia_cuantica}.
     \item \textbf{\textit{Clustering} jerárquico:} Aplicación del criterio jerárquico correspondiente y extracción del ordenamiento del dendrograma descrito en la Sección \ref{subsec:construccion_ordenamiento}.
     \item \textbf{Asignación de pesos (Recursive Bisection):} Distribución de capital entre los activos siguiendo la estructura jerárquica obtenida. Se aplica el algoritmo de bisección recursiva clásico sobre la matriz de covarianza para garantizar la paridad de riesgo basada en la nueva topología cuántica.
     \item \textbf{Evaluación y Análisis:} Comparación de las carteras resultantes mediante métricas de rendimiento ajustado por riesgo (Sharpe, \gls{PSR} y \gls{MinTRL}) entre los enfoques clásicos y cuánticos.
@@ -133,8 +133,8 @@ Donde $R_p$ es el retorno de la cartera, $R_f$ es la tasa libre de riesgo y $\si
 
 \subsection{PSR}
 \label{subsec:probabilistic_sharpe_ratio}
-Dado que el Sharpe Ratio es una estimación estadística sujeta a ruido, se utilizará el \textbf{\gls{PSR}} para evaluar la significación de los resultados. \gls{PSR} corrige los sesgos introducidos por la asimetría (\textit{skewness}) y la curtosis de la distribución de retornos, calculando la probabilidad de que el Sharpe Ratio observado sea superior a un valor de referencia (benchmark). Esta métrica es fundamental en este TFG para validar si la mejora del \gls{QHRP} es estadísticamente robusta o producto del azar.
+Dado que el Sharpe Ratio es una estimación estadística sujeta a ruido, se utilizará el \textbf{\gls{PSR}} para evaluar la significación de los resultados. \gls{PSR} corrige los sesgos introducidos por la asimetría (en inglés \textit{skewness}) y la curtosis de la distribución de retornos, calculando la probabilidad de que el Sharpe Ratio observado sea superior a un valor de referencia (benchmark). Esta métrica es fundamental en este TFG para validar si la mejora del \gls{QHRP} es estadísticamente robusta o producto del azar.
 
 \subsection{Otras métricas de riesgo}
 \label{subsec:otras_metricas_riesgo}
-Complementariamente, se incorpora la métrica \textbf{\gls{MinTRL}} (\textit{Minimum Track Record Length}) para las variantes \gls{HRP}, como indicador de robustez estadística de la señal. En esta implementación, el análisis cuantitativo principal de rendimiento se centra en Sharpe y \gls{PSR}; la estabilidad se interpreta a partir de la dispersión interventana de dichas métricas.
+Complementariamente, se incorpora la métrica \textbf{\gls{MinTRL}} para las variantes \gls{HRP}, como indicador de robustez estadística de la señal. En esta implementación, el análisis cuantitativo principal de rendimiento se centra en Sharpe y \gls{PSR}; la estabilidad se interpreta a partir de la dispersión interventana de dichas métricas.

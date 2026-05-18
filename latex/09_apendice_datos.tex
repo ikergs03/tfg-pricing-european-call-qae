@@ -1,7 +1,7 @@
 \chapter{Universo de activos y obtención de datos}
 \label{ap:datos}
 
-Este apéndice describe el universo de activos empleado en los experimentos, el procedimiento de descarga de precios de mercado y el pipeline de preprocesado utilizado para obtener las características financieras de entrada al modelo. El conjunto de activos y el proceso de obtención de datos replican fielmente el artículo de referencia~\cite{arian2025qhrp}.
+Este apéndice describe el universo de activos empleado en los experimentos, el procedimiento de descarga de precios de mercado y las etapas de preprocesado utilizadas para obtener las características financieras de entrada al modelo. El conjunto de activos y el proceso de obtención de datos replican fielmente el artículo de referencia~\cite{arian2025qhrp}.
 
 \section{Universo de activos}
 \label{ap:sec:universo_activos}
@@ -221,7 +221,7 @@ Los precios de cierre diarios se descargan de Yahoo Finance mediante la bibliote
 \section{Preprocesado y características financieras}
 \label{ap:sec:preprocesado}
 
-El pipeline de preprocesado replica exactamente el procedimiento del código reproducible del artículo de referencia~\cite{arian2025qhrp}:
+Las etapas de preprocesado replican exactamente el procedimiento del código reproducible del artículo de referencia~\cite{arian2025qhrp}:
 
 \begin{enumerate}
     \item \textbf{Limpieza de datos:} Se eliminan tickers sin datos (\texttt{dropna(axis=1, how='all')}) y filas completamente nulas (\texttt{dropna(how='all')}).

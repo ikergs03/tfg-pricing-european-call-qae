@@ -43,7 +43,7 @@ Para cada activo se calculan ventanas móviles (típicamente de 5 períodos) uti
 El procesamiento de características visible en el flujo principal se centra en la normalización angular del mapa de características; no se documenta aquí una estandarización previa adicional a las seis características ya calculadas.
 
 \begin{itemize}
-\item \textbf{Normalización angular (dentro del mapa de características):} Antes de la codificación cuántica, cada característica se normaliza mediante mapeo afín respecto a sus extremos históricos en una ventana temporal activa, transformándose en un ángulo $\theta_i \in [0, \alpha\pi]$ que parametriza las rotaciones del circuito. Esta normalización min-max es específica del mapa de características y permite que el embedding cuántico se adapte dinámicamente a cambios de régimen de mercado (véase Apéndice~\ref{ap:estimacion_ansatz}).
+\item \textbf{Normalización angular dentro del mapa de características:} Antes de la codificación cuántica, cada característica se normaliza mediante mapeo afín respecto a sus extremos históricos en una ventana temporal activa, transformándose en un ángulo $\theta_i \in [0, \alpha\pi]$ que parametriza las rotaciones del circuito. Esta normalización min-max es específica del mapa de características y permite que la codificación cuántica se adapte dinámicamente a cambios de régimen de mercado (véase Apéndice~\ref{ap:estimacion_ansatz}).
 \end{itemize}
 
 \subsection{Implementación del modelo cuántico}

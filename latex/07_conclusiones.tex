@@ -11,7 +11,7 @@ Este TFG ha evaluado la viabilidad de la metodología \gls{QHRP} como extensión
 
 \begin{itemize}
     \item \textbf{Objetivo 1 — Viabilidad de la codificación angular y del ansatz variacional:}
-    Se ha confirmado que la codificación angular min-max en el rango $[0, \alpha\pi]$ permite representar las seis características financieras como ángulos de rotación en un circuito de 6 qubits. El ansatz con tres capas de codificación intercaladas con entrelazamiento iSWAP genera matrices de densidad promedio que capturan dependencias no lineales entre activos. El experimento de reducción a 5 qubits muestra además que el método mantiene su capacidad de segmentación al eliminar una característica, lo que confirma la robustez del esquema de codificación.
+    Se ha confirmado que la codificación angular min-max en el rango $[0, \alpha\pi]$ permite representar las seis características financieras como ángulos de rotación en un circuito de 6 qubits. El ansatz con tres capas de codificación intercaladas con entrelazamiento iSWAP genera matrices de densidad promedio que capturan dependencias no lineales entre activos. El experimento de reducción a 5 qubits muestra además que el método mantiene su capacidad de sectorización al eliminar una característica, lo que confirma la robustez del esquema de codificación.
 
     \item \textbf{Objetivo 2 — Reproducción de QHRP y comparación con HRP clásico:}
     Se ha reproducido fielmente los resultados de Arian et al.~\cite{arian2025qhrp}. El ranking de métodos obtenido (QHRP $>$ Pesos Iguales $>$ Markowitz $>$ HRP Clásico $>$ HRP Kernel en Sharpe acumulado) es consistente con el del paper de referencia ~\cite{arian2025qhrp}. Las métricas por ventana presentan diferencias menores respecto a la referencia~\cite{arian2025qhrp}, con un Sharpe acumulado del período de prueba de 1.4441 frente al 1.3975 reportado, validando la fidelidad de la réplica.
@@ -20,7 +20,7 @@ Este TFG ha evaluado la viabilidad de la metodología \gls{QHRP} como extensión
     \gls{QHRP} produce sectorizaciones económicamente coherentes: separa la renta variable pura de los diversificadores y coberturas, a diferencia del mega-grupo heterogéneo que genera el HRP clásico. El Sharpe acumulado de \gls{QHRP} (1.4441) supera al del HRP clásico (1.2378) y al del HRP Kernel (1.1803). Los tests de permutación confirman que la estructura jerárquica es invariante al orden inicial de los activos y no es un artefacto visual.
 
     \item \textbf{Objetivo 4 — Validación en hardware cuántico real:}
-    El prototipo se ha ejecutado en el ordenador cuántico IBM \texttt{ibm\_fez} ($N=40$, $T=90$) de 126 qubits y se confirma que la estructura jerárquica de \gls{QHRP} persiste en hardware real. A diferencia de la simulación, en hardware cada resultado requiere un proceso de medida físico: el circuito se ejecuta con 256 disparos. La mejora de contraste de bloques obtenida ($\Delta\mathrm{BC} = 0.0102$) es inferior a la de simulación ($0.0786$) debido al ruido \gls{NISQ}, pero mantiene el signo positivo, constituyendo evidencia de transferencia metodológica parcial.
+    El prototipo se ha ejecutado en el ordenador cuántico IBM \texttt{ibm\_fez} (\(N=40\) valores, \(T=90\) instantes temporales) de 126 qubits y se confirma que la estructura jerárquica de \gls{QHRP} persiste en hardware real. A diferencia de la simulación, en hardware cada resultado requiere un proceso de medida físico: el circuito se ejecuta con 256 disparos. La mejora de contraste de bloques obtenida ($\Delta\mathrm{BC} = 0.0102$) es inferior a la de simulación ($0.0786$) debido al ruido \gls{NISQ}, pero mantiene el signo positivo, constituyendo evidencia de transferencia metodológica parcial.
 \end{itemize}
 
 \subsection{Contribuciones y limitaciones}
@@ -28,7 +28,7 @@ Este TFG contribuye al estado del arte mediante la reproducción fiel y extensi�
 
 El prototipo en hardware, aunque limitado por el ruido de los dispositivos \gls{NISQ} actuales, confirma que la estructura jerárquica cuántica persiste fuera del entorno de simulación ideal.
 
-No obstante, el estudio reconoce limitaciones intrínsecas: la dependencia de la simulación clásica para el grueso de los experimentos, la ausencia de costes de transacción en el modelo y la sensibilidad del modelo a hiperparámetros como el factor de escala en el mapeo cuántico. Estas limitaciones definen el marco de confianza de los resultados obtenidos.
+No obstante, el estudio reconoce limitaciones intrínsecas: la dependencia de la simulación clásica para el grueso de los experimentos, el hecho de que el modelo no tiene en cuenta los costes derivados de la compra y venta de activos (comisiones, impuestos, diferencia entre precio de compra y venta) y la sensibilidad del modelo a hiperparámetros como el parámetro de escala angular $\alpha$ en el mapeo cuántico o el tamaño de ventana $w$ en el cálculo de características. Estas limitaciones definen el marco de confianza de los resultados obtenidos.
 
 \section{Trabajo Futuro}
 \label{sec:trabajo_futuro}

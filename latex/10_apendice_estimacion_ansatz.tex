@@ -6,9 +6,9 @@ En este apéndice se describe la justificación del ansatz cuántico empleado, c
 \section{Justificación del ansatz cuántico}
 \label{sec:justificacion_ansatz}
 
-El circuito utilizado en este TFG se interpreta explícitamente como un \textbf{ansatz de codificación} (mapa de características) que define un embedding de las entradas reales en un espacio de Hilbert. En lugar de plantear una arquitectura libremente optimizada, se adopta una estructura repetible compuesta por: puertas de un qubit parametrizadas por las características (rotaciones) y capas de dos qubits (entrelazadores) aplicadas sobre pares predefinidos.
+El circuito utilizado en este TFG se interpreta explícitamente como un \textbf{ansatz de codificación} (mapa de características) que define una codificación de las entradas reales en un espacio de Hilbert. En lugar de plantear una arquitectura libremente optimizada, se adopta una estructura repetible compuesta por: puertas de un qubit parametrizadas por las características (rotaciones) y capas de dos qubits (entrelazadores) aplicadas sobre pares predefinidos.
 
-\subsubsection{Formalización: el mapa de características como embedding en el espacio de Hilbert}
+\subsubsection{Formalización: el mapa de características como codificación en el espacio de Hilbert}
 
 Sea $\mathbf{x}\in\mathbb{R}^P$ el vector de características de una observación. Definimos el mapeo de características cuántico (mapa de características) como una aplicación
 \begin{equation}[eq:feature_map_cuantico]{Mapeo cuántico de las características}
@@ -26,7 +26,7 @@ Los operadores unitarios que construyen $U(\mathbf{x})$ se separan conceptualmen
 \lvert\psi(\mathbf{x})\rangle = V_{\mathrm{ent}} U_{\mathrm{loc}}(\mathbf{x})\lvert 0\rangle^{\otimes P}.
 \end{equation}
 
-Nótese que operaciones locales $U_{\mathrm{loc}}$ por sí solas generan embeddings separables (producto tensorial de rotaciones) cuya geometría está determinada por la distancia entre estados locales; la inclusión de $V_{\mathrm{ent}}$ es la que introduce no separabilidad y, con ello, una geometría de distancias que refleja correlaciones entre componentes del vector original.
+Nótese que operaciones locales $U_{\mathrm{loc}}$ por sí solas generan codificaciones separables (producto tensorial de rotaciones) cuya geometría está determinada por la distancia entre estados locales; la inclusión de $V_{\mathrm{ent}}$ es la que introduce no separabilidad y, con ello, una geometría de distancias que refleja correlaciones entre componentes del vector original.
 
 \subsubsection{Efecto del entrelazamiento sobre separabilidad y geometría de distancias}
 
@@ -38,13 +38,13 @@ donde $p_{\ell}\geq 0$ y $\sum_{\ell}p_{\ell}=1$.
 
 Un estado entrelazado, por el contrario, posee coherencias y correlaciones entre subsistemas que se manifiestan en componentes fuera de la estructura tensorial simple. Estas coherencias influyen directamente en medidas matriciales como la distancia de Frobenius o la fidelidad: pequeñas variaciones en $V_{\mathrm{ent}}$ pueden modificar elementos off-diagonal de $\rho_i$ y, por tanto, alterar $d_F(\rho_i,\rho_j)$.
 
-Desde un punto de vista operatorio, la aplicación de entrelazadores no locales hace que la métrica entre dos embeddings deje de depender únicamente de diferencias locales de ángulos y pase a incorporar términos de correlación entre qubits. En particular, las distancias son invariantes frente a transformaciones unitarias globales comunes (es decir, $d(U\rho_i U^{\dagger}, U\rho_j U^{\dagger})=d(\rho_i,\rho_j)$). Sin embargo, aunque $V_{\mathrm{ent}}$ es independiente de las entradas, su aplicación sobre estados que dependen de $\mathbf{x}$ mediante $U_{\mathrm{loc}}(\mathbf{x})$ hace que la manera en que las características se codifican y se mezclan sea no lineal, alterando significativamente la geometría resultante del espacio de embeddings.
+Desde un punto de vista operatorio, la aplicación de entrelazadores no locales hace que la métrica entre dos codificaciones deje de depender únicamente de diferencias locales de ángulos y pase a incorporar términos de correlación entre qubits. En particular, las distancias son invariantes frente a transformaciones unitarias globales comunes (es decir, $d(U\rho_i U^{\dagger}, U\rho_j U^{\dagger})=d(\rho_i,\rho_j)$). Sin embargo, aunque $V_{\mathrm{ent}}$ es independiente de las entradas, su aplicación sobre estados que dependen de $\mathbf{x}$ mediante $U_{\mathrm{loc}}(\mathbf{x})$ hace que la manera en que las características se codifican y se mezclan sea no lineal, alterando significativamente la geometría resultante del espacio de codificaciones.
 
 En síntesis: el entrelazamiento extiende la capacidad del mapa de características para codificar correlaciones entre características, y por ende modifica la topología y la métrica del espacio de estados $\{\lvert\psi(\mathbf{x})\rangle : \mathbf{x}\in\mathbb{R}^P\}$ sobre los que se calcula la distancia de comparación entre activos.
 
 \subsubsection{Comparación técnica: CNOT vs iSWAP}
 
-Aunque el trabajo de referencia ilustra el entrelazamiento con CNOT, la formulación admite otras puertas (CZ, SWAP, iSWAP, ...). Es conveniente precisar en qué sentido la elección concreta afecta al embedding.
+Aunque el trabajo de referencia ilustra el entrelazamiento con CNOT, la formulación admite otras puertas (CZ, SWAP, iSWAP, ...). Es conveniente precisar en qué sentido la elección concreta afecta a la codificación.
 
 La acción en base computacional de CNOT y iSWAP sobre el subespacio de dos qubits puede escribirse como
 \begin{equation}[eq:matrices_cnot_iswap]{Matrices en base computacional de CNOT e iSWAP}
@@ -53,7 +53,7 @@ La acción en base computacional de CNOT y iSWAP sobre el subespacio de dos qubi
 \mathrm{iSWAP} = \begin{pmatrix}1&0&0&0\\0&0&i&0\\0&i&0&0\\0&0&0&1\end{pmatrix}.
 \end{equation}
 
-CNOT implementa un flip condicionado en el segundo qubit y es particularmente adecuado para generar correlaciones tipo bit-flip (estados de Bell cuando se combina con Hadamard). En contraste, iSWAP intercambia amplitudes entre los estados $\lvert 01\rangle$ y $\lvert 10\rangle$ introduciendo además una fase relativa $i$. En términos de embedding, CNOT introduce correlaciones condicionadas que tienden a correlacionar valores de probabilidad en la base computacional, mientras que iSWAP mezcla amplitudes e introduce estructura de fase relativa. La elección de puerta afecta significativamente a la estructura de coherencias off-diagonal de $\rho$ y, por tanto, a la geometría del espacio de embeddings. Dependiendo del problema y de la métrica elegida (por ejemplo, si la métrica es sensible a fases coherentes), esta distinción puede modificar la separación observada entre activos. En nuestro caso, el uso de iSWAP es una elección operativa coherente con la implementación y puede influir en la estructura de coherencias y la codificación de correlaciones complejas; la memoria deja constancia de esta decisión y compara cualitativamente ambos efectos.
+CNOT implementa un flip condicionado en el segundo qubit y es particularmente adecuado para generar correlaciones tipo bit-flip (estados de Bell cuando se combina con Hadamard). En contraste, iSWAP intercambia amplitudes entre los estados $\lvert 01\rangle$ y $\lvert 10\rangle$ introduciendo además una fase relativa $i$. En términos de codificación, CNOT introduce correlaciones condicionadas que tienden a correlacionar valores de probabilidad en la base computacional, mientras que iSWAP mezcla amplitudes e introduce estructura de fase relativa. La elección de puerta afecta significativamente a la estructura de coherencias off-diagonal de $\rho$ y, por tanto, a la geometría del espacio de codificaciones. Dependiendo del problema y de la métrica elegida (por ejemplo, si la métrica es sensible a fases coherentes), esta distinción puede modificar la separación observada entre activos. En nuestro caso, el uso de iSWAP es una elección operativa coherente con la implementación y puede influir en la estructura de coherencias y la codificación de correlaciones complejas; la memoria deja constancia de esta decisión y compara cualitativamente ambos efectos.
 
 \subsubsection{Papel del parámetro \texorpdfstring{$\alpha$}{alpha} y fenómenos de saturación}
 
@@ -62,7 +62,7 @@ Las rotaciones locales se parametrizan mediante ángulos que dependen de las car
 \theta_k(\mathbf{x}) = \alpha\,\pi\, s_k(\mathbf{x}).
 \end{equation}
 
-Cuando $\alpha$ es pequeño, las diferencias angulares entre observaciones son de baja magnitud y la resolución del embedding es limitada; cuando $\alpha$ crece, los ángulos pueden envolver varias vueltas (wrapping) y la representación puede saturarse o volverse altamente oscilatoria, reduciendo la interpretabilidad y, en presencia de ruido, amplificando efectos no deseados. Este comportamiento conecta con resultados sobre expresividad (``expressibility'') y problemas de optimización en circuitos parametrizados y motiva fijar $\alpha$ en un rango balanceado y reportarlo explícitamente en los experimentos.
+Cuando $\alpha$ es pequeño, las diferencias angulares entre observaciones son de baja magnitud y la resolución de la codificación es limitada; cuando $\alpha$ crece, los ángulos pueden envolver varias vueltas (wrapping) y la representación puede saturarse o volverse altamente oscilatoria, reduciendo la interpretabilidad y, en presencia de ruido, amplificando efectos no deseados. Este comportamiento conecta con resultados sobre expresividad (``expressibility'') y problemas de optimización en circuitos parametrizados y motiva fijar $\alpha$ en un rango balanceado y reportarlo explícitamente en los experimentos.
 
 \subsubsection{Profundidad de circuito y adecuación a entornos NISQ}
 
@@ -72,11 +72,11 @@ La profundidad del circuito se elige buscando un compromiso entre expresividad (
 
 En el paper de referencia, las capas de entrelazamiento se presentan como una \textbf{familia de opciones} (CNOT, CZ, SWAP, iSWAP, etc.), y la figura ilustrativa del circuito muestra CNOT como ejemplo concreto. En consecuencia, la contribución metodológica central no depende de una puerta única, sino de la combinación entre: (i) codificación angular de características y (ii) mezcla entre qubits mediante capas de entrelazamiento intercaladas.
 
-En esta implementación se adopta iSWAP en el pipeline principal para mantener consistencia con el código reproducido del proyecto y con la construcción de matrices de densidad utilizadas en los experimentos. Esta elección preserva la lógica del método (mapa de características + densidad promedio + distancia de Frobenius + clustering \gls{HRP}), aunque induce una geometría de embedding distinta a la de una implementación estrictamente CNOT.
+En esta implementación se adopta iSWAP en el proceso principal para mantener consistencia con el código reproducido del proyecto y con la construcción de matrices de densidad utilizadas en los experimentos. Esta elección preserva la lógica del método (mapa de características + densidad promedio + distancia de Frobenius + clustering \gls{HRP}), aunque induce una geometría de codificación distinta a la de una implementación estrictamente CNOT.
 
-El ansatz no se presenta como la arquitectura óptima universal, sino como una configuración metodológicamente consistente y reproducible para trasladar el problema financiero a un espacio cuántico de dimensión $2^P$ manteniendo interpretabilidad y trazabilidad. Desde el punto de vista de reproducibilidad, en este TFG se distinguen explícitamente dos niveles: (i) circuito de referencia del paper de referencia~\cite{arian2025qhrp} (con CNOT en la figura de ejemplo) y (ii) circuito efectivamente usado en el pipeline base (con iSWAP). Esta separación evita ambigüedades al comparar resultados con la literatura y al justificar divergencias cuantitativas esperables.
+El ansatz no se presenta como la arquitectura óptima universal, sino como una configuración metodológicamente consistente y reproducible para trasladar el problema financiero a un espacio cuántico de dimensión $2^P$ manteniendo interpretabilidad y trazabilidad. Desde el punto de vista de reproducibilidad, en este TFG se distinguen explícitamente dos niveles: (i) circuito de referencia del paper de referencia~\cite{arian2025qhrp} (con CNOT en la figura de ejemplo) y (ii) circuito efectivamente usado en el proceso base (con iSWAP). Esta separación evita ambigüedades al comparar resultados con la literatura y al justificar divergencias cuantitativas esperables.
 
-El desarrollo práctico del pipeline, junto con la reproducción de circuitos y la trazabilidad de implementación, se presenta de forma separada en el Capítulo~\ref{cap:desarrollo}.
+El desarrollo práctico del proceso, junto con la reproducción de circuitos y la trazabilidad de implementación, se presenta de forma separada en el Capítulo~\ref{cap:desarrollo}.
 
 \section[Cálculo del vector angular theta]{Cálculo del vector angular $\theta$}
 \label{ap:calculo_theta}
@@ -114,11 +114,11 @@ Con lo que la codificación angular en el tiempo $t$ queda:
 \end{cases}
 \end{equation}
 
-Esta dependencia temporal induce un mapa de características no estacionario donde la transformación $x\mapsto\theta(t)$ varía con la ventana $W(t)$, lo que implica que el embedding depende de la distribución empírica de los datos en cada ventana, no solo de la secuencia temporal. Esta es una decisión de diseño deliberada: el objetivo no es invariancia temporal sino adaptación del embedding a cambios de régimen de mercado. Políticas habituales de mantenimiento de $W(t)$ incluyen ventana deslizante (recomendada online) para respuesta rápida, ventana acumulada (offline) para estabilidad, o percentiles robustos para mitigar outliers.
+Esta dependencia temporal induce un mapa de características no estacionario donde la transformación $x\mapsto\theta(t)$ varía con la ventana $W(t)$, lo que implica que la codificación depende de la distribución empírica de los datos en cada ventana, no solo de la secuencia temporal. Esta es una decisión de diseño deliberada: el objetivo no es invariancia temporal sino adaptación de la codificación a cambios de régimen de mercado. Políticas habituales de mantenimiento de $W(t)$ incluyen ventana deslizante (recomendada online) para respuesta rápida, ventana acumulada (offline) para estabilidad, o percentiles robustos para mitigar outliers.
 
 
 \subsubsection{Actualización del estado cuántico}
-Una vez calculado $\theta(t)$ mediante Eq.~\eqref{eq:theta_qhrp_t}, se construye el circuito (Sección~\ref{ap:estructura_ansatz}) y se obtiene el estado cuántico $\rho(t)$. En ventanas fijas de tamaño $T$, la densidad media puede actualizarse incrementalmente:
+Una vez calculado $\theta(t)$ mediante Eq.~\eqref{eq:theta_qhrp_t}, se construye el circuito descrito en la Sección~\ref{ap:estructura_ansatz} y se obtiene el estado cuántico $\rho(t)$. En ventanas fijas de tamaño $T$, la densidad media puede actualizarse incrementalmente:
 
 \begin{equation}[eq:densidad_media_incremental]{Actualización incremental de densidad}
 \bar{\rho}_t = \bar{\rho}_{t-1} + \frac{1}{T}\big(\rho_{\text{nuevo}} - \rho_{\text{descartado}}\big),
