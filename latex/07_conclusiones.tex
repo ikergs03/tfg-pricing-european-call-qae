@@ -4,7 +4,7 @@
 \section{Conclusiones}
 \label{sec:conclusiones}
 
-Este TFG ha evaluado la viabilidad de la metodología \gls{QHRP} como extensión cuántica de los métodos clásicos de optimización de carteras. A continuación se sintetizan los resultados obtenidos en relación con cada uno de los objetivos planteados en la introducción.
+Este TFG ha evaluado la viabilidad de la metodología \gls{QHRP} como extensión cuántica de los métodos clásicos de optimización de carteras para sectorizar valores. A continuación se resumen los resultados obtenidos en relación con cada uno de los objetivos planteados en la introducción.
 
 \subsection{Consecución de objetivos}
 \label{subsec:consecucion_objetivos}
@@ -14,17 +14,17 @@ Este TFG ha evaluado la viabilidad de la metodología \gls{QHRP} como extensión
     Se ha confirmado que la codificación angular min-max en el rango $[0, \alpha\pi]$ permite representar las seis características financieras como ángulos de rotación en un circuito de 6 qubits. El ansatz con tres capas de codificación intercaladas con entrelazamiento iSWAP genera matrices de densidad promedio que capturan dependencias no lineales entre activos. El experimento de reducción a 5 qubits muestra además que el método mantiene su capacidad de segmentación al eliminar una característica, lo que confirma la robustez del esquema de codificación.
 
     \item \textbf{Objetivo 2 — Reproducción de QHRP y comparación con HRP clásico:}
-    Se ha reproducido fielmente el pipeline de Arian et al.~\cite{arian2025qhrp}. El ranking de métodos obtenido (QHRP $>$ Pesos Iguales $>$ Markowitz $>$ HRP Clásico $>$ HRP Kernel en Sharpe acumulado) es consistente con el del paper de referencia. Las métricas por ventana presentan diferencias menores respecto al original, con un Sharpe acumulado del período de prueba de 1.4441 frente al 1.3975 reportado, validando la fidelidad de la réplica.
+    Se ha reproducido fielmente los resultados de Arian et al.~\cite{arian2025qhrp}. El ranking de métodos obtenido (QHRP $>$ Pesos Iguales $>$ Markowitz $>$ HRP Clásico $>$ HRP Kernel en Sharpe acumulado) es consistente con el del paper de referencia ~\cite{arian2025qhrp}. Las métricas por ventana presentan diferencias menores respecto a la referencia~\cite{arian2025qhrp}, con un Sharpe acumulado del período de prueba de 1.4441 frente al 1.3975 reportado, validando la fidelidad de la réplica.
 
     \item \textbf{Objetivo 3 — Impacto sobre la estructura jerárquica y el rendimiento:}
-    \gls{QHRP} produce segmentaciones económicamente coherentes: separa la renta variable pura de los diversificadores y coberturas, a diferencia del mega-grupo heterogéneo que genera el HRP clásico. El Sharpe acumulado de \gls{QHRP} (1.4441) supera al del HRP clásico (1.2378) y al del HRP Kernel (1.1803). Los tests de permutación confirman que la estructura jerárquica es invariante al orden inicial de los activos y no es un artefacto visual.
+    \gls{QHRP} produce sectorizaciones económicamente coherentes: separa la renta variable pura de los diversificadores y coberturas, a diferencia del mega-grupo heterogéneo que genera el HRP clásico. El Sharpe acumulado de \gls{QHRP} (1.4441) supera al del HRP clásico (1.2378) y al del HRP Kernel (1.1803). Los tests de permutación confirman que la estructura jerárquica es invariante al orden inicial de los activos y no es un artefacto visual.
 
     \item \textbf{Objetivo 4 — Validación en hardware cuántico real:}
-    El prototipo ejecutado en el ordenador cuántico IBM \texttt{ibm\_fez} ($N=40$, $T=90$) confirma que la estructura jerárquica de \gls{QHRP} persiste en hardware real. A diferencia de la simulación, en hardware cada resultado requiere un proceso de medida físico: el circuito se ejecuta repetidamente (256 veces por circuito) porque cada ejecución colapsa el estado cuántico y produce un único resultado binario, por lo que se necesitan múltiples medidas para estimar la distribución de probabilidad. La mejora de contraste de bloques obtenida ($\Delta\mathrm{BC} = 0.0102$) es inferior a la de simulación ($0.0786$) debido al ruido \gls{NISQ}, pero mantiene el signo positivo, constituyendo evidencia de transferencia metodológica parcial.
+    El prototipo se ha ejecutado en el ordenador cuántico IBM \texttt{ibm\_fez} ($N=40$, $T=90$) de 126 qubits y se confirma que la estructura jerárquica de \gls{QHRP} persiste en hardware real. A diferencia de la simulación, en hardware cada resultado requiere un proceso de medida físico: el circuito se ejecuta con 256 disparos. La mejora de contraste de bloques obtenida ($\Delta\mathrm{BC} = 0.0102$) es inferior a la de simulación ($0.0786$) debido al ruido \gls{NISQ}, pero mantiene el signo positivo, constituyendo evidencia de transferencia metodológica parcial.
 \end{itemize}
 
 \subsection{Contribuciones y limitaciones}
-La tesis contribuye al estado del arte mediante la reproducción fiel y extensión de la metodología \gls{QHRP}, aportando validaciones de robustez (permutación), análisis de reducción a 5 qubits y una primera transferencia a hardware real en dispositivos de IBM. El código, los scripts de análisis y los materiales asociados están disponibles en el repositorio público del proyecto: \url{https://github.com/ikergs03/tfg-computacion-cuantica-finanzas}.
+Este TFG contribuye al estado del arte mediante la reproducción fiel y extensión de la metodología \gls{QHRP}, aportando validaciones de robustez con permutación, análisis de reducción a 5 qubits y una primera transferencia a hardware real en dispositivos de IBM. El código, los scripts de análisis y los materiales asociados están disponibles en el repositorio público del proyecto: \url{https://github.com/ikergs03/tfg-computacion-cuantica-finanzas}.
 
 El prototipo en hardware, aunque limitado por el ruido de los dispositivos \gls{NISQ} actuales, confirma que la estructura jerárquica cuántica persiste fuera del entorno de simulación ideal.
 
@@ -36,11 +36,11 @@ No obstante, el estudio reconoce limitaciones intrínsecas: la dependencia de la
 La investigación abre diversas líneas de desarrollo para consolidar la ventaja cuántica en la gestión de carteras:
 
 \begin{enumerate}
-    \item \textbf{Validación sistemática en hardware real:} Superar el prototipo preliminar mediante ejecuciones exhaustivas en ordenadores cuánticos reales. Resulta prioritario testear configuraciones de 5 o 6 qubits (correspondientes a las características $P$ del modelo) para evaluar cómo el ruido físico y los errores de puerta afectan a la estabilidad de la métrica de \textit{block contrast} y a la segmentación final.
+    \item \textbf{Validación sistemática en hardware real:} Superar el prototipo preliminar mediante ejecuciones exhaustivas en ordenadores cuánticos reales. Resulta prioritario testear configuraciones de 5 o 6 qubits, correspondientes a las características $P$ del modelo, para evaluar cómo el ruido físico y los errores de puerta afectan a la estabilidad de la métrica de contraste de bloques y a la sectorización final.
     
     \item \textbf{Optimización de la escalabilidad:} Investigar la simplificación de los mapas de características y técnicas de compilación de circuitos que permitan manejar universos de activos más amplios manteniendo la profundidad de circuito en niveles tolerables para el hardware \gls{NISQ}.
     
-    \item \textbf{Métricas de riesgo y adaptabilidad:} Explorar la inclusión de métricas de riesgo no lineales (como el \gls{CVaR} cuántico) y el desarrollo de versiones dinámicas del algoritmo que se adapten a cambios bruscos de régimen de mercado mediante rebalanceos optimizados.
+    \item \textbf{Métricas de riesgo y adaptabilidad:} Explorar la inclusión de métricas de riesgo no lineales, como el \gls{CVaR} cuántico, y el desarrollo de versiones dinámicas del algoritmo que se adapten a cambios bruscos de régimen de mercado mediante rebalanceos optimizados.
 \end{enumerate}
 
 \gls{QHRP} representa una línea de investigación con resultados prometedores: ir más allá de la correlación de segundo orden para construir carteras con métricas cuánticas es técnicamente viable hoy en simulación y, de forma parcial, ya en hardware real.

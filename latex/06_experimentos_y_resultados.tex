@@ -1,13 +1,12 @@
 \chapter{Experimentos y Resultados}
 \label{cap:experimentos_resultados}
 
-\section{Experimentos}
-\label{sec:experimentos}
 En este capítulo se comparan las estrategias de construcción de carteras descritas en el Capítulo~\ref{cap:metodologia}, analizando tanto su rendimiento financiero como su coste computacional.
 
-\subsection{Marco Experimental}
+\section{Marco Experimental}
+\label{sec:marco_experimental}
 
-La evaluación se realiza en una cartera de valores mediante un esquema \textit{walk-forward} con ventanas deslizantes de 756 días (aprox. 3 años) para entrenamiento y 21 días (aprox. 1 mes) para test, evaluando 18 ventanas en total. En cada ventana, los pesos se estiman con datos de entrenamiento y se evalúan exclusivamente en el bloque temporal posterior, evitando pérdida de información y reproduciendo un uso operativo realista.
+La evaluación se realiza en una cartera de valores mediante un esquema \textit{walk-forward} con ventanas deslizantes de 756 días (aprox. 3 años) para entrenamiento y 21 días para test, evaluando 18 ventanas en total. En cada ventana, los pesos se estiman con datos de entrenamiento y se evalúan exclusivamente en el bloque temporal posterior, evitando pérdida de información y reproduciendo un uso operativo realista.
 
 Se comparan cinco estrategias: \textbf{\gls{QHRP}} con ordenación jerárquica a partir de distancias entre matrices de densidad; \textbf{\gls{HRP} clásico} con ordenación jerárquica basada en distancia de correlación; \textbf{\gls{KHRP}} con ordenación jerárquica basada en distancia \gls{MMD} gaussiana; \textbf{Markowitz} con asignación proporcional al inverso de la varianza diagonal; y \textbf{Pesos Iguales (1/N)} con una cartera equiponderada como línea base.
 
@@ -15,9 +14,8 @@ Para cada método y cada ventana se calculan: \textbf{Sharpe ratio anualizado} c
 
 Todas las métricas numéricas se reportan con cuatro decimales, adoptando la misma precisión que emplean las tablas del artículo de referencia~\cite{arian2025qhrp}, lo que facilita la comparación directa con los resultados publicados.
 
-
-\section{Resultados}
-\label{sec:resultados}
+\section{Resultados experimentales}
+\label{sec:resultados_experimentales}
 
 \begin{table}[Sharpe y PSR por ventana walk-forward]{TB:WALKFORWARD}{Sharpe ratio y PSR por método, calculados sobre las 18 ventanas walk-forward.}
 \begin{tabular}{lccc}
@@ -34,12 +32,12 @@ Pesos Iguales & 1.5076 & 3.9906 & 0.6113 \\
 \end{tabular}
 \end{table}
 
-La Tabla~\ref{TB:WALKFORWARD} muestra que la diferencia de Sharpe medio entre el método \gls{QHRP} con valor de 1.5016 y el método Pesos Iguales con valor de 1.5076 es pequeña frente a su variabilidad interventana con desviaciones cercanas a 4, por lo que en una ventana concreta cualquiera puede quedar por encima. Esto significa que el comportamiento mensual está fuertemente influido por cambios de régimen y ruido de estimación, lo que sugiere que las diferencias no son estadísticamente robustas a nivel mensual y deben interpretarse con cautela. Por tanto, esta tabla sirve para evaluar robustez local, pero no basta por sí sola para decidir el mejor método global.
+La Tabla~\ref{TB:WALKFORWARD} muestra que la diferencia de Sharpe medio entre el método \gls{QHRP} con valor de 1.5016 y el método Pesos Iguales con valor de 1.5076 es pequeña frente a su variabilidad interventana con desviaciones cercanas a 4, por lo que en una ventana concreta cualquiera puede quedar por encima. Esto significa que el comportamiento mensual está fuertemente influido por cambios de régimen y ruido de estimación, lo que sugiere que las diferencias no son estadísticamente robustas a nivel mensual y deben interpretarse con cautela. Por tanto, esta tabla sirve para evaluar la robustez local, pero no basta por sí sola para decidir el mejor método global.
 
-\begin{table}[Sharpe acumulado \gls{OOS}]{TB:SHARPEAGREGADO}{Sharpe ratio acumulado del período de prueba (18 ventanas).}
+\begin{table}[Sharpe acumulado \gls{OOS}]{TB:SHARPEAGREGADO}{Sharpe ratio acumulado del período de prueba (\gls{OOS}) de 18 ventanas.}
 \begin{tabular}{lc}
 \hline
-\textbf{Método} & \textbf{Sharpe \gls{OOS} agregado} \\
+\textbf{Método} & \textbf{Sharpe \gls{OOS} acumulado} \\
 \hline
 HRP Cuántico & 1.4441 \\
 HRP Clásico & 1.2378 \\
@@ -50,7 +48,7 @@ Pesos Iguales & 1.3193 \\
 \end{tabular}
 \end{table}
 
-La Tabla~\ref{TB:WALKFORWARD} y la Tabla~\ref{TB:SHARPEAGREGADO} muestran que \gls{QHRP} tiene mejores resultados en términos agregados, mientras que la variabilidad mensual impide declarar un ganador estadísticamente robusto a corto plazo. En consecuencia, la comparación debe hacerse en dos niveles: estabilidad local por ventana y rendimiento global acumulado. La Tabla~\ref{TB:COSTECOMPUTACIONAL} muestra que la mejora financiera de \gls{QHRP} viene acompañada de un coste computacional muy superior.
+Completando la Tabla~\ref{TB:WALKFORWARD} y la Tabla~\ref{TB:SHARPEAGREGADO} se obtiene que \gls{QHRP} tiene mejores resultados en términos agregados, mientras que la variabilidad mensual impide declarar un ganador estadísticamente robusto a corto plazo. En consecuencia, la comparación debe hacerse en dos niveles: estabilidad local por ventana y rendimiento global acumulado. En la Tabla~\ref{TB:COSTECOMPUTACIONAL} se muestra que la mejora financiera de \gls{QHRP} viene acompañada de un coste computacional muy superior cuando se utilizan simulador de vector de estados.
 
 \begin{table}[Coste computacional]{TB:COSTECOMPUTACIONAL}{Coste computacional medio por ventana ($N=169$, $P=6$).}
 \begin{tabular}{lcc}
@@ -73,6 +71,8 @@ TOTAL HRP Kernel & 510.007 & 119.269 \\
 
 La Tabla~\ref{TB:COSTECOMPUTACIONAL} muestra que el cuello de botella de \gls{QHRP} está en la simulación de las matrices de densidad, con un coste aproximadamente $2.8\times 10^4$ veces superior al clásico. La fase de ordenación es marginal frente a esa simulación, así que la limitación real del método es su escalabilidad en entornos de rebalanceo frecuente.
 
+No obstante, este coste corresponde exclusivamente a la \textbf{simulación clásica} de circuitos cuánticos, cuyo coste crece exponencialmente con el número de qubits al tener que mantener y operar sobre un vector de estado de dimensión $2^P$. En hardware cuántico real la situación es radicalmente distinta: un circuito de profundidad fija se ejecuta en tiempo constante independientemente del número de características codificadas, ya que el procesador cuántico opera directamente sobre el estado físico del sistema. Al migrar de simulación a hardware cuántico real, este cuello de botella desaparece: añadir qubits no incrementa el tiempo de ejecución en el hardware sino únicamente la profundidad del circuito, que permanece acotada por el diseño del \textit{ansatz}.
+
 \subsection{Relación entre estructura visual y rendimiento}
 La comparación de matrices ordenadas y no ordenadas como se planteó en el Capítulo~\ref{cap:metodologia} ayuda a interpretar por qué \gls{QHRP} puede ofrecer mejor rendimiento que el método clásico. La matriz ordenada concentra activos similares en bloques cuasi-diagonales, lo que favorece particiones más coherentes en la bisección recursiva de \gls{HRP}. En consecuencia, se reduce la mezcla de activos poco afines dentro de subcarteras y mejora la asignación de riesgo.
 
@@ -82,10 +82,10 @@ No obstante, esta relación no es determinista: una estructura visual más defin
 
 Para validar que la estructura jerárquica es invariante al orden inicial de los activos, se realizó un experimento permutando aleatoriamente el orden de entrada en cinco ocasiones. La Tabla~\ref{TB:FIVEPERMS} resume los resultados:
 
-\begin{table}[Cinco permutaciones de activos]{TB:FIVEPERMS}{Resultados del test con cinco permutaciones de orden distintas de activos.}
+\begin{table}[Cinco permutaciones de activos]{TB:FIVEPERMS}{Resultados del test con cinco permutaciones de orden distintas de activos. $\Delta$BC es la mejora de \textit{block contrast} al ordenar; Sim.\ es la similitud del ordenamiento resultante respecto al de referencia (1.000 = idéntico).}
 \begin{tabular}{cccccc}
 \hline
-\textbf{perm} & \textbf{seed} & \textbf{ganancia\_clásico} & \textbf{ganancia\_cuántico} & \textbf{sim\_clásico} & \textbf{sim\_cuántico} \\
+\textbf{perm} & \textbf{seed} & \textbf{$\Delta$BC clásico} & \textbf{$\Delta$BC cuántico} & \textbf{Sim.\ clásico} & \textbf{Sim.\ cuántico} \\
 \hline
 1 & 11 & 0.1402 & 0.0234 & 1.0000 & 1.0000 \\
 2 & 22 & 0.1479 & 0.0314 & 1.0000 & 1.0000 \\
@@ -98,20 +98,20 @@ Para validar que la estructura jerárquica es invariante al orden inicial de los
 \end{tabular}
 \end{table}
 
-La similitud 1.0000 en todas las ejecuciones indica que la estructura de bloques se recupera idénticamente independientemente del orden inicial de activos. Las mejoras de contraste son positivas en ambos métodos en todas las ejecuciones. La Figura~\ref{FIG:PERMUTACIONES_CORR} y Figura~\ref{FIG:PERMUTACIONES_QUANTUM} muestran que en matrices sin ordenar la estructura se pierde, pero tras aplicar \gls{HRP}/\gls{QHRP} se recuperan patrones cuasi-diagonales equivalentes. Esto valida que los resultados no son artefactos visuales sino consecuencias del procedimiento jerárquico de ordenación.
+La similitud 1.0000 en todas las ejecuciones indica que la estructura de bloques se recupera idénticamente independientemente del orden inicial de activos. Las mejoras de contraste son positivas en ambos métodos en todas las ejecuciones. Las figuras~\ref{FIG:PERMUTACIONES_CORR} y~\ref{FIG:PERMUTACIONES_QUANTUM} muestran que en matrices sin ordenar la estructura se pierde, pero tras aplicar \gls{HRP}/\gls{QHRP} se recuperan patrones cuasi-diagonales equivalentes. Esto valida que los resultados no son artefactos visuales sino consecuencias del procedimiento jerárquico de ordenación.
 
-\begin{figure}[Invarianza frente a permutaciones: correlación]{FIG:PERMUTACIONES_CORR}{Ejemplo: matrices de correlación sin ordenar y tras HRP clásico en una permutación representativa de activos.}
+\begin{figure}[Invarianza frente a permutaciones: correlación]{FIG:PERMUTACIONES_CORR}{Visualización de matrices de correlación sin ordenar y tras HRP clásico en una permutación representativa de activos.}
 	\image{15cm}{}{fig3-shuffled}
 \end{figure}
 
-\begin{figure}[Invarianza frente a permutaciones: cuántica]{FIG:PERMUTACIONES_QUANTUM}{Ejemplo: matrices de distancia cuántica sin ordenar y tras QHRP en una permutación representativa de activos.}
+\begin{figure}[Invarianza frente a permutaciones: cuántica]{FIG:PERMUTACIONES_QUANTUM}{Visualización de matrices de distancia cuántica sin ordenar y tras QHRP en una permutación representativa de activos.}
 	\image{15cm}{}{fig4-shuffled}
 \end{figure}
 
-\subsection{Comparación con el paper de referencia}
-Para evaluar el grado de reproducibilidad, se comparan los resultados de este TFG con los reportados por el paper de referencia~\cite{arian2025qhrp} en tres dimensiones: (i) ranking relativo entre métodos, (ii) Sharpe ratio acumulado del período de prueba y (iii) comportamiento visual de las matrices ordenadas.
+\subsection{Comparación de resultados con el paper de referencia}
+Para evaluar el grado de reproducibilidad, se comparan los resultados de este TFG con los reportados por el paper de referencia~\cite{arian2025qhrp} en tres métricas: (i) ranking relativo entre métodos, (ii) Sharpe ratio acumulado del período de prueba y (iii) comportamiento visual de las matrices ordenadas.
 
-En este TFG, el ranking por Sharpe ratio acumulado del período de prueba (Tabla~\ref{TB:SHARPEAGREGADO}) es:
+En los resultados de este TFG, el ranking por Sharpe ratio acumulado del período de prueba (ver Tabla~\ref{TB:SHARPEAGREGADO}) verifican:
 
 \begin{center}
 QHRP (1.4441) $>$ Pesos Iguales (1.3193) $>$ Markowitz (1.2518) $>$ HRP Clásico (1.2378) $>$ HRP Kernel (1.1803).
@@ -119,26 +119,28 @@ QHRP (1.4441) $>$ Pesos Iguales (1.3193) $>$ Markowitz (1.2518) $>$ HRP Clásico
 
 En términos de reproducibilidad, el criterio principal no es la coincidencia exacta en valores absolutos, sino la consistencia cualitativa: que \gls{QHRP} mantenga un desempeño competitivo frente al \gls{HRP} clásico y que la ordenación cuántica siga revelando estructura jerárquica coherente en las matrices reordenadas.
 
-\begin{table}[Comparación con el paper de referencia (Tabla 1)]{TB:COMPARACIONPAPER_T1}{Comparación de métricas por ventana con la Tabla 1 del paper de referencia~\cite{arian2025qhrp}.}
-\begin{tabular}{lccc}
+\begin{table}[Comparación con el paper de referencia (Tabla 1)]{TB:COMPARACIONPAPER_T1}{Comparación de métricas de los resultados de este TFG y los del paper de referencia~\cite{arian2025qhrp}.}
+\begin{tabular}{lcccccc}
 \hline
-\textbf{Método} & \textbf{Sharpe (est./pap.)} & \textbf{Desv. (est./pap.)} & \textbf{PSR (est./pap.)} \\
+ & \multicolumn{3}{c}{\textbf{Este TFG}} & \multicolumn{3}{c}{\textbf{Paper de referencia~\cite{arian2025qhrp}}} \\
+\textbf{Método} & \textbf{Sharpe} & \textbf{Desv.} & \textbf{PSR} & \textbf{Sharpe} & \textbf{Desv.} & \textbf{PSR} \\
 \hline
-QHRP & 1.5016 / 1.4658 & 3.7837 / 3.7234 & 0.6191 / 0.6172 \\
-HRP Clásico & 1.2754 / 1.2190 & 3.9986 / 3.8598 & 0.5976 / 0.5970 \\
-HRP Kernel & 1.2928 / 1.2944 & 3.7140 / 3.6671 & 0.6054 / 0.6055 \\
-Markowitz & 1.3449 / 1.3474 & 3.7788 / 3.7785 & 0.6089 / 0.6093 \\
-Pesos Iguales & 1.5076 / 1.3565 & 3.9906 / 3.9065 & 0.6113 / 0.6043 \\
+QHRP & 1.5016 & 3.7837 & 0.6191 & 1.4658 & 3.7234 & 0.6172 \\
+HRP Clásico & 1.2754 & 3.9986 & 0.5976 & 1.2190 & 3.8598 & 0.5970 \\
+HRP Kernel & 1.2928 & 3.7140 & 0.6054 & 1.2944 & 3.6671 & 0.6055 \\
+Markowitz & 1.3449 & 3.7788 & 0.6089 & 1.3474 & 3.7785 & 0.6093 \\
+Pesos Iguales & 1.5076 & 3.9906 & 0.6113 & 1.3565 & 3.9065 & 0.6043 \\
 \hline
 \end{tabular}
 \end{table}
 
-La Tabla~\ref{TB:COMPARACIONPAPER_T1} revela una cercanía entre Sharpe, desviación y PSR respecto al paper de referencia~\cite{arian2025qhrp} que sugiere que el pipeline experimental está bien reproducido a nivel de ventana. Las discrepancias más visibles en algunos métodos (por ejemplo, Pesos Iguales) son compatibles con sensibilidad al periodo de mercado más que con un fallo metodológico. En consecuencia, la réplica puede considerarse fiel en dinámica estadística general.
+La Tabla~\ref{TB:COMPARACIONPAPER_T1} revela una cercanía entre Sharpe, desviación y PSR respecto al paper de referencia~\cite{arian2025qhrp} que sugiere que el pipeline experimental está bien reproducido a nivel de ventana. Las discrepancias más visibles en algunos métodos, por ejemplo en el denominado Pesos Iguales, son compatibles con sensibilidad al periodo de mercado más que con un fallo metodológico. Podemos concluir, que la réplica puede considerarse similar en dinámica estadística general.
 
 \begin{table}[Comparación con el paper de referencia (Tabla 2)]{TB:COMPARACIONPAPER_T2}{Comparación de Sharpe ratio acumulado del período de prueba con la Tabla 2 del paper de referencia~\cite{arian2025qhrp}.}
 \begin{tabular}{lcc}
 \hline
-\textbf{Método} & \textbf{Este TFG} & \textbf{Paper de referencia} \\
+ & \multicolumn{2}{c}{\textbf{Sharpe ratio \gls{OOS} acumulado}} \\
+\textbf{Método} & \textbf{Este TFG} & \textbf{Paper de referencia~\cite{arian2025qhrp}} \\
 \hline
 QHRP & 1.4441 & 1.3975 \\
 HRP Clásico & 1.2378 & 1.1378 \\
@@ -149,41 +151,90 @@ Pesos Iguales & 1.3193 & 1.1983 \\
 \end{tabular}
 \end{table}
 
-Como muestran las Tablas~\ref{TB:COMPARACIONPAPER_T1} y~\ref{TB:COMPARACIONPAPER_T2}, el pipeline es reproducible en dinámica estadística y ranking global, con variaciones menores en el orden intermedio debido a la sensibilidad de la muestra.
+Como muestran las Tablas~\ref{TB:COMPARACIONPAPER_T1} y~\ref{TB:COMPARACIONPAPER_T2}, los resultados del proceso son reproducibles, con variaciones menores en el orden intermedio debido a la sensibilidad de la muestra.
 
-\begin{figure}[Comparación visual Fig. 3 (este TFG)]{FIG:COMP_PAPER_FIG3_THIS}{Figura de correlaciones reordenadas obtenida en este TFG con el mismo esquema metodológico.}
+\begin{figure}[Comparación visual Fig. 3 (este TFG)]{FIG:COMP_PAPER_FIG3_THIS}{Figura de correlaciones reordenadas obtenida en este TFG con el mismo esquema metodológico que el utilizado en el paper de referencia~\cite{arian2025qhrp}.}
 	\image{12.5cm}{}{fig3-corr-matrices}
 \end{figure}
 
-La Figura~\ref{FIG:COMP_PAPER_FIG3_THIS} muestra que al recuperar bloques y separación entre grupos, se valida que la implementación reproduce la lógica económica del paper de referencia~\cite{arian2025qhrp} (activos similares quedan próximos en el ordenamiento). Las diferencias finas de contraste o tamaño son esperables por cambios en muestra y normalización, y no invalidan la réplica metodológica.
+La Figura~\ref{FIG:COMP_PAPER_FIG3_THIS} muestra que al recuperar bloques y separación entre grupos, se valida que la implementación reproduce la lógica económica del paper de referencia~\cite{arian2025qhrp} donde activos similares quedan próximos en el ordenamiento. Las diferencias finas de contraste o tamaño son esperables por cambios en muestra y normalización, y no invalidan la réplica metodológica.
 
-\begin{figure}[Comparación visual Fig. 4 (este TFG)]{FIG:COMP_PAPER_FIG4_THIS}{Figura de distancias cuánticas obtenida en este TFG.}
+\begin{figure}[Comparación visual Fig. 4 (este TFG)]{FIG:COMP_PAPER_FIG4_THIS}{Figura de distancias cuánticas obtenida en este TFG con el mismo esquema metodológico que el utilizado en el paper de referencia~\cite{arian2025qhrp}.}
 	\image{12.5cm}{}{fig4-best-match}
 \end{figure}
 
-La Figura~\ref{FIG:COMP_PAPER_FIG4_THIS} confirma que la presencia de bloques también en esta réplica muestra que QHRP mantiene poder de organización estructural fuera del contexto exacto del paper de referencia~\cite{arian2025qhrp}. La no coincidencia celda a celda es secundaria; lo relevante es conservar la separación jerárquica entre grupos de activos.
+La Figura~\ref{FIG:COMP_PAPER_FIG4_THIS} confirma que la estructura cuasi-diagonal se preserva también en las matrices de distancia cuántica, con \gls{QHRP} manteniendo capacidad de organización estructural fuera del contexto exacto del artículo original. Las discrepancias en valores absolutos son esperables y se explican por: (i) diferencias en universo temporal (tickers, fechas, regímenes de mercado) que alteran correlaciones y volatilidades, (ii) decisiones de preprocesado y parametrización del modelo ($\alpha$, normalización, criterio MMD), y (iii) detalles de implementación jerárquica (método de enlace, tratamiento de empates en dendrogramas). La no coincidencia celda a celda es secundaria; lo relevante es conservar el patrón cuasi-diagonal y la separación jerárquica entre grupos, criterio bajo el cual la réplica puede considerarse satisfactoria.
 
-La comparación visual se conserva como validación cualitativa, pero basta con las figuras reproducidas en este TFG para mostrar el patrón cuasi-diagonal y la separación jerárquica; no hace falta duplicar las imágenes del paper de referencia~\cite{arian2025qhrp}. Para esta parte visual se adopta un criterio estructural:
+\subsection{Prototipo en hardware IBM con 40 activos}
+\label{subsec:prototipo_hardware}
+Para reforzar la validación experimental en entorno real, se diseñó un prototipo en hardware IBM con una pregunta operativa explícita: dado un subconjunto fijo de activos y el mismo pipeline \gls{QHRP}, \textbf{¿se conserva la mejora estructural que aporta la ordenación cuántica al pasar de simulación ideal a hardware real?}
 
-\begin{itemize}
-	\item \textbf{Compatibilidad jerárquica:} agrupaciones estables y coherentes en la ordenación.
-	\item \textbf{Separación visual:} bloques de alta similitud interna y menor similitud entre bloques.
-	\item \textbf{Consistencia:} alineación entre estructura visual y resultados cuantitativos (Sharpe/PSR).
-\end{itemize}
+La conservación se mide con la métrica \textit{block contrast} ($\mathrm{BC}$) sobre la matriz de distancias $D$: dada una banda de anchura $b = \max(3, \lfloor N/10 \rfloor)$, se calcula la diferencia entre la distancia media de los pares lejanos a la diagonal y la distancia media de los pares próximos a ella. La mejora aportada por el reordenamiento se cuantifica como $\Delta\mathrm{BC} = \mathrm{BC}(D_{\text{ord}}) - \mathrm{BC}(D_{\text{raw}})$: un valor positivo indica que la ordenación acerca activos similares entre sí y aleja los distintos, reforzando la estructura de bloques en la matriz.
 
-Bajo estos criterios, las figuras obtenidas en este TFG (Figuras~\ref{FIG:COMP_PAPER_FIG3_THIS} y~\ref{FIG:COMP_PAPER_FIG4_THIS}) son comparables a las del paper de referencia~\cite{arian2025qhrp} en términos metodológicos, aunque presenten diferencias estéticas o de granularidad local. Las discrepancias pueden explicarse principalmente por: (i) diferencias en universo temporal (tickers, fechas, regímenes de mercado) que alteran correlaciones y volatilidades, (ii) decisiones de preprocesado y parametrización del modelo ($\alpha$, normalización, criterio MMD), y (iii) detalles de implementación jerárquica (método de enlace, tratamiento de empates en dendrogramas).
+\subsubsection{Por qué es necesario reducir a 40 activos en hardware real}
+\label{subsubsec:reduccion_40_activos}
 
-Por tanto, si los valores absolutos difieren pero se conserva el patrón cualitativo, la reproducción puede considerarse satisfactoria desde el punto de vista metodológico.
+En simulación ideal de vector de estado, calcular la matriz de densidad de un activo es una operación algebraica exacta: dado el vector de características $\mathbf{x}_i^t$, se aplica el circuito parametrizado y se obtiene el estado puro $|\psi(\mathbf{x}_i^t)\rangle$ directamente, sin ningún tipo de muestreo. Con ese estado se forma la contribución $|\psi\rangle\langle\psi|$ al promedio temporal, y el coste es exclusivamente computacional (multiplicaciones matriciales).
 
-\subsection{Experimento de reducción a 5 qubits}
+En hardware real el proceso es distinto. Un ordenador cuántico físico no puede devolver el vector de estado; solo puede medir el sistema en la base computacional y registrar qué resultado binario (\textit{bitstring}) se observa. Para obtener una estimación útil de la distribución de probabilidad $p(b) = |\langle b|\psi(\mathbf{x}_i^t)\rangle|^2$ sobre los $2^P = 64$ posibles \textit{bitstrings} de $P=6$ qubits, es necesario ejecutar el mismo circuito repetidamente. El número de repeticiones se denomina disparos (shots en inglés), y cada uno de ellos se corresponde con una ejecución del circuito: en este prototipo se usaron 256 disparos para obtener un resultado estadísticamente significativo.
+
+Esto implica que, para cada activo $i$ y cada instante temporal $t$, se debe enviar un circuito al hardware y esperar su resultado. El proceso completo por activo es el siguiente:
+\begin{enumerate}
+    \item \textbf{Preparación de circuitos:} para cada uno de los $T$ instantes de la ventana temporal se construye un circuito de 6 qubits parametrizado por el vector de características $\mathbf{x}_i^t$. Esto produce $T$ circuitos distintos por activo.
+    \item \textbf{Envío al hardware:} los $T$ circuitos se envían en lote al \textit{backend} de IBM Quantum. Cada circuito se ejecuta 256 veces para obtener un histograma de la distribución de estados estadísticamente significativo.
+    \item \textbf{Espera en cola:} el hardware real tiene una cola compartida entre todos los usuarios. El tiempo de espera depende del estado de carga del servidor y puede superar el tiempo de ejecución de los propios circuitos.
+    \item \textbf{Obtención de distribuciones:} una vez completados, los histogramas se normalizan para obtener vectores de probabilidad $p_i^t \in \mathbb{R}^{2^P}$, que actúan como sustitutos de las matrices de densidad individuales.
+    \item \textbf{Cálculo de distancias:} en lugar de la distancia de Frobenius entre matrices de densidad (usada en simulación), se calcula la distancia de Hellinger entre los vectores de probabilidad de cada par de activos.
+\end{enumerate}
+
+El total de circuitos a ejecutar crece como $N \times T$. La restricción determinante en hardware real no es técnica sino de cuota de acceso: el plan gratuito de IBM Quantum limita el tiempo de QPU a aproximadamente 10 minutos al mes. Reducir a $N=40$ activos y $T=90$ días acota el total a $3\,600$ circuitos, suficiente para obtener una muestra representativa de la estructura jerárquica dentro de ese presupuesto. El experimento principal completo ($N=169$, $T=756$, es decir, $127\,764$ circuitos) excedería con creces esa cuota mensual y queda fuera del alcance del plan de acceso utilizado.
+
+El prototipo se acotó a \(N=40\) activos y \(T=90\) días recientes, tamaño suficiente para obtener una muestra representativa dentro de la cuota de QPU disponible. En ambos casos se mantiene \(P=6\) características por activo, codificadas cada una en un qubit.
+
+La selección de activos se hizo de forma reproducible y en dos etapas:
+\begin{enumerate}
+\item \textbf{Tomando como criterio principal la liquidez:} ranking descendente por mediana de volumen monetario diario \((\text{precio}\times\text{volumen})\) en la ventana de 90 días. Se usa la mediana, y no la media, por su mayor robustez frente a picos transitorios y valores atípicos.
+\item \textbf{Tomando como criterio de respaldo la volatilidad:} si tras el filtro de datos faltan activos para completar 40, se añaden los no seleccionados con mayor desviación estándar de retornos en la misma ventana temporal.
+\end{enumerate}
+
+La simulación actúa como línea de base. Las etapas se mantiene idéntico en preprocesado, subconjunto de activos, mapa de características, ordenación jerárquica y criterio de evaluación. Solo cambia la capa de ejecución cuántica (observables ideales en simulador frente a distribuciones medidas en hardware). También se fija \(\alpha=2.0\) en ambos casos para mantener comparabilidad con el flujo principal y conservar una escala angular estable en la construcción de distancias.
+
+\begin{table}[Prototipo hardware vs simulación]{TB:PILOTO_BC}{Resultados de \textit{block contrast} en el prototipo \(N=40\) valores, \(T=90\) instantes temporales, \(P=6\) características.}
+\begin{tabular}{lccc}
+\hline
+\textbf{Caso} & \textbf{$BC_{\mathrm{raw}}$} & \textbf{$BC_{\mathrm{ord}}$} & \textbf{$\Delta\mathrm{BC}$} \\
+\hline
+Simulación línea de base & -0.0037 & 0.0748 & 0.0786 \\
+Hardware IBM (256 ejecuciones/circuito) & -0.0006 & 0.0096 & 0.0102 \\
+\hline
+\end{tabular}
+\end{table}
+
+Los resultados de hardware corresponden a una única ejecución sin promedio sobre ejecuciones independientes. La mejora estructural se conserva en signo, pero se atenúa en magnitud: la ratio entre el contraste hardware y el de simulación es aproximadamente $0.1298$, equivalente a una degradación relativa del $87.0\%$. Esta degradación combina dos efectos: (i) varianza de muestreo por número finito de ejecuciones por circuito y (ii) ruido físico del hardware debido a errores de puerta, tiempo de coherencia y deriva de calibración. Dado que se trata de una sola ejecución en hardware, este prototipo no permite aislar cuantitativamente ambos efectos ni sostener una atribución causal fina entre ellos.
+
+El criterio visual (bloques cuasi-diagonales en mapas de calor) se utiliza como evidencia cualitativa complementaria, no como prueba suficiente por sí sola. Por ende, el prototipo se interpreta como evidencia de \textbf{transferencia metodológica parcial}: la estructura jerárquica de QHRP persiste en hardware real, aunque con menor contraste que en simulación ideal.
+
+Por último, para asegurar reproducibilidad operativa, se guardó una copia local de la matriz de distancias de hardware y se habilitó recuperación desde trabajos ya completados en la plataforma de IBM. Esto permite rehacer figuras comparativas sin relanzar ejecuciones costosas.
+
+\begin{figure}[Correlaciones del prototipo en hardware IBM (Fig.\,3)]{FIG:HARDWARE_FIG3}{Equivalente a la Figura~3 del experimento principal, obtenido en el prototipo con hardware IBM ibm\_fez ($N=40$, $T=90$, 256 ejecuciones/circuito). Los tres paneles muestran la matriz de correlación sin ordenar, ordenada por HRP clásico y ordenada por QHRP cuyo ordenamiento se derivó del hardware real.}
+    \image{14cm}{}{fig3-hardware-corr}
+\end{figure}
+
+\begin{figure}[Distancias cuánticas del prototipo en hardware IBM (Fig.\,4)]{FIG:HARDWARE_FIG4}{Equivalente a la Figura~4 del experimento principal, para el prototipo en hardware IBM ibm\_fez. Los dos paneles muestran la matriz de distancia cuántica (Hellinger) sin ordenar y tras el ordenamiento QHRP. El panel derecho evidencia la aparición de bloques de baja distancia cerca de la diagonal, indicando que la estructura jerárquica se transfiere al hardware real, si bien con mayor dispersión que en simulación ideal.}
+    \image{14cm}{}{fig4-hardware-distance}
+\end{figure}
+
+La Figura~\ref{FIG:HARDWARE_FIG3} reproduce con 40 valores la visualción de la Figura~3 del experimento principal en el prototipo de hardware real: la ordenación cuántica derivada del hardware recupera bloques de alta correlación interna, aunque con menor definición que en simulación. La Figura~\ref{FIG:HARDWARE_FIG4} muestra las matrices de distancia cuántica antes y después del ordenamiento QHRP en hardware: aunque el contraste de bloques se reduce drásticamente ($\Delta\mathrm{BC} = 0.0102$ en hardware frente a $0.0786$ en simulación), la estructura cuasi-diagonal permanece visible, confirmando que \gls{QHRP} es ejecutable en hardware \gls{NISQ} real y transfiere al menos parcialmente su capacidad de clasificación de sectores por valores.
+
+\subsection{Circuito con reducción a 5 características (5 qubits)}
 \label{subsec:5_qubits}
 
-Una de las motivaciones de cara al trabajo futuro es probar \gls{QHRP} en hardware cuántico real con dispositivos de 5 qubits, que son más accesibles y abundantes que los de 6. Para anticipar si esta reducción es viable sin sacrificar la calidad de la segmentación, se realizó un experimento comparativo en simulación ideal.
+Una de las motivaciones de cara al trabajo futuro es probar \gls{QHRP} en hardware cuántico real con dispositivos de 5 qubits, que son más accesibles que los de mayor número de qubits. Para anticipar si esta reducción es viable sin sacrificar la calidad de la segmentación, se realizó un experimento comparativo en simulación ideal.
 
 El experimento conserva exactamente el mismo pipeline del experimento principal: mismo universo de 169 activos, misma ventana de 756 días, misma métrica de Frobenius y ordenamiento Ward. La única diferencia entre los dos escenarios es el número de características codificadas:
 
 \begin{itemize}
-    \item \textbf{6 qubits (referencia):} usa las seis características completas: retorno, retorno cuadrado, valor absoluto elevado a 1.5, $\mathrm{sign}(r)\log(1+|r|)$, $\tanh(r)$ y $\mathrm{sign}(r)\sqrt{|r|}$.
+    \item \textbf{6 qubits (referencia):} usa las seis características completas: retorno, retorno cuadrado, valor absoluto elevado a 1.5, $\mathrm{sign}(r)\log(1+|r|)$, $\tanh(r)$ y $\mathrm{sign}(r)\sqrt{|r|}$, donde $r$ representa el valor de retorno.
     \item \textbf{5 qubits:} elimina la sexta característica ($\mathrm{sign}(r)\sqrt{|r|}$), manteniendo las cinco restantes.
 \end{itemize}
 
@@ -212,67 +263,6 @@ Las correlaciones entre las matrices de distancia de ambos escenarios son muy al
 
 Las Figuras~\ref{FIG:6VS5_CORR} y~\ref{FIG:6VS5_DIST} confirman visualmente esta equivalencia: los bloques cuasi-diagonales resultantes del ordenamiento cuántico son comparables en ambas configuraciones. En consecuencia, el escenario de 5 qubits se perfila como una alternativa viable al de 6 para hardware cuántico real con menor número de qubits disponibles, sin comprometer la calidad de la segmentación jerárquica.
 
-\subsection{Prototipo en hardware IBM con 40 activos}
-\label{subsec:prototipo_hardware}
-Para reforzar la validación experimental en entorno real, se diseñó un prototipo en hardware IBM con una pregunta operativa explícita: dado un subconjunto fijo de activos y el mismo pipeline \gls{QHRP}, \textbf{¿se conserva la mejora estructural que aporta la ordenación cuántica al pasar de simulación ideal a hardware real?}
-
-La conservación se mide con la métrica \textit{block contrast} ($\mathrm{BC}$) sobre la matriz de distancias $D$: dada una banda de anchura $b = \max(3, \lfloor N/10 \rfloor)$, se calcula la diferencia entre la distancia media de los pares lejanos a la diagonal y la distancia media de los pares próximos a ella. La mejora aportada por el reordenamiento se cuantifica como $\Delta\mathrm{BC} = \mathrm{BC}(D_{\text{ord}}) - \mathrm{BC}(D_{\text{raw}})$: un valor positivo indica que la ordenación acerca activos similares entre sí y aleja los distintos, reforzando la estructura de bloques en la matriz.
-
-\subsubsection{Por qué es necesario reducir a 40 activos en hardware real}
-\label{subsubsec:reduccion_40_activos}
-
-En simulación ideal, calcular la matriz de densidad de un activo es una operación algebraica exacta: dado el vector de características $\mathbf{x}_i^t$, se aplica el circuito parametrizado y se obtiene el estado puro $|\psi(\mathbf{x}_i^t)\rangle$ directamente, sin ningún tipo de muestreo. Con ese estado se forma la contribución $|\psi\rangle\langle\psi|$ al promedio temporal, y el coste es exclusivamente computacional (multiplicaciones matriciales).
-
-En hardware real el proceso es radicalmente distinto. Un ordenador cuántico físico no puede devolver el vector de estado; solo puede medir el sistema en la base computacional y registrar qué resultado binario (\textit{bitstring}) se observa. Para obtener una estimación útil de la distribución de probabilidad $p(b) = |\langle b|\psi(\mathbf{x}_i^t)\rangle|^2$ sobre los $2^P = 64$ posibles \textit{bitstrings} de $P=6$ qubits, es necesario ejecutar el mismo circuito repetidamente. El número de repeticiones se denomina \textbf{ejecuciones por circuito}: en este prototipo se usaron 256 ejecuciones por circuito para controlar la varianza de estimación dentro de las restricciones de coste.
-
-Esto implica que, para cada activo $i$ y cada instante temporal $t$, se debe enviar un circuito al hardware y esperar su resultado. El proceso completo por activo es el siguiente:
-\begin{enumerate}
-    \item \textbf{Preparación de circuitos:} para cada uno de los $T$ instantes de la ventana temporal se construye un circuito de 6 qubits parametrizado por el vector de características $\mathbf{x}_i^t$. Esto produce $T$ circuitos distintos por activo.
-    \item \textbf{Envío al hardware:} los $T$ circuitos se envían en lote al \textit{backend} de IBM Quantum. Cada circuito se ejecuta 256 veces para obtener un histograma de \textit{bitstrings} estadísticamente estable.
-    \item \textbf{Espera en cola:} el hardware real tiene una cola compartida entre todos los usuarios. El tiempo de espera depende del estado de carga del servidor y puede superar el tiempo de ejecución de los propios circuitos.
-    \item \textbf{Obtención de distribuciones:} una vez completados, los histogramas se normalizan para obtener vectores de probabilidad $p_i^t \in \mathbb{R}^{2^P}$, que actúan como sustitutos de las matrices de densidad individuales.
-    \item \textbf{Cálculo de distancias:} en lugar de la distancia de Frobenius entre matrices de densidad (usada en simulación), se calcula la distancia de Hellinger entre los vectores de probabilidad de cada par de activos.
-\end{enumerate}
-
-El total de circuitos a ejecutar crece como $N \times T$. La restricción determinante en hardware real no es técnica sino de cuota de acceso: el plan gratuito de IBM Quantum limita el tiempo de QPU a aproximadamente 10 minutos al mes. Reducir a $N=40$ activos y $T=90$ días acota el total a $3\,600$ circuitos, suficiente para obtener una muestra representativa de la estructura jerárquica dentro de ese presupuesto. El experimento principal completo ($N=169$, $T=756$, es decir, $127\,764$ circuitos) excedería con creces esa cuota mensual y queda fuera del alcance del plan de acceso utilizado.
-
-El prototipo se acotó a \(N=40\) activos y \(T=90\) días recientes, tamaño suficiente para obtener una muestra representativa dentro de la cuota de QPU disponible. En ambos casos se mantiene \(P=6\) características por activo, codificadas cada una en un qubit.
-
-La selección de activos se hizo de forma reproducible y en dos etapas:
-\begin{enumerate}
-\item \textbf{Criterio principal (liquidez):} ranking descendente por mediana de volumen monetario diario \((\text{precio}\times\text{volumen})\) en la ventana de 90 días. Se usa la mediana, y no la media, por su mayor robustez frente a picos transitorios y valores atípicos.
-\item \textbf{Criterio de respaldo (volatilidad):} si tras el filtro de datos faltan activos para completar 40, se añaden los no seleccionados con mayor desviación estándar de retornos en la misma ventana temporal.
-\end{enumerate}
-
-La simulación actúa como \textit{baseline}. El pipeline se mantiene idéntico en preprocesado, subconjunto de activos, mapa de características, ordenación jerárquica y criterio de evaluación. Solo cambia la capa de ejecución cuántica (observables ideales en simulador frente a distribuciones medidas en hardware). También se fija \(\alpha=2.0\) en ambos casos para mantener comparabilidad con el flujo principal y conservar una escala angular estable en la construcción de distancias.
-
-\begin{table}[Prototipo hardware vs simulación]{TB:PILOTO_BC}{Resultados de \textit{block contrast} en el prototipo \(N=40\), \(T=90\), \(P=6\).}
-\begin{tabular}{lccc}
-\hline
-\textbf{Caso} & \textbf{$BC_{\mathrm{raw}}$} & \textbf{$BC_{\mathrm{ord}}$} & \textbf{$\Delta\mathrm{BC}$} \\
-\hline
-Simulación (\textit{baseline}) & -0.0037 & 0.0748 & 0.0786 \\
-Hardware IBM (256 ejecuciones/circuito) & -0.0006 & 0.0096 & 0.0102 \\
-\hline
-\end{tabular}
-\end{table}
-
-Los resultados de hardware corresponden a una única ejecución (sin promedio sobre ejecuciones independientes). La mejora estructural se conserva en signo, pero se atenúa en magnitud: la ratio entre el contraste hardware y el de simulación es aproximadamente $0.1298$, equivalente a una degradación relativa del $87.0\%$. Esta degradación combina dos efectos: (i) varianza de muestreo por número finito de ejecuciones por circuito y (ii) ruido físico del hardware (errores de puerta, lectura y deriva de calibración). Dado que se trata de una sola ejecución en hardware, este prototipo no permite aislar cuantitativamente ambos efectos ni sostener una atribución causal fina entre ellos.
-
-El criterio visual (bloques cuasi-diagonales en mapas de calor) se utiliza como evidencia cualitativa complementaria, no como prueba suficiente por sí sola. Por ende, el prototipo se interpreta como evidencia de \textbf{transferencia metodológica parcial}: la estructura jerárquica de QHRP persiste en hardware real, aunque con menor contraste que en simulación ideal.
-
-Por último, para asegurar reproducibilidad operativa, se guardó una copia local de la matriz de distancias de hardware y se habilitó recuperación desde trabajos ya completados en la plataforma de IBM. Esto permite rehacer figuras comparativas sin relanzar ejecuciones costosas.
-
-\begin{figure}[Correlaciones del prototipo en hardware IBM (Fig.\,3)]{FIG:HARDWARE_FIG3}{Equivalente a la Figura~3 del experimento principal, obtenido en el prototipo con hardware IBM ibm\_fez ($N=40$, $T=90$, 256 ejecuciones/circuito). Los tres paneles muestran la matriz de correlación sin ordenar, ordenada por HRP clásico y ordenada por QHRP cuyo ordenamiento se derivó del hardware real.}
-    \image{14cm}{}{fig3-hardware-corr}
-\end{figure}
-
-\begin{figure}[Distancias cuánticas del prototipo en hardware IBM (Fig.\,4)]{FIG:HARDWARE_FIG4}{Equivalente a la Figura~4 del experimento principal, para el prototipo en hardware IBM ibm\_fez. Los dos paneles muestran la matriz de distancia cuántica (Hellinger) sin ordenar y tras el ordenamiento QHRP. El panel derecho evidencia la aparición de bloques de baja distancia cerca de la diagonal, indicando que la estructura jerárquica se transfiere al hardware real, si bien con mayor dispersión que en simulación ideal.}
-    \image{14cm}{}{fig4-hardware-distance}
-\end{figure}
-
-La Figura~\ref{FIG:HARDWARE_FIG3} reproduce el esquema de la Figura~3 del experimento principal en el prototipo de hardware real: la ordenación cuántica derivada del hardware recupera bloques de alta correlación interna, aunque con menor definición que en simulación. La Figura~\ref{FIG:HARDWARE_FIG4} muestra las matrices de distancia cuántica antes y después del ordenamiento QHRP en hardware: aunque el contraste de bloques se reduce drásticamente ($\Delta\mathrm{BC} = 0.0102$ en hardware frente a $0.0786$ en simulación), la estructura cuasi-diagonal permanece visible, confirmando que \gls{QHRP} es ejecutable en hardware \gls{NISQ} real y transfiere al menos parcialmente su capacidad de segmentación.
-
 \subsection{Discusión de resultados}
 \label{subsec:discusion_resultados}
 
@@ -280,14 +270,14 @@ Más allá del rendimiento financiero, se analiza si \gls{HRP} clásico y \gls{Q
 
 El HRP clásico concentra 147 de los 169 activos en un único grupo (Purity=0.129, Entropy=0.866) que mezcla renta variable, renta fija y materias primas con dinámicas opuestas. Solo el grupo de criptomonedas queda aislado con coherencia perfecta (Purity=1.0), al ser una señal sectorial tan fuerte que la correlación lineal la detecta sin dificultad.
 
-\gls{QHRP}, en cambio, separa un grupo de 31 diversificadores y coberturas (renta fija + materias primas + emergentes, Purity=0.290) de un grupo de 25 activos de renta variable pura (ETFs amplios + acciones de alta correlación sistémica, Purity=0.400). \gls{QHRP} no agrupa por sector sino por \textbf{factor de riesgo}: los diversificadores se mueven de forma opuesta a la renta variable en escenarios de estrés, lo que los hace útiles como cobertura. La Tabla~\ref{TB:QHRP_MULTILEVEL} confirma que la segmentación cuántica es jerárquicamente coherente: al aumentar la granularidad, los grupos ganan homogeneidad de forma progresiva.
+\gls{QHRP}, en cambio, separa un grupo de 31 sectores y coberturas (renta fija + materias primas + emergentes, Purity=0.290) de un grupo de 25 activos de renta variable pura (ETFs amplios + acciones de alta correlación sistémica, Purity=0.400). \gls{QHRP} no agrupa por sector sino por \textbf{factor de riesgo}: los diversificadores se mueven de forma opuesta a la renta variable en escenarios de estrés, lo que los hace útiles como cobertura. La Tabla~\ref{TB:QHRP_MULTILEVEL} confirma que la segmentación cuántica es jerárquicamente coherente: al aumentar la granularidad, los grupos ganan homogeneidad de forma progresiva.
 
 \subsubsection{QHRP: Análisis multinivel}
 \label{subsubsec:analisis_multinivel}
 
-El análisis jerárquico de \gls{QHRP} permite refinar la segmentación en tres niveles de granularidad:
+En la tabla~\ref{TB:QHRP_MULTILEVEL}, el análisis jerárquico de \gls{QHRP} permite refinar la segmentación en tres niveles de granularidad:
 
-\begin{table}[Segmentación multinivel en QHRP]{TB:QHRP_MULTILEVEL}{Estadísticas de segmentación a diferentes niveles de granularidad en QHRP.}
+\begin{table}[Sectorización multinivel en QHRP]{TB:QHRP_MULTILEVEL}{Estadísticas de segmentación a diferentes niveles de granularidad en QHRP.}
 \begin{tabular}{lccccc}
 \hline
 \textbf{Nivel} & \textbf{Grupos} & \textbf{Tamaño medio} & \textbf{Purity media} & \textbf{Entropy media} & \textbf{Sectores/grupo} \\
@@ -299,21 +289,21 @@ MICRO & 45 & 3.2 & 0.504 & 0.859 & 2.6 \\
 \end{tabular}
 \end{table}
 
-La tendencia es clara: a medida que aumenta la granularidad (de MAIN a SUB a MICRO), los grupos se vuelven más homogéneos (Purity sube de 0.27 a 0.50), más compactos (tamaño baja de 15.3 a 3.2) y más especializados (sectores/grupo baja de 8.3 a 2.6). 
+La tendencia es clara, a medida que aumenta la granularidad de PRINCIPAL a SUB y a MICRO, los grupos se vuelven más homogéneos. La Pureza sube de 0.27 a 0.50, es decir, son más compactos, el tamaño baja de 15.3 a 3.2 y quedan más especializados y también los Sectores/grupo baja de 8.3 a 2.6. 
 
-Esta progresión indica que la segmentación cuántica es jerárquicamente coherente: cada refinamiento agrega información significativa sin contradecir el nivel anterior. En contraste, si la segmentación fuera arbitraria, la Purity no mostraría mejora consistente al refinar la granularidad.
+Esta progresión indica que la sectorización cuántica es jerárquicamente coherente: cada refinamiento agrega información significativa sin contradecir el nivel anterior. En contraste, si la segmentación fuera arbitraria, la Purity no mostraría mejora consistente al refinar la granularidad.
 
 \subsubsection{Comparación cuántico vs. clásico}
 \label{subsubsec:comparacion_quantico_clasico}
 
-\begin{table}[Comparación de segmentación: HRP Clásico vs QHRP]{TB:COMP_SEGMENTATION}{Resumen de diferencias en estrategia de segmentación.}
+\begin{table}[Comparación de sectorización: HRP Clásico vs QHRP]{TB:COMP_SEGMENTATION}{Resumen de diferencias en estrategia de sectorización.}
 \begin{tabular}{lll}
 \hline
 \textbf{Aspecto} & \textbf{HRP Clásico} & \textbf{QHRP Cuántico} \\
 \hline
 Base matemática & Correlación lineal & Matrices de densidad cuántica \\
 \hline
-Criterio de agrupamiento & Similitud en dendograma & Similitud en firmas cuánticas \\
+Criterio de agrupamiento & Similitud en dendrograma & Similitud en firmas cuánticas \\
 \hline
 Grupo más grande & 147 activos, Purity=0.129 & 31 activos, Purity=0.290 \\
 \hline
@@ -326,10 +316,10 @@ Rendimiento financiero & Sharpe acumulado: 1.238 & Sharpe acumulado: 1.444 \\
 \end{tabular}
 \end{table}
 
-Como muestra la Tabla~\ref{TB:COMP_SEGMENTATION}, el resultado principal es que \gls{QHRP} no solo obtiene mejor rendimiento financiero (Sharpe 1.444 vs. 1.238), sino que además produce segmentaciones más económicamente coherentes. Los grupos cuánticos responden a factores de riesgo interpretables (rentas variables, diversificadores, coberturas), mientras que los clásicos mezclan indiscriminadamente activos con dinámicas opuestas.
+Como muestra la Tabla~\ref{TB:COMP_SEGMENTATION}, el resultado principal es que \gls{QHRP} no solo obtiene mejor rendimiento financiero (Sharpe 1.444 vs. 1.238), sino que además produce sectorizaciones más económicamente coherentes. Los grupos cuánticos responden a factores de riesgo interpretables (rentas variables, diversificadores, coberturas), mientras que los clásicos mezclan indiscriminadamente activos con dinámicas opuestas.
 
 La ventaja de \gls{QHRP} frente a \gls{HRP} clásico no es solo empírica (mejor Sharpe), sino también estructural: grupos definidos por factores de riesgo coherentes producen asignaciones más robustas ante cambios de régimen y permiten identificar coberturas reales dentro de la cartera.
 
 \subsection{Resumen}
-\gls{QHRP} obtiene el mejor Sharpe acumulado (1.444) y produce segmentaciones económicamente coherentes, aunque con un coste computacional $2.8\times10^4$ veces mayor que el clásico. La elección entre métodos depende del equilibrio entre calidad de la segmentación y velocidad de ejecución requerida en cada contexto operativo.
+\gls{QHRP} obtiene el mejor Sharpe acumulado (1.444) y produce sectorizaciones económicamente coherentes, aunque con un coste computacional $2.8\times10^4$ veces mayor que el clásico. La elección entre métodos depende del equilibrio entre calidad de la sectorización y velocidad de ejecución requerida en cada contexto operativo.
 

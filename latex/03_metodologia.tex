@@ -1,6 +1,6 @@
 \chapter{Metodología}
 \label{cap:metodologia}
-En esta sección se presenta el marco metodológico empleado para analizar la estructura de dependencia entre activos financieros mediante técnicas de \gls{HRP} y su extensión cuántica. El objetivo principal es estudiar las relaciones latentes del mercado utilizando métricas alternativas a la correlación tradicional, permitiendo una representación más rica y robusta de las interdependencias entre activos.
+En este capítulo se presenta el marco metodológico empleado para analizar la estructura de dependencia entre activos financieros mediante técnicas de \gls{HRP} y su extensión cuántica. Se estudian las relaciones latentes del mercado utilizando métricas alternativas a la correlación tradicional, permitiendo una representación más rica y robusta de las interdependencias entre activos.
 
 \section{Representación cuántica de activos financieros}
 \label{sec:representacion_cuantica_activos}
@@ -72,7 +72,7 @@ Del dendrograma se extrae un ordenamiento de los activos, de forma que activos c
 
 El algoritmo \gls{HRP} clásico sigue el siguiente procedimiento: (1) calcula la matriz de correlación de retornos, (2) transforma la correlación en una métrica de distancia, (3) aplica \textit{clustering} jerárquico y (4) ordena los activos según el dendrograma para construir la cartera.
 
-En contraste, \gls{QHRP} sustituye la construcción clásica de la matriz de distancias por una métrica derivada de embeddings cuánticos:
+En contraste, \gls{QHRP} sustituye la construcción clásica de la matriz de distancias por una métrica derivada de mapeo de características cuánticas:
 \begin{itemize}
     \item \textbf{\gls{HRP} clásico:} Matriz de correlación $\Rightarrow$ Distancia clásica (ej. $1 - \text{corr}$) $\Rightarrow$ \textit{Clustering} jerárquico.
     \item \textbf{\gls{QHRP}:} Mapa de características $\Rightarrow$ Matrices de densidad $\Rightarrow$ Distancia de Frobenius $\Rightarrow$ \textit{Clustering} jerárquico.
@@ -88,11 +88,11 @@ La implementación de \gls{QHRP} se especifica mediante los siguientes parámetr
 \begin{itemize}
     \item \textbf{Número de qubits:} $P = 6$, correspondiente a las seis características por activo.
     \item \textbf{Configuración principal de evaluación:} 18 ventanas \textit{walk-forward} con 756 días de entrenamiento y 21 días de prueba por ventana.
-    \item \textbf{Universo principal de activos:} $N = 169$ activos del S\&P 500 en el experimento principal.
+    \item \textbf{Cartera principal de activos:} $N = 169$ activos del índice bursatil Standard and Poor's (S\&P 500) en el experimento principal.
     \item \textbf{Prototipo hardware:} Subconjunto de $N = 40$ activos para la validación exploratoria en hardware cuántico real.
     \item \textbf{Profundidad del circuito:} El mapa de características consta de bloques locales (rotaciones parametrizadas) intercalados con capas de entrelazamiento.
     \item \textbf{Puertas de entrelazamiento:} Se utiliza iSWAP aplicada sobre pares predefinidos de qubits.
-    \item \textbf{Backend de simulación:} Simulación mediante simulador de estado vectorial (statevector), sin ruido, permitiendo acceso directo a la función de onda completa en el régimen ideal.
+    \item \textbf{Backend de simulación:} Simulación mediante simulador de vector de estado (statevector), sin ruido, permitiendo acceso directo a la función de onda completa en el régimen ideal.
     \item \textbf{Normalización de características:} Normalización angular min-max dentro del mapa de características.
 \end{itemize}
 
@@ -105,9 +105,9 @@ El proceso integral de análisis se estructura en las siguientes etapas:
     \item \textbf{Preparación de datos:} Carga de series de precios, cálculo de retornos diarios y organización en ventanas temporales.
     \item \textbf{Ingeniería de características:} Cálculo de momentos estadísticos mediante ventanas móviles.
     \item \textbf{Normalización:} Normalización angular min-max dentro del mapa de características.
-    \item \textbf{Representación cuántica:} Aplicación del mapa de características parametrizado para generar matrices de densidad promedio de cada activo (Sección \ref{subsec:representacion_cuantica}).
+    \item \textbf{Representación cuántica:} Aplicación del mapa de características parametrizado para generar matrices de densidad promedio de cada activo descrito en la Sección \ref{subsec:representacion_cuantica}.
     \item \textbf{Métrica de distancia:} Cálculo de la matriz de distancias de Frobenius entre pares de activos (Sección \ref{subsec:metrica_distancia_cuantica}).
-    \item \textbf{\textit{Clustering} jerárquico:} Aplicación del criterio jerárquico correspondiente y extracción del ordenamiento del dendrograma (Sección \ref{subsec:construccion_ordenamiento}).
+    \item \textbf{\textit{Clustering} jerárquico:} Aplicación del criterio jerárquico correspondiente y extracción del ordenamiento del dendrograma descrito en la Sección \ref{subsec:construccion_ordenamiento}.
     \item \textbf{Asignación de pesos (Recursive Bisection):} Distribución de capital entre los activos siguiendo la estructura jerárquica obtenida. Se aplica el algoritmo de bisección recursiva clásico sobre la matriz de covarianza para garantizar la paridad de riesgo basada en la nueva topología cuántica.
     \item \textbf{Evaluación y Análisis:} Comparación de las carteras resultantes mediante métricas de rendimiento ajustado por riesgo (Sharpe, \gls{PSR} y \gls{MinTRL}) entre los enfoques clásicos y cuánticos.
 \end{enumerate}
@@ -118,7 +118,7 @@ Para evaluar y comparar el rendimiento de las estrategias de inversión resultan
 
 \subsection{Sharpe Ratio}
 \label{subsec:sharpe_ratio}
-El \textbf{Sharpe Ratio} es la métrica de referencia en la industria para medir el rendimiento de una cartera ajustado por riesgo. Representa el exceso de retorno por unidad de desviación estándar (volatilidad).
+El \textbf{Sharpe Ratio} es la métrica de referencia en entidades financieras para medir el rendimiento de una cartera ajustado por riesgo. Representa el exceso de retorno por unidad de desviación estándar (volatilidad).
 
 \begin{equation}[eq:sharpe_ratio]{Sharpe Ratio}
     SR = \frac{E[R_p - R_f]}{\sigma_p}
@@ -128,7 +128,7 @@ Donde $R_p$ es el retorno de la cartera, $R_f$ es la tasa libre de riesgo y $\si
 
 \begin{itemize}
     \item \textbf{Interpretación:} Un Sharpe Ratio más alto indica una gestión más eficiente, sugiriendo que la rentabilidad no es fruto de una exposición excesiva al riesgo.
-    \item \textbf{Limitaciones:} Su principal debilidad es que asume que los retornos siguen una distribución normal. En mercados financieros, donde existen eventos de "cola ancha" (\textit{fat tails}) y asimetría, el Sharpe Ratio puede subestimar el riesgo real.
+    \item \textbf{Limitaciones:} Su principal debilidad es que asume que los retornos siguen una distribución normal. En mercados financieros, donde existen eventos de cola ancha (\textit{fat tails}) y asimetría, el Sharpe Ratio puede subestimar el riesgo real.
 \end{itemize}
 
 \subsection{PSR}

@@ -5,10 +5,10 @@
 \label{sec:implementacion_analisis}
 En este capítulo se detalla el diseño y desarrollo del código utilizado para la preparación de los datos, la construcción de las características económicas basadas en momentos estadísticos, la implementación del modelo cuántico y la generación de las visualizaciones analizadas en el capítulo de resultados.
 
-\subsection{Arquitectura general del sistema}
-\label{sec:arquitectura_sistema}
+\subsection{Arquitectura general del proceso}
+\label{sec:arquitectura_proceso}
 
-El sistema se ha diseñado siguiendo una estructura modular con el objetivo de facilitar la mantenibilidad, la escalabilidad y la reproducibilidad de los experimentos. El flujo general del proceso se divide en tres bloques principales:
+El proceso se ha diseñado siguiendo una estructura modular con el objetivo de facilitar la mantenibilidad, la escalabilidad y la reproducibilidad de los experimentos. El flujo general se divide en tres bloques principales:
 
 \begin{itemize}
 \item Preparación y preprocesamiento de datos (extracción de indicadores estadísticos).
@@ -51,4 +51,4 @@ El procesamiento de características visible en el flujo principal se centra en 
 
 El modelo cuántico se implementa mediante circuitos parametrizados. Cada observación multivariante de 6 dimensiones se transforma en un estado cuántico simulado mediante \texttt{qiskit}, a partir del cual se construyen matrices densidad individuales $\rho$.
 
-Para cada activo, dichas matrices se agregan mediante un promedio temporal, obteniendo una matriz densidad representativa del comportamiento global del activo. Todas las operaciones se realizan mediante simuladores de estado (\texttt{statevector\_simulator}), garantizando un entorno reproducible.
+Para cada activo, dichas matrices se agregan mediante un promedio temporal, obteniendo una matriz densidad representativa del comportamiento global del activo. Todas las operaciones se realizan mediante simuladores de vector de estado (\texttt{statevector\_simulator}), garantizando un entorno reproducible.
