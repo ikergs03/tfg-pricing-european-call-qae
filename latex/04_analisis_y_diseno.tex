@@ -1,11 +1,9 @@
 \chapter{Análisis y Diseño}
 \label{cap:analisis_diseno}
 
-En este capítulo se presenta el análisis y diseño del sistema propuesto, incluyendo la estructura conceptual del pipeline, la representación de datos y la justificación teórica del ansatz cuántico adoptado.
-
 \section{Implementación del análisis jerárquico cuántico}
 \label{sec:implementacion_analisis}
-En esta sección se detalla el diseño y desarrollo del código utilizado para la preparación de los datos, la construcción de las características económicas basadas en momentos estadísticos, la implementación del modelo cuántico y la generación de las visualizaciones analizadas en el capítulo anterior.
+En este capítulo se detalla el diseño y desarrollo del código utilizado para la preparación de los datos, la construcción de las características económicas basadas en momentos estadísticos, la implementación del modelo cuántico y la generación de las visualizaciones analizadas en el capítulo de resultados.
 
 \subsection{Arquitectura general del sistema}
 \label{sec:arquitectura_sistema}
@@ -14,7 +12,7 @@ El sistema se ha diseñado siguiendo una estructura modular con el objetivo de f
 
 \begin{itemize}
 \item Preparación y preprocesamiento de datos (extracción de indicadores estadísticos).
-\item Implementación del modelo de análisis (QHRP y distancias de Frobenius).
+\item Implementación del modelo de análisis (\gls{QHRP} y distancias de Frobenius).
 \item Generación de resultados y visualizaciones (Heatmaps de distancias).
 \end{itemize}
 
@@ -42,10 +40,10 @@ Para cada activo se calculan ventanas móviles (típicamente de 5 períodos) uti
 \subsection{Estandarización y normalización}
 \label{sec:estandarizacion_control}
 
-El procesamiento de características visible en el flujo principal se centra en la normalización angular del feature map; no se documenta aquí una estandarización previa adicional a las seis características ya calculadas.
+El procesamiento de características visible en el flujo principal se centra en la normalización angular del mapa de características; no se documenta aquí una estandarización previa adicional a las seis características ya calculadas.
 
 \begin{itemize}
-\item \textbf{Normalización angular (dentro del feature map):} Antes de la codificación cuántica, cada característica se normaliza mediante mapeo afín respecto a sus extremos históricos en una ventana temporal activa, transformándose en un ángulo $\theta_i \in [0, \alpha\pi]$ que parametriza las rotaciones del circuito. Esta normalización min-max es específica del feature map y permite que el embedding cuántico se adapte dinámicamente a cambios de régimen de mercado (véase Apéndice~\ref{ap:estimacion_ansatz}).
+\item \textbf{Normalización angular (dentro del mapa de características):} Antes de la codificación cuántica, cada característica se normaliza mediante mapeo afín respecto a sus extremos históricos en una ventana temporal activa, transformándose en un ángulo $\theta_i \in [0, \alpha\pi]$ que parametriza las rotaciones del circuito. Esta normalización min-max es específica del mapa de características y permite que el embedding cuántico se adapte dinámicamente a cambios de régimen de mercado (véase Apéndice~\ref{ap:estimacion_ansatz}).
 \end{itemize}
 
 \subsection{Implementación del modelo cuántico}
@@ -54,78 +52,3 @@ El procesamiento de características visible en el flujo principal se centra en 
 El modelo cuántico se implementa mediante circuitos parametrizados. Cada observación multivariante de 6 dimensiones se transforma en un estado cuántico simulado mediante \texttt{qiskit}, a partir del cual se construyen matrices densidad individuales $\rho$.
 
 Para cada activo, dichas matrices se agregan mediante un promedio temporal, obteniendo una matriz densidad representativa del comportamiento global del activo. Todas las operaciones se realizan mediante simuladores de estado (\texttt{statevector\_simulator}), garantizando un entorno reproducible.
-
-\subsection{Justificación del ansatz cuántico}
-\label{sec:justificacion_ansatz}
-
-El circuito utilizado en este trabajo se interpreta explícitamente como un \textbf{ansatz de codificación} (feature map) que define un embedding de las entradas reales en un espacio de Hilbert. En lugar de plantear una arquitectura libremente optimizada, se adopta una estructura repetible compuesta por: puertas de un qubit parametrizadas por las características (rotaciones) y capas de dos qubits (entrelazadores) aplicadas sobre pares predefinidos.
-
-\subsubsection{Formalización: el feature map como embedding en el espacio de Hilbert}
-
-Sea $\mathbf{x}\in\mathbb{R}^P$ el vector de características de una observación. Definimos el mapeo de características cuántico (feature map) como una aplicación
-\begin{equation}[eq:feature_map_cuantico]{Mapeo cuántico de las características}
-\Phi:\;\mathbb{R}^P \longrightarrow \mathcal{H},
-\qquad
-\Phi(\mathbf{x}) = \lvert\psi(\mathbf{x})\rangle = U(\mathbf{x})\lvert 0\rangle^{\otimes P},
-\end{equation}
-donde $U(\mathbf{x})$ es la unitaria del circuito parametrizada por las entradas y $\mathcal{H}\cong\mathbb{C}^{2^P}$ es el espacio de Hilbert compuesto de $P$ qubits. La representación de cada activo se obtiene como la matriz de densidad promedio
-\begin{equation}[eq:densidad_promedio_activo]{Definición de densidad promedio de un activo}
-\rho_i = \frac{1}{T}\sum_{t=1}^T \lvert\psi(\mathbf{x}_i^t)\rangle\langle\psi(\mathbf{x}_i^t)\rvert.
-\end{equation}
-
-Los operadores unitarios que construyen $U(\mathbf{x})$ se separan conceptualmente en dos bloques: (i) un bloque de operadores locales $U_{\mathrm{loc}}(\mathbf{x})=\bigotimes_{k=1}^P R_k(\theta_k(\mathbf{x}))$ que codifican las características en ángulos locales, y (ii) un bloque de entrelazadores globales $V_{\mathrm{ent}}$ que introducen correlaciones no locales. Así,
-\begin{equation}[eq:estado_feature_map_entrelazado]{Estado embebido con bloques local y entrelazador}
-\lvert\psi(\mathbf{x})\rangle = V_{\mathrm{ent}} U_{\mathrm{loc}}(\mathbf{x})\lvert 0\rangle^{\otimes P}.
-\end{equation}
-
-Nótese que operaciones locales $U_{\mathrm{loc}}$ por sí solas generan embeddings separables (producto tensorial de rotaciones) cuya geometría está determinada por la distancia entre estados locales; la inclusión de $V_{\mathrm{ent}}$ es la que introduce no separabilidad y, con ello, una geometría de distancias que refleja correlaciones entre componentes del vector original.
-
-\subsubsection{Efecto del entrelazamiento sobre separabilidad y geometría de distancias}
-
-Un estado puro es separable si puede factorizarse como un producto tensorial entre subsistemas; en presencia de entrelazamiento el estado no admite tal factorización. A nivel de matrices de densidad, un estado global separable es una combinación convexa de productos tensoriales, esto es,
-\begin{equation}[eq:estado_separable_mixto]{Forma general de un estado separable mixto}
-\rho_{\mathrm{sep}} = \sum_{\ell} p_{\ell} \bigotimes_{k=1}^P \rho_k^{(\ell)},
-\end{equation}
-donde $p_{\ell}\geq 0$ y $\sum_{\ell}p_{\ell}=1$.
-
-Un estado entrelazado, por el contrario, posee coherencias y correlaciones entre subsistemas que se manifiestan en componentes fuera de la estructura tensorial simple. Estas coherencias influyen directamente en medidas matriciales como la distancia de Frobenius o la fidelidad: pequeñas variaciones en $V_{\mathrm{ent}}$ pueden modificar elementos off-diagonal de $\rho_i$ y, por tanto, alterar $d_F(\rho_i,\rho_j)$.
-
-Desde un punto de vista operatorio, la aplicación de entrelazadores no locales hace que la métrica entre dos embeddings deje de depender únicamente de diferencias locales de ángulos y pase a incorporar términos de correlación entre qubits. En particular, las distancias son invariantes frente a transformaciones unitarias globales comunes (es decir, $d(U\rho_i U^{\dagger}, U\rho_j U^{\dagger})=d(\rho_i,\rho_j)$). Sin embargo, aunque $V_{\mathrm{ent}}$ es independiente de las entradas, su aplicación sobre estados que dependen de $\mathbf{x}$ mediante $U_{\mathrm{loc}}(\mathbf{x})$ hace que la manera en que las características se codifican y se mezclan sea no lineal, alterando significativamente la geometría resultante del espacio de embeddings.
-
-En síntesis: el entrelazamiento extiende la capacidad del feature map para codificar correlaciones entre características, y por ende modifica la topología y la métrica del espacio de estados $\{\lvert\psi(\mathbf{x})\rangle : \mathbf{x}\in\mathbb{R}^P\}$ sobre los que se calcula la distancia de comparación entre activos.
-
-\subsubsection{Comparación técnica: CNOT vs iSWAP}
-
-Aunque el trabajo de referencia ilustra el entrelazamiento con CNOT, la formulación admite otras puertas (CZ, SWAP, iSWAP, ...). Es conveniente precisar en qué sentido la elección concreta afecta al embedding.
-
-La acción en base computacional de CNOT y iSWAP sobre el subespacio de dos qubits puede escribirse como
-\begin{equation}[eq:matrices_cnot_iswap]{Matrices en base computacional de CNOT e iSWAP}
-\mathrm{CNOT} = \begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&0&1\\0&0&1&0\end{pmatrix},
-\qquad
-\mathrm{iSWAP} = \begin{pmatrix}1&0&0&0\\0&0&i&0\\0&i&0&0\\0&0&0&1\end{pmatrix}.
-\end{equation}
-
-CNOT implementa un flip condicionado en el segundo qubit y es particularmente adecuado para generar correlaciones tipo bit-flip (estados de Bell cuando se combina con Hadamard). En contraste, iSWAP intercambia amplitudes entre los estados $\lvert 01\rangle$ y $\lvert 10\rangle$ introduciendo además una fase relativa $i$. En términos de embedding, CNOT introduce correlaciones condicionadas que tienden a correlacionar valores de probabilidad en la base computacional, mientras que iSWAP mezcla amplitudes e introduce estructura de fase relativa. La elección de puerta afecta significativamente a la estructura de coherencias off-diagonal de $\rho$ y, por tanto, a la geometría del espacio de embeddings. Dependiendo del problema y de la métrica elegida (por ejemplo, si la métrica es sensible a fases coherentes), esta distinción puede modificar la separación observada entre activos. En nuestro caso, el uso de iSWAP es una elección operativa coherente con la implementación y puede influir en la estructura de coherencias y la codificación de correlaciones complejas; la memoria deja constancia de esta decisión y compara cualitativamente ambos efectos.
-
-\subsubsection{Papel del parámetro \texorpdfstring{$\alpha$}{alpha} y fenómenos de saturación}
-
-Las rotaciones locales se parametrizan mediante ángulos que dependen de las características normalizadas $s_k(\mathbf{x})\in[0,1]$; en la implementación se usa una escala global $\alpha$ para controlar el rango angular, por ejemplo
-\begin{equation}[eq:escala_angular_alpha]{Escalado angular de las características normalizadas}
-\theta_k(\mathbf{x}) = \alpha\,\pi\, s_k(\mathbf{x}).
-\end{equation}
-
-Cuando $\alpha$ es pequeño, las diferencias angulares entre observaciones son de baja magnitud y la resolución del embedding es limitada; cuando $\alpha$ crece, los ángulos pueden envolver varias vueltas (wrapping) y la representación puede saturarse o volverse altamente oscilatoria, reduciendo la interpretabilidad y, en presencia de ruido, amplificando efectos no deseados. Este comportamiento conecta con resultados sobre expresividad ("expressibility") y problemas de optimización en circuitos parametrizados y motiva fijar $\alpha$ en un rango balanceado y reportarlo explícitamente en los experimentos.
-
-\subsubsection{Profundidad de circuito y adecuación a entornos NISQ}
-
-La profundidad del circuito se elige buscando un compromiso entre expresividad (más capas de entrelazamiento) y robustez frente al ruido real de dispositivos NISQ. En los experimentos se emplea un número limitado pero efectivo de capas de entrelazamiento (típicamente dos o tres capas), suficiente para introducir correlaciones no triviales entre qubits pero contenido para mantener la reproducibilidad en simulación y factibilidad en dispositivos intermedios.
-
-\subsubsection{Reproducibilidad y precisión terminológica}
-
-En el paper de referencia, las capas de entrelazamiento se presentan como una \textbf{familia de opciones} (CNOT, CZ, SWAP, iSWAP, etc.), y la figura ilustrativa del circuito muestra CNOT como ejemplo concreto. En consecuencia, la contribución metodológica central no depende de una puerta única, sino de la combinación entre: (i) codificación angular de características y (ii) mezcla entre qubits mediante capas de entrelazamiento intercaladas.
-
-En esta implementación se adopta iSWAP en el pipeline principal para mantener consistencia con el código reproducido del proyecto y con la construcción de matrices de densidad utilizadas en los experimentos. Esta elección preserva la lógica del método (feature map + densidad promedio + distancia de Frobenius + clustering HRP), aunque induce una geometría de embedding distinta a la de una implementación estrictamente CNOT.
-
-El ansatz no se presenta como la arquitectura óptima universal, sino como una configuración metodológicamente consistente y reproducible para trasladar el problema financiero a un espacio cuántico de dimensión $2^P$ manteniendo interpretabilidad y trazabilidad. Desde el punto de vista de reproducibilidad, en este trabajo se distinguen explícitamente dos niveles: (i) circuito de referencia del paper (con CNOT en la figura de ejemplo) y (ii) circuito efectivamente usado en el pipeline base (con iSWAP). Esta separación evita ambigüedades al comparar resultados con la literatura y al justificar divergencias cuantitativas esperables.
-
-El desarrollo práctico del pipeline, junto con la reproducción de circuitos y la trazabilidad de implementación, se presenta de forma separada en el Capítulo~\ref{cap:desarrollo}.

@@ -1,0 +1,240 @@
+\chapter{Universo de activos y obtención de datos}
+\label{ap:datos}
+
+Este apéndice describe el universo de activos empleado en los experimentos, el procedimiento de descarga de precios de mercado y el pipeline de preprocesado utilizado para obtener las características financieras de entrada al modelo. El conjunto de activos y el proceso de obtención de datos replican fielmente el artículo de referencia~\cite{arian2025qhrp}.
+
+\section{Universo de activos}
+\label{ap:sec:universo_activos}
+
+Los experimentos parten de un universo de 170 activos de distintas clases, descargados de Yahoo Finance para el período 2005--2025. La selección abarca índices, ETFs sectoriales, renta fija, materias primas, criptomonedas y acciones individuales de distintas geografías y sectores industriales. Tras el proceso de limpieza y alineamiento temporal descrito en la Sección~\ref{ap:sec:preprocesado}, uno de los tickers queda excluido por datos insuficientes, resultando en los $N=169$ activos utilizados efectivamente en los experimentos principales. La Tabla~\ref{TAB:ACTIVOS_UNIVERSO} recoge el listado completo del universo original organizado por categoría.
+
+\begin{longtable}{ll}
+\caption{Universo de 170 activos empleados en los experimentos, clasificados por categoría. Adaptado de~\cite{arian2025qhrp}.}
+\label{TAB:ACTIVOS_UNIVERSO} \\
+\hline
+\textbf{Ticker} & \textbf{Categoría} \\
+\hline
+\endfirsthead
+\multicolumn{2}{c}{\tablename\ \thetable{} -- continuación} \\
+\hline
+\textbf{Ticker} & \textbf{Categoría} \\
+\hline
+\endhead
+\hline
+\endfoot
+\multicolumn{2}{c}{\textbf{Major US Index ETFs}} \\
+SPY & Major US Index ETFs \\
+QQQ & Major US Index ETFs \\
+DIA & Major US Index ETFs \\
+IWM & Major US Index ETFs \\
+IVV & Major US Index ETFs \\
+VTI & Major US Index ETFs \\
+VOO & Major US Index ETFs \\
+\multicolumn{2}{c}{\textbf{Global Index ETFs}} \\
+EFA & Global Index ETFs \\
+EEM & Global Index ETFs \\
+VEA & Global Index ETFs \\
+VWO & Global Index ETFs \\
+ACWI & Global Index ETFs \\
+SPDW & Global Index ETFs \\
+SCHF & Global Index ETFs \\
+\multicolumn{2}{c}{\textbf{Sector ETFs}} \\
+XLK & Sector ETFs \\
+XLF & Sector ETFs \\
+XLE & Sector ETFs \\
+XLI & Sector ETFs \\
+XLY & Sector ETFs \\
+XLV & Sector ETFs \\
+XLC & Sector ETFs \\
+XLP & Sector ETFs \\
+XLRE & Sector ETFs \\
+XLU & Sector ETFs \\
+XLB & Sector ETFs \\
+\multicolumn{2}{c}{\textbf{Real Estate \& REITs}} \\
+VNQ & Real Estate \& REITs \\
+IYR & Real Estate \& REITs \\
+RWX & Real Estate \& REITs \\
+SCHH & Real Estate \& REITs \\
+FREL & Real Estate \& REITs \\
+RWO & Real Estate \& REITs \\
+\multicolumn{2}{c}{\textbf{Intl.\ \& EM Bonds}} \\
+BNDX & Intl.\ \& EM Bonds \\
+VWOB & Intl.\ \& EM Bonds \\
+IGOV & Intl.\ \& EM Bonds \\
+IEMG & Intl.\ \& EM Bonds \\
+EMB  & Intl.\ \& EM Bonds \\
+\multicolumn{2}{c}{\textbf{Commodities}} \\
+GLD  & Commodities \\
+SLV  & Commodities \\
+PPLT & Commodities \\
+COPX & Commodities \\
+DBB  & Commodities \\
+DBC  & Commodities \\
+PDBC & Commodities \\
+USO  & Commodities \\
+UGA  & Commodities \\
+CORN & Commodities \\
+WEAT & Commodities \\
+SOYB & Commodities \\
+\multicolumn{2}{c}{\textbf{Bonds \& Fixed Income}} \\
+TLT  & Bonds \& Fixed Income \\
+IEF  & Bonds \& Fixed Income \\
+LQD  & Bonds \& Fixed Income \\
+HYG  & Bonds \& Fixed Income \\
+SHY  & Bonds \& Fixed Income \\
+TIP  & Bonds \& Fixed Income \\
+AGG  & Bonds \& Fixed Income \\
+BND  & Bonds \& Fixed Income \\
+MBB  & Bonds \& Fixed Income \\
+SCHZ & Bonds \& Fixed Income \\
+VCSH & Bonds \& Fixed Income \\
+VCIT & Bonds \& Fixed Income \\
+\multicolumn{2}{c}{\textbf{Crypto}} \\
+BTC-USD  & Crypto \\
+ETH-USD  & Crypto \\
+SOL-USD  & Crypto \\
+BNB-USD  & Crypto \\
+XRP-USD  & Crypto \\
+ADA-USD  & Crypto \\
+DOGE-USD & Crypto \\
+DOT-USD  & Crypto \\
+AVAX-USD & Crypto \\
+\multicolumn{2}{c}{\textbf{Large-Cap US Stocks}} \\
+AAPL  & Large-Cap US Stocks \\
+MSFT  & Large-Cap US Stocks \\
+GOOGL & Large-Cap US Stocks \\
+AMZN  & Large-Cap US Stocks \\
+NVDA  & Large-Cap US Stocks \\
+TSLA  & Large-Cap US Stocks \\
+BRK-B & Large-Cap US Stocks \\
+META  & Large-Cap US Stocks \\
+NFLX  & Large-Cap US Stocks \\
+DIS   & Large-Cap US Stocks \\
+\multicolumn{2}{c}{\textbf{Financials}} \\
+JPM  & Financials \\
+GS   & Financials \\
+BAC  & Financials \\
+C    & Financials \\
+WFC  & Financials \\
+MS   & Financials \\
+AXP  & Financials \\
+BLK  & Financials \\
+SCHW & Financials \\
+TFC  & Financials \\
+\multicolumn{2}{c}{\textbf{Industrials \& Transportation}} \\
+BA  & Industrials \& Transportation \\
+CAT & Industrials \& Transportation \\
+HON & Industrials \& Transportation \\
+LMT & Industrials \& Transportation \\
+UNP & Industrials \& Transportation \\
+CSX & Industrials \& Transportation \\
+NSC & Industrials \& Transportation \\
+UPS & Industrials \& Transportation \\
+FDX & Industrials \& Transportation \\
+RTX & Industrials \& Transportation \\
+\multicolumn{2}{c}{\textbf{Energy}} \\
+CVX & Energy \\
+XOM & Energy \\
+OXY & Energy \\
+MPC & Energy \\
+PSX & Energy \\
+VLO & Energy \\
+SLB & Energy \\
+HAL & Energy \\
+BKR & Energy \\
+\multicolumn{2}{c}{\textbf{Consumer Staples \& Discretionary}} \\
+PG   & Consumer Staples \& Discretionary \\
+KO   & Consumer Staples \& Discretionary \\
+PEP  & Consumer Staples \& Discretionary \\
+MO   & Consumer Staples \& Discretionary \\
+PM   & Consumer Staples \& Discretionary \\
+WMT  & Consumer Staples \& Discretionary \\
+TGT  & Consumer Staples \& Discretionary \\
+HD   & Consumer Staples \& Discretionary \\
+LOW  & Consumer Staples \& Discretionary \\
+MCD  & Consumer Staples \& Discretionary \\
+SBUX & Consumer Staples \& Discretionary \\
+NKE  & Consumer Staples \& Discretionary \\
+TJX  & Consumer Staples \& Discretionary \\
+\multicolumn{2}{c}{\textbf{Healthcare \& Pharma}} \\
+JNJ  & Healthcare \& Pharma \\
+PFE  & Healthcare \& Pharma \\
+UNH  & Healthcare \& Pharma \\
+CVS  & Healthcare \& Pharma \\
+ABBV & Healthcare \& Pharma \\
+LLY  & Healthcare \& Pharma \\
+MRNA & Healthcare \& Pharma \\
+REGN & Healthcare \& Pharma \\
+BMY  & Healthcare \& Pharma \\
+GILD & Healthcare \& Pharma \\
+\multicolumn{2}{c}{\textbf{Tech, AI \& Innovation}} \\
+AMD  & Tech, AI \& Innovation \\
+INTC & Tech, AI \& Innovation \\
+TSM  & Tech, AI \& Innovation \\
+ORCL & Tech, AI \& Innovation \\
+IBM  & Tech, AI \& Innovation \\
+ADBE & Tech, AI \& Innovation \\
+CRM  & Tech, AI \& Innovation \\
+SNOW & Tech, AI \& Innovation \\
+PANW & Tech, AI \& Innovation \\
+AVGO & Tech, AI \& Innovation \\
+\multicolumn{2}{c}{\textbf{Communication \& Media}} \\
+VZ    & Communication \& Media \\
+T     & Communication \& Media \\
+CMCSA & Communication \& Media \\
+CHTR  & Communication \& Media \\
+TMUS  & Communication \& Media \\
+WBD   & Communication \& Media \\
+\multicolumn{2}{c}{\textbf{International Stocks}} \\
+BABA  & International Stocks \\
+TCEHY & International Stocks \\
+NIO   & International Stocks \\
+INFY  & International Stocks \\
+SHOP  & International Stocks \\
+SE    & International Stocks \\
+MELI  & International Stocks \\
+BYDDF & International Stocks \\
+\multicolumn{2}{c}{\textbf{Auto Industry}} \\
+GM   & Auto Industry \\
+F    & Auto Industry \\
+RIVN & Auto Industry \\
+LCID & Auto Industry \\
+NKLA & Auto Industry \\
+XPEV & Auto Industry \\
+LI   & Auto Industry \\
+\multicolumn{2}{c}{\textbf{ESG \& Green Energy}} \\
+ICLN & ESG \& Green Energy \\
+TAN  & ESG \& Green Energy \\
+PBW  & ESG \& Green Energy \\
+QCLN & ESG \& Green Energy \\
+LIT  & ESG \& Green Energy \\
+FAN  & ESG \& Green Energy \\
+PBD  & ESG \& Green Energy \\
+KRBN & ESG \& Green Energy \\
+\end{longtable}
+
+\section{Descarga de precios}
+\label{ap:sec:descarga_precios}
+
+Los precios de cierre diarios se descargan de Yahoo Finance mediante la biblioteca \texttt{yfinance} para el período comprendido entre el 1 de enero de 2005 y el 1 de enero de 2025. Los datos se almacenan en formato Parquet y CSV para facilitar su reutilización. El proceso gestiona automáticamente reintentos ante fallos de conexión y registra los tickers para los que no se obtienen datos suficientes.
+
+\section{Preprocesado y características financieras}
+\label{ap:sec:preprocesado}
+
+El pipeline de preprocesado replica exactamente el procedimiento del código reproducible del artículo de referencia~\cite{arian2025qhrp}:
+
+\begin{enumerate}
+    \item \textbf{Limpieza de datos:} Se eliminan tickers sin datos (\texttt{dropna(axis=1, how='all')}) y filas completamente nulas (\texttt{dropna(how='all')}).
+    \item \textbf{Cálculo de retornos:} Retornos diarios mediante diferencias porcentuales (\texttt{pct\_change()}), eliminando filas con cualquier valor ausente. Este paso trunca el período efectivo al inicio del activo más reciente del universo.
+    \item \textbf{Ingeniería de características:} Para cada activo $i$ y cada instante $t$, se calculan seis características sobre una ventana deslizante de $w=5$ días:
+    \begin{itemize}
+        \item $f_1$: retorno diario actual.
+        \item $f_2$: media móvil de retornos en la ventana.
+        \item $f_3$: desviación estándar móvil de retornos (con corrección de Bessel, $\text{ddof}=1$).
+        \item $f_4$: retorno acumulado de la ventana, calculado como $\prod(1 + r_t) - 1$.
+        \item $f_5$: asimetría (\textit{skewness}) de la distribución de retornos en la ventana.
+        \item $f_6$: curtosis en exceso (\textit{excess kurtosis}) de la distribución de retornos en la ventana.
+    \end{itemize}
+\end{enumerate}
+
+El resultado es un tensor de dimensiones $(N, T, 6)$, donde $N$ es el número de activos y $T$ el número de instantes temporales disponibles tras el preprocesado. Este tensor constituye la entrada directa al mapa de características cuántico descrito en el Apéndice~\ref{ap:estimacion_ansatz}.

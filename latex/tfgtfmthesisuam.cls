@@ -203,9 +203,9 @@
 	\@ifpackageloaded{gnuplottex}{\PassOptionsToPackage{shell,cleanup,subfolder}{gnuplottex}}{\RequirePackage[shell,cleanup,subfolder]{gnuplottex}}
 \fi% Scientific plots
 \if@overleafbool
-	\@ifpackageloaded{glossaries}{\PassOptionsToPackage{acronyms,nogroupskip,nonumberlist,shortcuts,toc}{glossaries}}{\RequirePackage[acronyms,nogroupskip,nonumberlist,shortcuts,toc]{glossaries}}
+	\@ifpackageloaded{glossaries}{\PassOptionsToPackage{acronym,nogroupskip,nonumberlist,shortcuts,toc}{glossaries}}{\RequirePackage[acronym,nogroupskip,nonumberlist,shortcuts,toc]{glossaries}}
 \else
-	\@ifpackageloaded{glossaries}{\PassOptionsToPackage{acronyms,nogroupskip,nonumberlist,shortcuts,toc,xindy={language=spanish-traditional}}{glossaries}}{\RequirePackage[acronyms,nogroupskip,nonumberlist,shortcuts,toc,xindy={language=spanish-traditional}]{glossaries}}
+	\@ifpackageloaded{glossaries}{\PassOptionsToPackage{acronym,nogroupskip,nonumberlist,shortcuts,toc}{glossaries}}{\RequirePackage[acronym,nogroupskip,nonumberlist,shortcuts,toc]{glossaries}}
 \fi
 
 \@ifpackageloaded{calc}{}{\RequirePackage{calc}}
@@ -594,7 +594,7 @@
 		\def\@auxvaralgorithmindex{\addtocounter{section}{1}Lista de algoritmos}
 		\def\indexname{Índice terminológico}
 		\def\glosario{Glosario}
-		\renewcommand*{\acronymname}{Acrónimos}
+		\renewcommand*{\acronymname}{Lista de acrónimos}
 	\else
 		\def\@ListsChapter{Lists}
 		\def\glossaryname{Terminology}
@@ -615,7 +615,7 @@
 		\def\@auxvaralgorithmindex{\addtocounter{section}{1}List of algorithms}
 		\def\indexname{Index}
 		\def\glosario{Glossary}
-		\renewcommand*{\acronymname}{Acronyms}
+		\renewcommand*{\acronymname}{List of acronyms}
 	\fi
 }
 
@@ -1120,7 +1120,7 @@
 {
 	\@appendixbooltrue
 	\thesisbibliography
-	\printglossaries
+	\printglossary[title=\glossaryname]
 	\part{\appendixname}
 	\oldappendix
 }
@@ -3100,13 +3100,13 @@ coordinates {(#1,0) (#2,0)};
 
 \def\listoflists
 {
+	\printglossaries
 	\if@listofalgsbool \listofalgorithms{\@auxvaralgorithmindex}  \fi
 	\if@listofcodesbool \mylistof{\@auxvarcodeindex}{lol}  \fi
 	\if@languagespa \if@listoftextboxesbool \listoftextboxes{\@auxvartextboxindex} \fi \fi
 	\if@listofequationsbool \mylistof{\listequationname}{loe} \fi
 	\if@listoffiguresbool \mylistof{\listfigurename}{lof} \fi
 	\if@listoftablesbool \mylistof{\listtablename}{lot} \fi
-	\if@languagespa \else \if@listoftextboxesbool \listoftextboxes{\@auxvartextboxindex} \fi \fi
 }
 
 \newcommand{\listoftextboxes}[1]
@@ -3135,25 +3135,33 @@ coordinates {(#1,0) (#2,0)};
 \def\listoflists
 {
 	\if@nonelistbool\empty\else
+
+		\@newschapter{\@ListsChapter}
+
+		% --- LISTA DE ACRÓNIMOS (SIN DUPLICADOS) ---
+		\mylistof{\acronymname}{}
+		\begingroup
+		\let\clearpage\relax
+		\let\cleardoublepage\relax
+		\renewcommand*{\glossarysection}[2][]{}
+		\printglossary[type=\acronymtype, title={}]
+		\endgroup
+
+		% --- RESTO DE LISTAS ---
 		\if@alllistsbool
-			\@newschapter{\@ListsChapter}
-			\listofalgorithms{\@auxvaralgorithmindex}
 			\mylistof{\@auxvarcodeindex}{lol}
-			\if@languagespa \listoftextboxes{\@auxvartextboxindex} \fi
-	    \mylistof{\listequationname}{loe}
+			\mylistof{\listequationname}{loe}
 			\mylistof{\listfigurename}{lof}
 			\mylistof{\listtablename}{lot}
-			\if@languagespa  \listoftextboxes{\@auxvartextboxindex} \fi
 		\else
-			\@newschapter{\@ListsChapter}
 			\if@algorithmsbool \listofalgorithms{\@auxvaralgorithmindex} \fi
 			\if@codesbool \mylistof{\@auxvarcodeindex}{lol} \fi
-			\if@languagespa \else \if@textboxesbool \listoftextboxes{\@auxvartextboxindex} \fi \fi
+			\if@textboxesbool \listoftextboxes{\@auxvartextboxindex} \fi
 			\if@equationsbool \mylistof{\listequationname}{loe} \fi
 			\if@figuresbool \mylistof{\listfigurename}{lof} \fi
 			\if@tablesbool \mylistof{\listtablename}{lot} \fi
-			\if@languagespa \else \if@textboxesbool  \listoftextboxes{\@auxvartextboxindex} \fi \fi
 		\fi
+
 	\fi
 }
 
@@ -3575,7 +3583,7 @@ coordinates {(#1,0) (#2,0)};
 {
 	\if@appendixbool\else
 		\thesisbibliography
-		\printglossaries
+		\printglossary[title=\glossaryname]
 	\fi
 	\cleardoublepage
 	\pagestyle{indexst}
