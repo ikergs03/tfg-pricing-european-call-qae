@@ -170,9 +170,7 @@ La Figura~\ref{FIG:COMP_PAPER_FIG4_THIS} confirma que QHRP mantiene capacidad de
 
 \subsection{Prototipo en hardware IBM con 40 activos}
 \label{subsec:prototipo_hardware}
-Para reforzar la validación experimental en entorno real, se diseñó un prototipo en hardware IBM con una pregunta operativa explícita: dado un subconjunto fijo de activos y el mismo proceso \gls{QHRP}, \textbf{¿se conserva la mejora estructural que aporta la ordenación cuántica al pasar de simulación ideal a hardware real?}
-
-La conservación se mide con la métrica $\mathrm{BC}$ definida anteriormente (véase la Sección~\ref{subsec:robustez_permutaciones}).
+Para reforzar la validación experimental en entorno real, se diseñó un prototipo en hardware IBM con una pregunta operativa explícita: dado un subconjunto fijo de activos y el mismo proceso \gls{QHRP}, \textbf{¿se conserva la mejora estructural que aporta la ordenación cuántica al pasar de simulación ideal a hardware real?} La conservación se mide con la métrica $\mathrm{BC}$ definida anteriormente (véase la Sección~\ref{subsec:robustez_permutaciones}).
 
 \subsubsection{Por qué es necesario reducir a 40 activos en hardware real}
 \label{subsubsec:reduccion_40_activos}
@@ -187,7 +185,7 @@ El total de circuitos a ejecutar crece como $N \times T$. La restricción determ
 
 Los 40 activos se eligieron priorizando liquidez, medida por la mediana del volumen diario, y recurriendo a la volatilidad como criterio de respaldo para completar el conjunto.
 
-La simulación actúa como línea de base. Las etapas se mantienen idénticas en preprocesado, subconjunto de activos, mapa de características, ordenación jerárquica y criterio de evaluación. Solo cambia la capa de ejecución cuántica, que en simulación proporciona el estado cuántico exacto y en hardware real solo ofrece distribuciones de probabilidad obtenidas por medición repetida. También se fija \(\alpha=2.0\) en ambos casos para mantener comparabilidad con el flujo principal y conservar una escala angular estable en la construcción de distancias (véase Apéndice~\ref{ap:estimacion_ansatz}).
+La simulación actúa como línea de base. Las etapas se mantienen idénticas en preprocesado, subconjunto de activos, mapa de características, ordenación jerárquica y criterio de evaluación. Solo cambia la capa de ejecución cuántica, que en simulación proporciona el estado cuántico exacto y en hardware real solo ofrece distribuciones de probabilidad obtenidas por medición repetida. También se fija \(\alpha=2.0\) en ambos casos para mantener comparabilidad con el flujo principal y conservar una escala angular estable en la construcción de distancias (véase Apéndice~\ref{ap:estimacion_ansatz}). La Tabla~\ref{TB:PILOTO_BC} recoge los resultados de contraste de bloques obtenidos en ambos entornos.
 
 \begin{table}[Prototipo hardware vs simulación]{TB:PILOTO_BC}{Resultados de contraste de bloques en el prototipo \(N=40\) valores, \(T=90\) instantes temporales, \(P=6\) características.}
 \begin{tabular}{lccc}
@@ -242,12 +240,12 @@ La Tabla~\ref{TB:6VS5} muestra que la mejora de estructura al pasar de la matriz
 
 Las correlaciones entre las matrices de distancia de ambos escenarios son muy altas: Pearson $= 0.998$ y Spearman $= 0.998$. La correlación de Spearman entre los ordenamientos de activos resultantes es $0.953$ (Kendall $\tau = 0.833$), lo que indica que los dos circuitos producen un ordenamiento casi idéntico de los activos.
 
-\begin{figure}[Matrices de correlación 6 vs 5 qubits]{FIG:6VS5_CORR}{Matrices de correlación sin ordenar, ordenada por HRP clásico y ordenada por QHRP, para 6 qubits fila superior y 5 qubits fila inferior. La estructura de bloques cuasi-diagonales es equivalente en ambas configuraciones. a) Matriz de correlación sin ordenar con 6 qubits, b) Matriz de correlación ordenada por HRP clásico con 6 qubits, c) Matriz de distancia cuántica ordenada por HRP Cuántico con 6 qubits, d) Matriz de correlación sin ordenar con 5 qubits, e) Matriz de correlación ordenada por HRP clásico con 5 qubits, f) Matriz de distancia cuántica ordenada por HRP Cuántico con 5 qubits.}
+\begin{figure}[Matrices de correlación 6 vs 5 qubits]{FIG:6VS5_CORR}{La estructura de bloques cuasi-diagonales es equivalente en ambas configuraciones. a) Matriz de correlación sin ordenar con 6 qubits, b) Matriz de correlación ordenada por HRP clásico con 6 qubits, c) Matriz de distancia cuántica ordenada por HRP Cuántico con 6 qubits, d) Matriz de correlación sin ordenar con 5 qubits, e) Matriz de correlación ordenada por HRP clásico con 5 qubits, f) Matriz de distancia cuántica ordenada por HRP Cuántico con 5 qubits.}
     \image{14cm}{}{fig3-6vs5-corr}
 \end{figure}
 
-\begin{figure}[Matrices de distancia cuántica 6 vs 5 qubits]{FIG:6VS5_DIST}{Matrices de distancia cuántica antes y después del ordenamiento QHRP para los escenarios de 6 y 5 qubits. a) Matriz de distancia cuántica sin ordenar con 6 qubits, b) Matriz de distancia cuántica ordenada por QHRP con 6 qubits, c) Matriz de distancia cuántica sin ordenar con 5 qubits, d) Matriz de distancia cuántica ordenada por QHRP con 5 qubits.}
-    \image{14cm}{}{fig4-6vs5-distance}
+\begin{figure}[Matrices de distancia cuántica 6 vs 5 qubits]{FIG:6VS5_DIST}{a) Matriz de distancia cuántica sin ordenar con 6 qubits, b) Matriz de distancia cuántica ordenada por QHRP con 6 qubits, c) Matriz de distancia cuántica sin ordenar con 5 qubits, d) Matriz de distancia cuántica ordenada por QHRP con 5 qubits.}
+    \image{12cm}{}{fig4-6vs5-distance}
 \end{figure}
 
 Las Figuras~\ref{FIG:6VS5_CORR} y~\ref{FIG:6VS5_DIST} confirman visualmente esta equivalencia: los bloques cuasi-diagonales resultantes del ordenamiento cuántico son comparables en ambas configuraciones. En consecuencia, el escenario de 5 qubits se perfila como una alternativa viable al de 6 para hardware cuántico real con menor número de qubits disponibles, sin comprometer la calidad de la sectorización jerárquica.
@@ -263,6 +261,8 @@ El HRP clásico concentra 147 de los 169 activos en un único grupo, con Pureza=
 
 \subsubsection{QHRP: Análisis multinivel}
 \label{subsubsec:analisis_multinivel}
+
+La Tabla~\ref{TB:QHRP_MULTILEVEL} muestra las estadísticas de sectorización a distintos niveles de granularidad en \gls{QHRP}.
 
 \begin{table}[Sectorización multinivel en QHRP]{TB:QHRP_MULTILEVEL}{Estadísticas de sectorización a diferentes niveles de granularidad en QHRP.}
 \begin{tabular}{lccccc}
