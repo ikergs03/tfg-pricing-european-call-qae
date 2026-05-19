@@ -45,7 +45,7 @@ de representaciones más expresivas.
 
 \subsection{Computación Cuántica en Finanzas}
 \label{subsec:computacion_cuantica_en_finanzas}
-La investigación en computación cuántica aplicada a las finanzas ha crecido notablemente y hoy abarca varias líneas complementarias. Una primera línea se centra en la aceleración de cálculos de estimación y valoración financiera mediante algoritmos como \gls{QAE} y sus variantes, que pueden mejorar la eficiencia de métodos basados en Monte Carlo\cite{rebentrost2018quantumportfolio,egger2019creditrisk,manzano2023rqae,miyamoto2024iqae}. Una segunda línea, particularmente relevante para los métodos jerárquicos de cartera, explora representaciones y algoritmos para capturar relaciones complejas entre activos.
+La investigación en computación cuántica aplicada a las finanzas ha crecido notablemente y hoy abarca varias líneas complementarias. Una primera línea se centra en la aceleración de cálculos de estimación y valoración financiera mediante algoritmos como \gls{QAE} y sus variantes, que pueden mejorar la eficiencia de métodos basados en Monte Carlo\cite{rebentrost2018quantumportfolio,egger2019creditrisk,manzano2023rqae,miyamoto2024iqae}, así como la valoración de derivados financieros bajo volatilidad estocástica\cite{wang2024optionpricing}. Una segunda línea, particularmente relevante para los métodos jerárquicos de cartera, explora representaciones y algoritmos para capturar relaciones complejas entre activos.
 
 En esta segunda línea de trabajo destacan varios enfoques relevantes para la construcción y evaluación de carteras. Una primera familia de métodos se basa en el uso de ansatz variacionales y algoritmos híbridos tipo \gls{VQE}\cite{peruzzo2014vqe}. \glsunset{NISQ}\gls{VQE} proporciona un marco práctico en los dispositivos cuánticos actuales que se encuentran en la denominada \textit{cuántica de escala intermedia ruidosa} (en inglés, \textit{Noisy Intermediate-Scale Quantum}, \gls{NISQ}), caracterizados por un número limitado de qubits y la presencia de ruido en las operaciones, para optimizar parámetros de circuitos parametrizados mediante la interacción con un optimizador clásico. En finanzas, los ansatz variacionales pueden emplearse para formular problemas de optimización de carteras o para aprender transformaciones de los datos que mejoren la discriminación entre activos.
 
@@ -61,7 +61,7 @@ Finalmente, trabajos recientes que conectan explícitamente estas ideas con la c
 
 \subsection{QHRP}
 \label{subsec:qhrp}
-En este contexto surge el trabajo más reciente de Arian et al.\cite{arian2025qhrp}, \gls{QHRP}, que constituye el punto central del presente Trabajo de Fin de Grado. \gls{QHRP}
+El trabajo de Arian et al.\cite{arian2025qhrp}, \gls{QHRP}, constituye el punto de partida del presente Trabajo de Fin de Grado. \gls{QHRP}
 reinterpreta la etapa fundamental del \gls{HRP}, la construcción de la matriz de distancias entre
 activos, a través de un enfoque cuántico basado en mapas de características cuánticos y matrices de densidad
 promedio. En la práctica, cada activo se codifica en un estado cuántico y la similitud entre activos
@@ -79,7 +79,9 @@ Por último, dado que \gls{QHRP} se basa en técnicas cuánticas inspiradas en e
 
 Más allá de IBM Quantum, que ofrece acceso a distintas familias de qubits superconductores, existen otros proveedores y entornos relevantes que conviene mencionar de forma descriptiva. IonQ y Honeywell/Quantinuum emplean trampas de iones; Rigetti trabaja también con hardware superconducting; y Microsoft Azure Quantum actúa como capa de acceso a varios proveedores y backends. Estas plataformas difieren en arquitectura, número de qubits, conectividad física y perfiles de ruido.
 
-La distinción entre simuladores clásicos y hardware real es esencial en la investigación aplicada: los simuladores permiten validar diseños y realizar comparativas controladas a escala, mientras que el hardware real proporciona una evaluación experimental bajo restricciones \gls{NISQ}. Debido a las limitaciones actuales —ruido, número limitado de qubits, tiempos de coherencia finitos y costes de acceso—, gran parte de la literatura realiza la mayoría de sus experimentos en simulación y recurre al hardware real para pruebas complementarias y validación empírica en pequeña escala. En paralelo, el paradigma de annealing, representado de forma destacada por D-Wave, sigue una lógica de optimización distinta a los circuitos gate-based y se emplea principalmente en formulaciones específicas de tipo Ising/\gls{QUBO}.
+La distinción entre simuladores clásicos y hardware real es esencial en la investigación aplicada: los simuladores permiten validar diseños y realizar comparativas controladas a escala, mientras que el hardware real proporciona una evaluación experimental bajo restricciones \gls{NISQ}. Debido a las limitaciones actuales —ruido, número limitado de qubits, tiempos de coherencia finitos y costes de acceso—, gran parte de la literatura realiza la mayoría de sus experimentos en simulación y recurre al hardware real para pruebas complementarias y validación empírica en pequeña escala. 
+
+En paralelo, el paradigma de annealing, representado de forma destacada por D-Wave, sigue una lógica de optimización distinta a los circuitos gate-based y se emplea principalmente en formulaciones específicas de tipo Ising/\gls{QUBO}.
 
 Cabe mencionar que, más allá del ecosistema internacional, existen iniciativas españolas relevantes en el desarrollo de tecnologías y soluciones cuánticas. El Barcelona Supercomputing Center (BSC) y empresas como Kilimanjaro Quantum Tech contribuyen al avance de la computación cuántica desde perspectivas de hardware, software y aplicaciones prácticas.
 

@@ -1,12 +1,12 @@
 \chapter{Experimentos y Resultados}
 \label{cap:experimentos_resultados}
 
-En este capítulo se comparan las estrategias de construcción de carteras descritas en el Capítulo~\ref{cap:metodologia}, analizando tanto su rendimiento financiero como su coste computacional.
+En este capítulo se comparan las estrategias de construcción de carteras, analizando tanto su rendimiento financiero como su coste computacional.
 
 \section{Marco Experimental}
 \label{sec:marco_experimental}
 
-La evaluación se realiza en una cartera de valores mediante un esquema \textit{walk-forward} con ventanas deslizantes de 756 días (aprox. 3 años) para entrenamiento y 21 días para test, evaluando 18 ventanas en total. En cada ventana, los pesos se estiman con datos de entrenamiento y se evalúan exclusivamente en el bloque temporal posterior o período de prueba (\textit{fuera de muestra}, del inglés \textit{Out-of-Sample}, \gls{OOS}), evitando pérdida de información y reproduciendo un uso operativo realista.
+La evaluación se realiza en una cartera de valores mediante un esquema \textit{walk-forward} con ventanas deslizantes de 756 días (aprox. 3 años) para entrenamiento y 21 días como período de prueba, evaluando 18 ventanas en total. En cada ventana, los pesos se estiman con datos de entrenamiento y se evalúan exclusivamente en el bloque temporal posterior o período de prueba (\textit{fuera de muestra}, del inglés \textit{Out-of-Sample}, \gls{OOS}), evitando pérdida de información y reproduciendo un uso operativo realista.
 
 Se comparan cinco estrategias: \textbf{\gls{QHRP}} con ordenación jerárquica a partir de distancias entre matrices de densidad; \textbf{\gls{HRP} clásico} con ordenación jerárquica basada en distancia de correlación; \textbf{\gls{KHRP}} con ordenación jerárquica basada en distancia \gls{MMD} gaussiana; \textbf{Markowitz} con asignación proporcional al inverso de la varianza diagonal; y \textbf{Pesos Iguales (1/N)} con una cartera equiponderada como línea base.
 
@@ -79,13 +79,16 @@ La comparación de matrices ordenadas y no ordenadas como se planteó en el Cap�
 No obstante, esta relación no es determinista: una estructura visual más definida no garantiza necesariamente un mejor rendimiento financiero. Sin embargo, es un indicativo de que el método de distancia está capturando estructura jerárquica relevante y económicamente significativa.
 
 \subsection{Robustez frente a permutaciones de activos}
+\label{subsec:robustez_permutaciones}
 
 Para validar que la estructura jerárquica es invariante al orden inicial de los activos, se realizó un experimento permutando aleatoriamente el orden de entrada en cinco ocasiones. La Tabla~\ref{TB:FIVEPERMS} resume los resultados:
 
-\begin{table}[Cinco permutaciones de activos]{TB:FIVEPERMS}{Resultados del test con cinco permutaciones de orden distintas de activos.}
+El contraste de bloques ($\mathrm{BC}$) mide la diferencia entre la distancia media de los pares lejanos a la diagonal de la matriz de distancias $D$ y la de los pares próximos, usando una banda de anchura $b = \max(3, \lfloor N/10 \rfloor)$. La mejora aportada por el reordenamiento se cuantifica como $\Delta\mathrm{BC} = \mathrm{BC}(D_{\text{ord}}) - \mathrm{BC}(D_{\text{raw}})$: un valor positivo indica que la ordenación acerca activos similares entre sí y aleja los distintos, reforzando la estructura de bloques en la matriz.
+
+\begin{table}[Cinco permutaciones de activos]{TB:FIVEPERMS}{Resultados para cinco permutaciones de orden distintas de activos comparados con contraste de bloques (BC).}
 \begin{tabular}{cccccc}
 \hline
-\textbf{perm} & \textbf{seed} & \textbf{$\Delta$BC clásico} & \textbf{$\Delta$BC cuántico} & \textbf{Sim. clásico} & \textbf{Sim. cuántico} \\
+\textbf{perm} & \textbf{semilla} & \textbf{$\Delta$BC clásico} & \textbf{$\Delta$BC cuántico} & \textbf{Sim. clásico} & \textbf{Sim. cuántico} \\
 \hline
 1 & 11 & 0.1402 & 0.0234 & 1.0000 & 1.0000 \\
 2 & 22 & 0.1479 & 0.0314 & 1.0000 & 1.0000 \\
@@ -100,16 +103,16 @@ Para validar que la estructura jerárquica es invariante al orden inicial de los
 
 La similitud 1.0000 en todas las ejecuciones indica que la estructura de bloques se recupera idénticamente independientemente del orden inicial de activos. Las mejoras de \textit{contraste de bloques} (del inglés, \textit{block contrast}, $\mathrm{BC}$) son positivas en ambos métodos en todas las ejecuciones. Las figuras~\ref{FIG:PERMUTACIONES_CORR} y~\ref{FIG:PERMUTACIONES_QUANTUM} muestran que en matrices sin ordenar la estructura se pierde, pero tras aplicar \gls{HRP}/\gls{QHRP} se recuperan patrones cuasi-diagonales equivalentes. Esto valida que los resultados no son artefactos visuales sino consecuencias del procedimiento jerárquico de ordenación.
 
-\begin{figure}[Invarianza frente a permutaciones: correlación]{FIG:PERMUTACIONES_CORR}{Visualización de matrices de correlación sin ordenar y tras HRP clásico en una permutación representativa de activos.}
+\begin{figure}[Invarianza frente a permutaciones: correlación]{FIG:PERMUTACIONES_CORR}{Visualización de matrices de correlación sin ordenar y tras HRP clásico en una permutación representativa de activos. a) Matriz de correlación sin ordenar, b) Matriz de correlación ordenada por HRP clásico, c) Matriz de correlación ordenada por HRP cuántico.}
 	\image{15cm}{}{fig3-shuffled}
 \end{figure}
 
-\begin{figure}[Invarianza frente a permutaciones: cuántica]{FIG:PERMUTACIONES_QUANTUM}{Visualización de matrices de distancia cuántica sin ordenar y tras QHRP en una permutación representativa de activos.}
+\begin{figure}[Invarianza frente a permutaciones: cuántica]{FIG:PERMUTACIONES_QUANTUM}{Visualización de matrices de distancia cuántica sin ordenar y tras QHRP en una permutación representativa de activos. a) Matriz de distancia cuántica sin ordenar, b) Matriz de distancia cuántica ordenada por HRP Cuántico}
 	\image{15cm}{}{fig4-shuffled}
 \end{figure}
 
-\subsection{Comparación de resultados con el paper de referencia}
-Para evaluar el grado de reproducibilidad, se comparan los resultados de este TFG con los reportados por el paper de referencia~\cite{arian2025qhrp} en tres métricas: (i) ranking relativo entre métodos, (ii) Sharpe ratio acumulado del período de prueba y (iii) comportamiento visual de las matrices ordenadas.
+\subsection{Comparación de resultados con el artículo de referencia}
+Para evaluar el grado de reproducibilidad, se comparan los resultados de este TFG con los reportados por el artículo de referencia~\cite{arian2025qhrp} en tres métricas: (i) ranking relativo entre métodos, (ii) Sharpe ratio acumulado del período de prueba y (iii) comportamiento visual de las matrices ordenadas.
 
 En los resultados de este TFG, el ranking por Sharpe ratio acumulado del período de prueba (ver Tabla~\ref{TB:SHARPEAGREGADO}) verifican:
 
@@ -117,12 +120,12 @@ En los resultados de este TFG, el ranking por Sharpe ratio acumulado del períod
 QHRP (1.4441) $>$ Pesos Iguales (1.3193) $>$ Markowitz (1.2518) $>$ HRP Clásico (1.2378) $>$ HRP Kernel (1.1803).
 \end{center}
 
-En términos de reproducibilidad, el criterio principal no es la coincidencia exacta en valores absolutos, sino la consistencia cualitativa: que \gls{QHRP} mantenga un desempeño competitivo frente al \gls{HRP} clásico y que la ordenación cuántica siga revelando estructura jerárquica coherente en las matrices reordenadas.
+En términos de reproducibilidad, el criterio principal no es la coincidencia exacta en valores absolutos, sino la consistencia cualitativa: que \gls{QHRP} mantenga un rendimiento competitivo frente al \gls{HRP} clásico y que la ordenación cuántica siga revelando estructura jerárquica coherente en las matrices reordenadas.
 
-\begin{table}[Comparación con el paper de referencia (Tabla 1)]{TB:COMPARACIONPAPER_T1}{Comparación de métricas de los resultados de este TFG y los del paper de referencia~\cite{arian2025qhrp}.}
+\begin{table}[Comparación con el artículo de referencia (Tabla 1)]{TB:COMPARACIONPAPER_T1}{Comparación de métricas de los resultados de este TFG y los del artículo de referencia~\cite{arian2025qhrp}.}
 \begin{tabular}{lcccccc}
 \hline
- & \multicolumn{3}{c}{\textbf{Este TFG}} & \multicolumn{3}{c}{\textbf{Paper de referencia~\cite{arian2025qhrp}}} \\
+ & \multicolumn{3}{c}{\textbf{Este TFG}} & \multicolumn{3}{c}{\textbf{Artículo de referencia~\cite{arian2025qhrp}}} \\
 \textbf{Método} & \textbf{Sharpe} & \textbf{Desv.} & \textbf{PSR} & \textbf{Sharpe} & \textbf{Desv.} & \textbf{PSR} \\
 \hline
 QHRP & 1.5016 & 3.7837 & 0.6191 & 1.4658 & 3.7234 & 0.6172 \\
@@ -134,13 +137,13 @@ Pesos Iguales & 1.5076 & 3.9906 & 0.6113 & 1.3565 & 3.9065 & 0.6043 \\
 \end{tabular}
 \end{table}
 
-La Tabla~\ref{TB:COMPARACIONPAPER_T1} revela una cercanía entre Sharpe, desviación y PSR respecto al paper de referencia~\cite{arian2025qhrp} que sugiere que el proceso experimental está bien reproducido a nivel de ventana. Las discrepancias más visibles en algunos métodos, por ejemplo en el denominado Pesos Iguales, son compatibles con sensibilidad al periodo de mercado más que con un fallo metodológico. Podemos concluir, que la réplica puede considerarse similar en dinámica estadística general.
+La Tabla~\ref{TB:COMPARACIONPAPER_T1} revela una cercanía entre Sharpe, desviación y PSR respecto al artículo de referencia~\cite{arian2025qhrp} que sugiere que el proceso experimental está bien reproducido a nivel de ventana. Las discrepancias más visibles en algunos métodos, por ejemplo en el denominado Pesos Iguales, son compatibles con sensibilidad al periodo de mercado más que con un fallo metodológico. Podemos concluir, que la réplica puede considerarse similar en dinámica estadística general.
 
-\begin{table}[Comparación con el paper de referencia (Tabla 2)]{TB:COMPARACIONPAPER_T2}{Comparación de Sharpe ratio acumulado del período de prueba con la Tabla 2 del paper de referencia~\cite{arian2025qhrp}.}
+\begin{table}[Comparación con el artículo de referencia (Tabla 2)]{TB:COMPARACIONPAPER_T2}{Reproducción de la Tabla 2 del artículo de referencia~\cite{arian2025qhrp} para la comparación de Sharpe ratio acumulado del período de prueba (OOS).}
 \begin{tabular}{lcc}
 \hline
  & \multicolumn{2}{c}{\textbf{Sharpe ratio \gls{OOS} acumulado}} \\
-\textbf{Método} & \textbf{Este TFG} & \textbf{Paper de referencia~\cite{arian2025qhrp}} \\
+\textbf{Método} & \textbf{Este TFG} & \textbf{Artículo de referencia~\cite{arian2025qhrp}} \\
 \hline
 QHRP & 1.4441 & 1.3975 \\
 HRP Clásico & 1.2378 & 1.1378 \\
@@ -153,23 +156,23 @@ Pesos Iguales & 1.3193 & 1.1983 \\
 
 Como muestran las Tablas~\ref{TB:COMPARACIONPAPER_T1} y~\ref{TB:COMPARACIONPAPER_T2}, los resultados del proceso son reproducibles, con variaciones menores en el orden intermedio debido a la sensibilidad de la muestra.
 
-\begin{figure}[Comparación visual Fig. 3]{FIG:COMP_PAPER_FIG3_THIS}{Figura de correlaciones reordenadas obtenida en este TFG con el mismo esquema metodológico que el utilizado en el paper de referencia~\cite{arian2025qhrp}.}
+\begin{figure}[Comparación visual Fig. 3]{FIG:COMP_PAPER_FIG3_THIS}{Figura de correlaciones reordenadas obtenida en este TFG con el mismo esquema metodológico que el utilizado en el artículo de referencia~\cite{arian2025qhrp}. a) Matriz de correlación sin ordenar, b) Matriz de correlación ordenada por HRP clásico, c) Matriz de distancia cuántica ordenada por HRP Cuántico.}
 	\image{12.5cm}{}{fig3-corr-matrices}
 \end{figure}
 
-La Figura~\ref{FIG:COMP_PAPER_FIG3_THIS} muestra que al recuperar bloques y separación entre grupos, se valida que la implementación reproduce la lógica económica del paper de referencia~\cite{arian2025qhrp} donde activos similares quedan próximos en el ordenamiento. Las diferencias finas de contraste o tamaño son esperables por cambios en muestra y normalización, y no invalidan la réplica metodológica.
+La Figura~\ref{FIG:COMP_PAPER_FIG3_THIS} muestra que al recuperar bloques y separación entre grupos, se valida que la implementación reproduce la lógica económica del artículo de referencia~\cite{arian2025qhrp} donde activos similares quedan próximos en el ordenamiento. Las diferencias finas de contraste o tamaño son esperables por cambios en muestra y normalización, y no invalidan la réplica metodológica.
 
-\begin{figure}[Comparación visual Fig. 4]{FIG:COMP_PAPER_FIG4_THIS}{Figura de distancias cuánticas obtenida en este TFG con el mismo esquema metodológico que el utilizado en el paper de referencia~\cite{arian2025qhrp}.}
+\begin{figure}[Comparación visual Fig. 4]{FIG:COMP_PAPER_FIG4_THIS}{Figura de distancias cuánticas obtenida en este TFG con el mismo esquema metodológico que el utilizado en el artículo de referencia~\cite{arian2025qhrp}. a) Matriz de distancia cuántica sin ordenar, b) Matriz de distancia cuántica ordenada por HRP Cuántico.}
 	\image{12.5cm}{}{fig4-best-match}
 \end{figure}
 
-La Figura~\ref{FIG:COMP_PAPER_FIG4_THIS} confirma que QHRP mantiene capacidad de organización estructural fuera del contexto exacto del artículo original. Las diferencias en valores absolutos se explican por distintos universos temporales, decisiones de preprocesado y detalles de implementación jerárquica, pero el patrón cuasi-diagonal se conserva en ambos casos.
+La Figura~\ref{FIG:COMP_PAPER_FIG4_THIS} confirma que QHRP mantiene capacidad de organización estructural fuera del contexto exacto del artículo de referencia~\cite{arian2025qhrp}. Las diferencias en valores absolutos se explican por distintos universos temporales, decisiones de preprocesado y detalles de implementación jerárquica, pero el patrón cuasi-diagonal se conserva en ambos casos.
 
 \subsection{Prototipo en hardware IBM con 40 activos}
 \label{subsec:prototipo_hardware}
 Para reforzar la validación experimental en entorno real, se diseñó un prototipo en hardware IBM con una pregunta operativa explícita: dado un subconjunto fijo de activos y el mismo proceso \gls{QHRP}, \textbf{¿se conserva la mejora estructural que aporta la ordenación cuántica al pasar de simulación ideal a hardware real?}
 
-La conservación se mide con la métrica de contraste de bloques ($\mathrm{BC}$) sobre la matriz de distancias $D$: dada una banda de anchura $b = \max(3, \lfloor N/10 \rfloor)$, se calcula la diferencia entre la distancia media de los pares lejanos a la diagonal y la distancia media de los pares próximos a ella. La mejora aportada por el reordenamiento se cuantifica como $\Delta\mathrm{BC} = \mathrm{BC}(D_{\text{ord}}) - \mathrm{BC}(D_{\text{raw}})$: un valor positivo indica que la ordenación acerca activos similares entre sí y aleja los distintos, reforzando la estructura de bloques en la matriz.
+La conservación se mide con la métrica $\mathrm{BC}$ definida anteriormente (véase la Sección~\ref{subsec:robustez_permutaciones}).
 
 \subsubsection{Por qué es necesario reducir a 40 activos en hardware real}
 \label{subsubsec:reduccion_40_activos}
@@ -184,7 +187,7 @@ El total de circuitos a ejecutar crece como $N \times T$. La restricción determ
 
 Los 40 activos se eligieron priorizando liquidez, medida por la mediana del volumen diario, y recurriendo a la volatilidad como criterio de respaldo para completar el conjunto.
 
-La simulación actúa como línea de base. Las etapas se mantiene idéntico en preprocesado, subconjunto de activos, mapa de características, ordenación jerárquica y criterio de evaluación. Solo cambia la capa de ejecución cuántica, que en simulación proporciona el estado cuántico exacto y en hardware real solo ofrece distribuciones de probabilidad obtenidas por medición repetida. También se fija \(\alpha=2.0\) en ambos casos para mantener comparabilidad con el flujo principal y conservar una escala angular estable en la construcción de distancias (véase Apéndice~\ref{ap:estimacion_ansatz}).
+La simulación actúa como línea de base. Las etapas se mantienen idénticas en preprocesado, subconjunto de activos, mapa de características, ordenación jerárquica y criterio de evaluación. Solo cambia la capa de ejecución cuántica, que en simulación proporciona el estado cuántico exacto y en hardware real solo ofrece distribuciones de probabilidad obtenidas por medición repetida. También se fija \(\alpha=2.0\) en ambos casos para mantener comparabilidad con el flujo principal y conservar una escala angular estable en la construcción de distancias (véase Apéndice~\ref{ap:estimacion_ansatz}).
 
 \begin{table}[Prototipo hardware vs simulación]{TB:PILOTO_BC}{Resultados de contraste de bloques en el prototipo \(N=40\) valores, \(T=90\) instantes temporales, \(P=6\) características.}
 \begin{tabular}{lccc}
@@ -202,15 +205,15 @@ Los resultados de hardware corresponden a una única ejecución del experimento 
 El criterio visual (bloques cuasi-diagonales en mapas de calor) se utiliza como evidencia cualitativa complementaria, no como prueba suficiente por sí sola. Por ende, el prototipo se interpreta como evidencia de \textbf{transferencia metodológica parcial}: la estructura jerárquica de QHRP persiste en hardware real, aunque con menor contraste que en simulación ideal.
 
 
-\begin{figure}[Correlaciones del prototipo en hardware IBM (Fig.\,3)]{FIG:HARDWARE_FIG3}{Equivalente a la Figura~3 del experimento principal, obtenido en el prototipo con hardware IBM ibm\_fez (\(N=40\) valores, \(T=90\) instantes temporales, \(P=6\) características, 256 ejecuciones/circuito). Los tres paneles muestran la matriz de correlación sin ordenar, ordenada por HRP clásico y ordenada por QHRP cuyo ordenamiento se derivó del hardware real.}
+\begin{figure}[Correlaciones del prototipo en hardware IBM (Fig.\,3)]{FIG:HARDWARE_FIG3}{Equivalente a la Figura~3 del artículo de referencia~\cite{arian2025qhrp}, que se realizó en simulación, obtenido en el prototipo con hardware IBM ibm\_fez (\(N=40\) valores, \(T=90\) instantes temporales, \(P=6\) características, 256 ejecuciones/circuito). a) Matriz de correlación sin ordenar, b) Matriz de correlación ordenada por HRP clásico, c) Matriz de distancia cuántica ordenada por HRP Cuántico.}
     \image{14cm}{}{fig3-hardware-corr}
 \end{figure}
 
-\begin{figure}[Distancias cuánticas del prototipo en hardware IBM (Fig.\,4)]{FIG:HARDWARE_FIG4}{Equivalente a la Figura~4 del experimento principal, para el prototipo en hardware IBM ibm\_fez. Los dos paneles muestran la matriz de distancia cuántica de Hellinger sin ordenar y tras el ordenamiento QHRP. El panel derecho evidencia la aparición de bloques de baja distancia cerca de la diagonal, indicando que la estructura jerárquica se transfiere al hardware real, si bien con mayor dispersión que en simulación ideal.}
+\begin{figure}[Distancias cuánticas del prototipo en hardware IBM (Fig.\,4)]{FIG:HARDWARE_FIG4}{Equivalente a la Figura~4 del artículo de referencia~\cite{arian2025qhrp}, que se relizó en simulación, para el prototipo en hardware IBM ibm\_fez. a) Matriz de distancia cuántica sin ordenar, b) Matriz de distancia cuántica ordenada por QHRP. El panel derecho evidencia la aparición de bloques de baja distancia cerca de la diagonal, indicando que la estructura jerárquica se transfiere al hardware real, si bien con mayor dispersión que en simulación ideal.}
     \image{14cm}{}{fig4-hardware-distance}
 \end{figure}
 
-La Figura~\ref{FIG:HARDWARE_FIG3} reproduce con 40 valores la visualción de la Figura~3 del experimento principal en el prototipo de hardware real: la ordenación cuántica derivada del hardware recupera bloques de alta correlación interna, aunque con menor definición que en simulación. La Figura~\ref{FIG:HARDWARE_FIG4} muestra las matrices de distancia cuántica antes y después del ordenamiento QHRP en hardware: aunque el contraste de bloques se reduce drásticamente, con $\Delta\mathrm{BC} = 0.0102$ en hardware frente a $0.0786$ en simulación, la estructura cuasi-diagonal permanece visible, confirmando que \gls{QHRP} es ejecutable en hardware \gls{NISQ} real y transfiere al menos parcialmente su capacidad de clasificación de sectores por valores.
+La Figura~\ref{FIG:HARDWARE_FIG3} reproduce con 40 valores la visualización de la Figura~3 del experimento principal del artículo de referencia~\cite{arian2025qhrp} en el prototipo de hardware real: la ordenación cuántica derivada del hardware recupera bloques de alta correlación interna, aunque con menor definición que en simulación. La Figura~\ref{FIG:HARDWARE_FIG4} muestra las matrices de distancia cuántica antes y después del ordenamiento QHRP en hardware: aunque el contraste de bloques se reduce drásticamente, con $\Delta\mathrm{BC} = 0.0102$ en hardware frente a $0.0786$ en simulación, la estructura cuasi-diagonal permanece visible, confirmando que \gls{QHRP} es ejecutable en hardware \gls{NISQ} real y transfiere al menos parcialmente su capacidad de clasificación de sectores por valores.
 
 \subsection{Circuito con reducción a 5 características (5 qubits)}
 \label{subsec:5_qubits}
@@ -239,11 +242,11 @@ La Tabla~\ref{TB:6VS5} muestra que la mejora de estructura al pasar de la matriz
 
 Las correlaciones entre las matrices de distancia de ambos escenarios son muy altas: Pearson $= 0.998$ y Spearman $= 0.998$. La correlación de Spearman entre los ordenamientos de activos resultantes es $0.953$ (Kendall $\tau = 0.833$), lo que indica que los dos circuitos producen un ordenamiento casi idéntico de los activos.
 
-\begin{figure}[Matrices de correlación 6 vs 5 qubits]{FIG:6VS5_CORR}{Matrices de correlación sin ordenar, ordenada por HRP clásico y ordenada por QHRP, para 6 qubits fila superior y 5 qubits fila inferior. La estructura de bloques cuasi-diagonales es equivalente en ambas configuraciones.}
+\begin{figure}[Matrices de correlación 6 vs 5 qubits]{FIG:6VS5_CORR}{Matrices de correlación sin ordenar, ordenada por HRP clásico y ordenada por QHRP, para 6 qubits fila superior y 5 qubits fila inferior. La estructura de bloques cuasi-diagonales es equivalente en ambas configuraciones. a) Matriz de correlación sin ordenar con 6 qubits, b) Matriz de correlación ordenada por HRP clásico con 6 qubits, c) Matriz de distancia cuántica ordenada por HRP Cuántico con 6 qubits, d) Matriz de correlación sin ordenar con 5 qubits, e) Matriz de correlación ordenada por HRP clásico con 5 qubits, f) Matriz de distancia cuántica ordenada por HRP Cuántico con 5 qubits.}
     \image{14cm}{}{fig3-6vs5-corr}
 \end{figure}
 
-\begin{figure}[Matrices de distancia cuántica 6 vs 5 qubits]{FIG:6VS5_DIST}{Matrices de distancia cuántica antes y después del ordenamiento QHRP para los escenarios de 6 y 5 qubits.}
+\begin{figure}[Matrices de distancia cuántica 6 vs 5 qubits]{FIG:6VS5_DIST}{Matrices de distancia cuántica antes y después del ordenamiento QHRP para los escenarios de 6 y 5 qubits. a) Matriz de distancia cuántica sin ordenar con 6 qubits, b) Matriz de distancia cuántica ordenada por QHRP con 6 qubits, c) Matriz de distancia cuántica sin ordenar con 5 qubits, d) Matriz de distancia cuántica ordenada por QHRP con 5 qubits.}
     \image{14cm}{}{fig4-6vs5-distance}
 \end{figure}
 
@@ -300,6 +303,6 @@ Rendimiento financiero & Sharpe acumulado: 1.238 & Sharpe acumulado: 1.444 \\
 
 Como muestra la Tabla~\ref{TB:COMP_SEGMENTATION}, \gls{QHRP} no solo supera en rendimiento financiero, con Sharpe 1.444 frente a 1.238, sino que produce sectorizaciones más coherentes económicamente, agrupando por factores de riesgo interpretables frente a la mezcla heterogénea del \gls{HRP} clásico. Esta ventaja es tanto empírica como estructural, ya que grupos coherentes por factor de riesgo producen asignaciones más robustas ante cambios de régimen.
 
-\subsection{Resumen}
-\gls{QHRP} obtiene el mejor Sharpe acumulado con 1.444 y produce sectorizaciones económicamente coherentes, aunque con un coste computacional $2.8\times10^4$ veces mayor que el clásico. La elección entre métodos depende del equilibrio entre calidad de la sectorización y velocidad de ejecución requerida en cada contexto operativo.
+\section{Resumen}
+\gls{QHRP} en simulación obtiene el mejor Sharpe acumulado con 1.444 y produce sectorizaciones económicamente coherentes, aunque con un coste computacional $2.8\times10^4$ veces mayor que el clásico. La elección entre métodos depende del equilibrio entre calidad de la sectorización y velocidad de ejecución requerida en cada contexto operativo.
 

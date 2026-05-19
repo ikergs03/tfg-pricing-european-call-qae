@@ -1,7 +1,7 @@
-\chapter{Fundamentos de computación cuántica y circuitos}
+\chapter{Fundamentos de computación cuántica basada en circuitos}
 \label{ap:fundamentos_cuantica}
 
-Este apéndice reúne los fundamentos de computación cuántica y la descripción básica de los circuitos y puertas cuánticas que se han movido fuera del cuerpo principal del estado del arte para aligerar la lectura.
+Este apéndice reúne los fundamentos de computación cuántica y la descripción básica de los circuitos y puertas cuánticas que se han movido fuera del cuerpo principal del estado del arte para aligerar la lectura. Viene a ser un compendio similar de la Introducción de otros TFGs de computación cuántica.
 
 \section{Fundamentos de computación cuántica}
 \label{ap:sec:fundamentos_cuantica}
@@ -23,7 +23,7 @@ donde $\alpha$ y $\beta$ son números complejos denominados \textbf{amplitudes d
 |\alpha|^2 + |\beta|^2 = 1.
 \end{equation}
 
-Esta condición garantiza que las probabilidades de obtener cada resultado al medir sumen la unidad: $|\alpha|^2$ representa la probabilidad de obtener 0 y $|\beta|^2$ la de 1. Como $\alpha$ y $\beta$ son complejos, el estado codifica además información de fase relativa, esencial para los algoritmos cuánticos; la superposición no implica que el qubit "esté en ambos estados a la vez" en sentido clásico, sino que no tiene un valor definido hasta la medición.
+Esta condición garantiza que las probabilidades de obtener cada resultado al medir sumen la unidad: $|\alpha|^2$ representa la probabilidad de obtener 0 y $|\beta|^2$ la de 1. Como $\alpha$ y $\beta$ son complejos, el estado codifica además información de fase relativa, esencial para los algoritmos cuánticos; la superposición no implica que el qubit esté en ambos estados a la vez en sentido clásico, sino que no tiene un valor definido hasta la medición.
 
 \begin{figure}[Esfera de Bloch]{ap:FIG:BLOCHSPHERE}
 {Representación geométrica de un qubit en la esfera de Bloch.
@@ -99,7 +99,7 @@ Los \textbf{mapas de características cuánticos}, son transformaciones que codi
 
 Un ordenador cuántico procesa información mediante secuencias de operaciones sobre qubits. A diferencia de la programación clásica, donde las instrucciones se ejecutan de forma secuencial sobre registros de bits, la computación cuántica se estructura en forma de \textbf{circuitos cuánticos}. Un circuito cuántico describe la evolución de un conjunto de qubits desde un estado inicial hasta un estado final, mediante la aplicación sucesiva de operaciones unitarias.
 
-Las operaciones que se aplican a los qubits se denominan \textbf{puertas cuánticas} y son el equivalente cuántico de las puertas lógicas clásicas (AND, OR, NOT, etc.). Sin embargo, existe una diferencia fundamental: todas las puertas cuánticas son \textbf{transformaciones unitarias}, lo que implica que son \textbf{reversibles}. Formalmente, una puerta cuántica que actúa sobre $n$ qubits es una matriz unitaria $U \in \mathbb{C}^{2^n \times 2^n}$ que satisface:
+Las operaciones que se aplican a los qubits se denominan \textbf{puertas cuánticas}\cite{salasperalta2012diabaticgates} y son el equivalente cuántico de las puertas lógicas clásicas (AND, OR, NOT, etc.). Sin embargo, existe una diferencia fundamental: todas las puertas cuánticas son \textbf{transformaciones unitarias}, lo que implica que son \textbf{reversibles}. Formalmente, una puerta cuántica que actúa sobre $n$ qubits es una matriz unitaria $U \in \mathbb{C}^{2^n \times 2^n}$ que satisface:
 
 \begin{equation}[ap:eq:unitaria]{Condición de unitariedad de una puerta cuántica}
 U U^\dagger = U^\dagger U = I,

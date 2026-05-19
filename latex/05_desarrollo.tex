@@ -1,31 +1,31 @@
 \chapter{Desarrollo}
 \label{cap:desarrollo}
 
-En este capítulo se presenta la implementación práctica del proceso, comenzando por la reproducción del circuito descrito en el paper de referencia~\cite{arian2025qhrp} y continuando con la implementación del circuito que realice el proceso por etapas, de tal manera, que se facilite su trazabilidad.
+En este capítulo se presenta la implementación práctica del proceso, comenzando por la reproducción del circuito descrito en el artículo de referencia~\cite{arian2025qhrp} y continuando con la implementación del circuito que realice el proceso por etapas, de tal manera, que se facilite su trazabilidad.
 
-\section{Circuito cuántico extraído del paper de referencia}
-\label{sec:circuito_extraido_paper}
+\section{Circuito cuántico extraído del artículo de referencia}
+\label{sec:circuito_extraido_articulo}
 
-Como parte de la validación metodológica, se construye una representación esquemática del circuito de referencia descrito en el artículo~\cite{arian2025qhrp} para el caso de seis qubits. La figura~\ref{FIG:CIRCUITO_PAPER_QHRP} ilustra la estructura general del mapa de características tal y como se presenta en dicho artículo. La secuencia incluye: (i) compuertas Hadamard en todos los qubits, para cambiar a la distribución equiprobable de estados; (ii) tres capas de codificación con rotaciones $R_y$, $R_x$ y de nuevo $R_y$, que parametrizan en los ángulos el mapa de características; (iii) capas de entrelazamiento intercaladas generadas con puertas CNOT; y (iv) una etapa final de medición en la base computacional. La última etapa de medición se incluye para su ejecución en ordenadores reales, siendo innecesaria cuando se utiliza el simulador de vector de estados.
+Como parte de la validación metodológica, se construye una representación esquemática del circuito de referencia descrito en el artículo~\cite{arian2025qhrp} para el caso de seis qubits. La figura~\ref{FIG:CIRCUITO_PAPER_QHRP} ilustra la estructura general del mapa de características tal y como se presenta en dicho artículo. La secuencia incluye: (i) compuertas Hadamard en todos los qubits, para obtener la distribución equiprobable de estados; (ii) tres capas de codificación con rotaciones $R_y$, $R_x$ y de nuevo $R_y$, que parametrizan en los ángulos el mapa de características; (iii) capas de entrelazamiento intercaladas generadas con puertas CNOT; y (iv) una etapa final de medición en la base computacional. La última etapa de medición se incluye para su ejecución en ordenadores reales, siendo innecesaria cuando se utiliza el simulador de vector de estados.
 
 Por otro lado, indicar que la puerta CNOT, es una opción para generar entrelazamiento, pero las posibilidades de equivalencia de puertas permiten otras alternativas de generarlo con puertas como \texttt{CZ}, \texttt{SWAP} e \texttt{iSWAP}, y con ello obtener relaciones no lineales entre las características que se representan en el circuito.
 
 La representación de la figura~\ref{FIG:CIRCUITO_PAPER_QHRP} es la base del diseño del ansatz y el punto de partida para facilitar la comparación entre la formulación teórica y su implementación práctica.
 
-Para evitar confusiones de interpretación, entre el circuito del paper de referencia y el utilizado en el código experimental se detallan dos circuitos complementarios:
+Para evitar confusiones de interpretación, entre el circuito del artículo de referencia y el utilizado en el código experimental se detallan dos circuitos complementarios:
 \begin{itemize}
-\item \textbf{Circuito de referencia (ver Figura~\ref{FIG:CIRCUITO_PAPER_QHRP}):} replica la narrativa del paper de referencia~\cite{arian2025qhrp} y usa CNOT como caso ilustrativo de entrelazamiento.
+\item \textbf{Circuito de referencia (ver Figura~\ref{FIG:CIRCUITO_PAPER_QHRP}):} replica la narrativa del artículo de referencia~\cite{arian2025qhrp} y usa CNOT como caso ilustrativo de entrelazamiento.
 \item \textbf{Circuito del proceso experimental \gls{QHRP}:} usa la secuencia \texttt{H} -- \texttt{T} -- \texttt{RY/RX} con capas de \texttt{iSWAP} en pares predefinidos, consistente con el módulo de simulación que genera las matrices de densidad.
 \end{itemize}
 
-Esta decisión metodológica permite, simultáneamente, (i) mantener fidelidad documental con la presentación del paper de referencia~\cite{arian2025qhrp} y (ii) preservar coherencia con la implementación reproducible que produce los resultados reportados. Ambos circuitos son esencialmente equivalentes desde el punto de vista del mapeo de características cuánticas, pero la sustitución de CNOT por iSWAP modifica la geometría del circuito implementado. Puede haber cambios adicionales cuando se produce la traspilación para su ejecución en un ordenador cuántico real.
+Esta decisión metodológica permite, simultáneamente, (i) mantener fidelidad documental con la presentación del artículo de referencia~\cite{arian2025qhrp} y (ii) preservar coherencia con la implementación reproducible que produce los resultados reportados. Ambos circuitos son esencialmente equivalentes desde el punto de vista del mapeo de características cuánticas, pero la sustitución de CNOT por iSWAP modifica la geometría del circuito implementado. Puede haber cambios adicionales cuando se produce la traspilación para su ejecución en un ordenador cuántico real.
 
-\begin{figure}[Circuito cuántico reproducido del paper de referencia]{FIG:CIRCUITO_PAPER_QHRP}
+\begin{figure}[Circuito cuántico reproducido del artículo de referencia]{FIG:CIRCUITO_PAPER_QHRP}
 {Representación esquemática del circuito cuántico de 6 qubits basada en el esquema del artículo de referencia~\cite{arian2025qhrp}.}
 \image{15cm}{}{fig1-circuito-paper-qhrp}
 \end{figure}
 
-El circuito confirma que cada una de las 6 características del activo se codifica en un qubit y se correlaciona mediante capas de entrelazamiento. El mapa de características define un espacio de Hilbert de dimensión $2^6=64$ para 6 qubits, donde la información queda codificada en la geometría de puertas y los parámetros de las mismas que definen las correlaciones cuánticas.
+El circuito confirma que cada una de las 6 características del activo se codifica en un qubit y se correlaciona mediante capas de entrelazamiento. El mapa de características define un espacio de Hilbert de dimensión $2^6=64$ para 6 qubits, donde la información queda codificada en los ángulos de rotación de las puertas y su geometría de conexión.
 
 \subsection{Codificación en Qiskit de los circuitos}
 \label{subsec:codificacion_qiskit_circuitos}
@@ -43,7 +43,7 @@ La trazabilidad queda garantizada porque el notebook documenta la arquitectura d
 
 Con el objetivo de facilitar la replicabilidad de los resultados, el proyecto mantiene dos ficheros de dependencias:
 \begin{itemize}
-\item \texttt{requirements\_paper\_qiskit.txt}: entorno compatible con la versión usada para reproducir el proceso del paper de referencia~\cite{arian2025qhrp}.
+\item \texttt{requirements\_paper\_qiskit.txt}: entorno compatible con la versión usada para reproducir el proceso del artículo de referencia~\cite{arian2025qhrp}.
 \item \texttt{requirements\_act\_qiskit.txt}: entorno actualizado para pruebas recientes y extensiones.
 \end{itemize}
 
@@ -60,7 +60,7 @@ Para facilitar los experimentos, se han utilizado 3 notebooks principales, para 
 \item Notebook específico para experimentos con 5 qubits.
 \end{itemize}
 
-Esta organización permite distinguir con claridad resultados en simulación ideal, resultados en ejecución hardware y resultados de comparación con el paper de referencia~\cite{arian2025qhrp}, evitando ambigüedades en la interpretación.
+Esta organización permite distinguir con claridad resultados en simulación ideal, resultados en ejecución hardware y resultados de comparación con el artículo de referencia~\cite{arian2025qhrp}, evitando ambigüedades en la interpretación.
 
 \section{Cálculo de distancias, estructura jerárquica y asignación de pesos}
 \label{sec:calculo_distancias_estructura}
@@ -79,4 +79,4 @@ Las visualizaciones se generan mediante mapas de calor dispobibles en la librer�
 \section{Descarga y preparación de datos financieros}
 \label{sec:descarga_preparacion_datos}
 
-La cartera de activos, el procedimiento de descarga de precios desde Yahoo Finance y las etapas de preprocesado y construcción de características financieras se describen en detalle en el Apéndice~\ref{ap:datos}. Allí se especifican los 170 activos del universo original, el período 2005--2025, los pasos de limpieza y cálculo de retornos, y las seis características calculadas mediante ventanas móviles que constituyen la entrada al mapa de características cuántico. El tensor resultante de dimensiones $(N, T, 6)$ se almacena en formato binario (\texttt{.npy}) para desacoplar la preparación de datos del análisis posterior y facilitar la reproducibilidad.
+La cartera de activos, el procedimiento de descarga de precios desde Yahoo Finance y las etapas de preprocesado y construcción de características financieras se describen en detalle en el Apéndice~\ref{ap:datos}. Allí se especifican los 170 activos del universo original, el período de 20 años comprendido entre 2005 y 2025, los pasos de limpieza y cálculo de retornos, y las seis características calculadas mediante ventanas móviles que constituyen la entrada al mapa de características cuántico. El tensor resultante de dimensiones $(N, T, 6)$ se almacena en formato binario (\texttt{.npy}) para desacoplar la preparación de datos del análisis posterior y facilitar la reproducibilidad.

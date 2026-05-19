@@ -1,9 +1,60 @@
 \chapter{Análisis y Diseño}
 \label{cap:analisis_diseno}
 
+En este capítulo se detalla el diseño y desarrollo del código utilizado para la preparación de los datos, la construcción de las características económicas basadas en momentos estadísticos, la implementación del modelo cuántico y la generación de las visualizaciones analizadas en el capítulo de resultados.
+
+
+\section{Descripción y análisis de QHRP}
+\label{sec:descripcion_analisis_qhrp}
+
+\subsection{Definición operativa y diferenciación respecto a HRP clásico}
+\label{subsec:qhrp_vs_hrp}
+
+El algoritmo \gls{HRP} clásico sigue el siguiente procedimiento: (1) calcula la matriz de correlación de retornos, (2) transforma la correlación en una métrica de distancia, (3) aplica \textit{clustering} jerárquico y (4) ordena los activos según el dendrograma para construir la cartera.
+
+En contraste, \gls{QHRP} sustituye la construcción clásica de la matriz de distancias por una métrica derivada de mapeo de características cuánticas:
+\begin{itemize}
+    \item \textbf{\gls{HRP} clásico:} Matriz de correlación $\Rightarrow$ Distancia clásica (ej. $1 - \text{corr}$) $\Rightarrow$ \textit{Clustering} jerárquico.
+    \item \textbf{\gls{QHRP}:} Mapa de características $\Rightarrow$ Matrices de densidad $\Rightarrow$ Distancia de Frobenius $\Rightarrow$ \textit{Clustering} jerárquico.
+\end{itemize}
+
+Las etapas de \textit{clustering} jerárquico y construcción de jerarquía permanecen idénticas en ambos enfoques. Asimismo, una vez obtenida la estructura jerárquica, ambos métodos emplean el mismo procedimiento de \textbf{bisección recursiva} para la asignación de pesos. La diferencia fundamental radica, por tanto, en que la métrica de similitud entre activos proviene de la geometría de estados cuánticos en lugar de correlaciones clásicas.
+
+\subsection{Parámetros del proceso}
+\label{subsec:parametros_proceso}
+
+La implementación de \gls{QHRP} se especifica mediante los siguientes parámetros:
+
+\begin{itemize}
+    \item \textbf{Número de qubits:} $P = 6$, correspondiente a las seis características por activo.
+    \item \textbf{Configuración principal de evaluación:} 18 ventanas \textit{walk-forward} con 756 días de entrenamiento y 21 días de prueba por ventana.
+    \item \textbf{Cartera principal de activos:} $N = 169$ activos del índice bursatil Standard and Poor's (S\&P 500) en el experimento principal.
+    \item \textbf{Prototipo hardware:} Subconjunto de $N = 40$ activos para la validación exploratoria en hardware cuántico real.
+    \item \textbf{Profundidad del circuito:} El mapa de características consta de bloques locales (rotaciones parametrizadas) intercalados con capas de entrelazamiento.
+    \item \textbf{Puertas de entrelazamiento:} Se utiliza iSWAP aplicada sobre pares predefinidos de qubits.
+    \item \textbf{Backend de simulación:} Simulación mediante simulador de vector de estado (en inglés \textit{statevector}), sin ruido, permitiendo acceso directo a la función de onda completa en el régimen ideal.
+    \item \textbf{Normalización de características:} Normalización angular min-max dentro del mapa de características.
+\end{itemize}
+
+\subsection{Etapas del algoritmo}
+\label{subsec:etapas_algoritmo}
+
+El proceso integral de análisis se estructura en las siguientes etapas:
+
+\begin{enumerate}
+    \item \textbf{Preparación de datos:} Carga de series de precios, cálculo de retornos diarios y organización en ventanas temporales.
+    \item \textbf{Ingeniería de características:} Cálculo de momentos estadísticos mediante ventanas móviles.
+    \item \textbf{Normalización:} Normalización angular min-max dentro del mapa de características.
+    \item \textbf{Representación cuántica:} Aplicación del mapa de características parametrizado para generar matrices de densidad promedio de cada activo descrito en la Sección \ref{subsec:representacion_cuantica}.
+    \item \textbf{Métrica de distancia:} Cálculo de la matriz de distancias de Frobenius entre pares de activos, descrito en la Sección~\ref{subsec:metrica_distancia_cuantica}.
+    \item \textbf{\textit{Clustering} jerárquico:} Aplicación del criterio jerárquico correspondiente y extracción del ordenamiento del dendrograma descrito en la Sección \ref{subsec:construccion_ordenamiento}.
+    \item \textbf{Asignación de pesos (Recursive Bisection):} Distribución de capital entre los activos siguiendo la estructura jerárquica obtenida. Se aplica el algoritmo de bisección recursiva clásico sobre la matriz de covarianza para garantizar la paridad de riesgo basada en la nueva topología cuántica.
+    \item \textbf{Evaluación y Análisis:} Comparación de las carteras resultantes entre los enfoques clásicos y cuánticos mediante las métricas de rendimiento ajustado por riesgo Sharpe, \gls{PSR} y \gls{MinTRL}, descritas en la Sección~\ref{sec:metricas_evaluacion}.
+\end{enumerate}
+
+
 \section{Implementación del análisis jerárquico cuántico}
 \label{sec:implementacion_analisis}
-En este capítulo se detalla el diseño y desarrollo del código utilizado para la preparación de los datos, la construcción de las características económicas basadas en momentos estadísticos, la implementación del modelo cuántico y la generación de las visualizaciones analizadas en el capítulo de resultados.
 
 \subsection{Arquitectura general del proceso}
 \label{sec:arquitectura_proceso}
@@ -22,7 +73,7 @@ Cada uno de estos bloques se implementa mediante scripts y cuadernos de trabajo 
 \label{sec:preparacion_almacenamiento}
 Los datos financieros empleados corresponden a precios de cierre ajustados, obtenidos y procesados inicialmente en formato \texttt{CSV} para asegurar la compatibilidad con las librerías de análisis de datos. 
 
-Durante la carga de los datos se realiza un proceso de limpieza consistente en la eliminación de observaciones incompletas (NaNs) y el tratamiento de valores atípicos, garantizando la coherencia temporal de las series utilizadas. A partir de los precios se calculan los retornos diarios, los cuales constituyen la entrada principal para la función de ingeniería de características.
+Durante la carga de los datos se realiza un proceso de limpieza consistente en la eliminación de observaciones incompletas (NaNs) y el tratamiento de valores atípicos, garantizando la coherencia temporal de las series utilizadas. A partir de los precios se calculan los retornos diarios, los cuales constituyen la entrada principal para la etapa de extracción de características.
 
 \subsection{Construcción del tensor de características}
 \label{sec:construccion_tensor}
@@ -40,7 +91,7 @@ Para cada activo se calculan ventanas móviles (típicamente de 5 períodos) uti
 \subsection{Estandarización y normalización}
 \label{sec:estandarizacion_control}
 
-El procesamiento de características visible en el flujo principal se centra en la normalización angular del mapa de características; no se documenta aquí una estandarización previa adicional a las seis características ya calculadas.
+El procesamiento se centra en la normalización angular del mapa de características, aplicada directamente sobre las seis características calculadas sin ninguna estandarización previa adicional.
 
 \begin{itemize}
 \item \textbf{Normalización angular dentro del mapa de características:} Antes de la codificación cuántica, cada característica se normaliza mediante mapeo afín respecto a sus extremos históricos en una ventana temporal activa, transformándose en un ángulo $\theta_i \in [0, \alpha\pi]$ que parametriza las rotaciones del circuito. Esta normalización min-max es específica del mapa de características y permite que la codificación cuántica se adapte dinámicamente a cambios de régimen de mercado (véase Apéndice~\ref{ap:estimacion_ansatz}).

@@ -55,7 +55,7 @@ d_F(\rho_i, \rho_j) = \frac{1}{2}
 
 Esta métrica proporciona una medida geométrica natural en el espacio de operadores cuánticos y permite comparar activos teniendo en cuenta la totalidad de su comportamiento multivariante.
 
-\subsection{Construcción y ordenamiento jerárquico}
+\subsection{Construcción de la matriz de distancias y ordenamiento jerárquico}
 \label{subsec:construccion_ordenamiento}
 
 Las distancias cuánticas entre todos los pares de activos se organizan en una matriz de distancias simétrica $D \in \mathbb{R}^{N \times N}$. Dicha matriz se emplea como entrada para un procedimiento de \textit{clustering} jerárquico, que genera un dendrograma jerárquico a partir de una métrica de distancia entre \textit{clusters}.
@@ -63,54 +63,6 @@ Las distancias cuánticas entre todos los pares de activos se organizan en una m
 En la implementación experimental comparada en este TFG, el \gls{HRP} clásico y el \gls{KHRP} emplean enlace simple para la construcción jerárquica, mientras que la ordenación cuántica evaluada con distancias de Frobenius utiliza Ward. El \textbf{enlace simple} (en inglés \textit{single linkage}) mide la distancia entre dos grupos como la distancia entre los dos activos más cercanos de cada grupo, lo que puede dar lugar a estructuras alargadas en el dendrograma. El \textbf{criterio de Ward} en cambio fusiona en cada paso los dos grupos cuya unión provoca el menor aumento de varianza interna, tendiendo a formar grupos más compactos y equilibrados. Esta diferencia afecta únicamente a la fase de ordenamiento; el esquema de asignación de pesos mediante bisección recursiva se mantiene común.
 
 Del dendrograma se extrae un ordenamiento de los activos, de forma que activos con menor distancia tienden a situarse próximos en la representación final. El reordenamiento de la matriz de distancias mediante este procedimiento no altera los valores originales, pero facilita su reorganización consistente con la estructura jerárquica.
-
-\section{Definición e implementación de QHRP}
-\label{sec:definicion_implementacion_qhrp}
-
-\subsection{Definición operativa y diferenciación respecto a HRP clásico}
-\label{subsec:qhrp_vs_hrp}
-
-El algoritmo \gls{HRP} clásico sigue el siguiente procedimiento: (1) calcula la matriz de correlación de retornos, (2) transforma la correlación en una métrica de distancia, (3) aplica \textit{clustering} jerárquico y (4) ordena los activos según el dendrograma para construir la cartera.
-
-En contraste, \gls{QHRP} sustituye la construcción clásica de la matriz de distancias por una métrica derivada de mapeo de características cuánticas:
-\begin{itemize}
-    \item \textbf{\gls{HRP} clásico:} Matriz de correlación $\Rightarrow$ Distancia clásica (ej. $1 - \text{corr}$) $\Rightarrow$ \textit{Clustering} jerárquico.
-    \item \textbf{\gls{QHRP}:} Mapa de características $\Rightarrow$ Matrices de densidad $\Rightarrow$ Distancia de Frobenius $\Rightarrow$ \textit{Clustering} jerárquico.
-\end{itemize}
-
-Las etapas de \textit{clustering} jerárquico y construcción de jerarquía permanecen idénticas en ambos enfoques. Asimismo, una vez obtenida la estructura jerárquica, ambos métodos emplean el mismo procedimiento de \textbf{bisección recursiva} para la asignación de pesos. La diferencia fundamental radica, por tanto, en que la métrica de similitud entre activos proviene de la geometría de estados cuánticos en lugar de correlaciones clásicas.
-
-\subsection{Parámetros del proceso}
-\label{subsec:parametros_proceso}
-
-La implementación de \gls{QHRP} se especifica mediante los siguientes parámetros:
-
-\begin{itemize}
-    \item \textbf{Número de qubits:} $P = 6$, correspondiente a las seis características por activo.
-    \item \textbf{Configuración principal de evaluación:} 18 ventanas \textit{walk-forward} con 756 días de entrenamiento y 21 días de prueba por ventana.
-    \item \textbf{Cartera principal de activos:} $N = 169$ activos del índice bursatil Standard and Poor's (S\&P 500) en el experimento principal.
-    \item \textbf{Prototipo hardware:} Subconjunto de $N = 40$ activos para la validación exploratoria en hardware cuántico real.
-    \item \textbf{Profundidad del circuito:} El mapa de características consta de bloques locales (rotaciones parametrizadas) intercalados con capas de entrelazamiento.
-    \item \textbf{Puertas de entrelazamiento:} Se utiliza iSWAP aplicada sobre pares predefinidos de qubits.
-    \item \textbf{Backend de simulación:} Simulación mediante simulador de vector de estado (en inglés \textit{statevector}), sin ruido, permitiendo acceso directo a la función de onda completa en el régimen ideal.
-    \item \textbf{Normalización de características:} Normalización angular min-max dentro del mapa de características.
-\end{itemize}
-
-\subsection{Etapas del algoritmo}
-\label{subsec:etapas_algoritmo}
-
-El proceso integral de análisis se estructura en las siguientes etapas:
-
-\begin{enumerate}
-    \item \textbf{Preparación de datos:} Carga de series de precios, cálculo de retornos diarios y organización en ventanas temporales.
-    \item \textbf{Ingeniería de características:} Cálculo de momentos estadísticos mediante ventanas móviles.
-    \item \textbf{Normalización:} Normalización angular min-max dentro del mapa de características.
-    \item \textbf{Representación cuántica:} Aplicación del mapa de características parametrizado para generar matrices de densidad promedio de cada activo descrito en la Sección \ref{subsec:representacion_cuantica}.
-    \item \textbf{Métrica de distancia:} Cálculo de la matriz de distancias de Frobenius entre pares de activos, descrito en la Sección~\ref{subsec:metrica_distancia_cuantica}.
-    \item \textbf{\textit{Clustering} jerárquico:} Aplicación del criterio jerárquico correspondiente y extracción del ordenamiento del dendrograma descrito en la Sección \ref{subsec:construccion_ordenamiento}.
-    \item \textbf{Asignación de pesos (Recursive Bisection):} Distribución de capital entre los activos siguiendo la estructura jerárquica obtenida. Se aplica el algoritmo de bisección recursiva clásico sobre la matriz de covarianza para garantizar la paridad de riesgo basada en la nueva topología cuántica.
-    \item \textbf{Evaluación y Análisis:} Comparación de las carteras resultantes mediante métricas de rendimiento ajustado por riesgo (Sharpe, \gls{PSR} y \gls{MinTRL}) entre los enfoques clásicos y cuánticos.
-\end{enumerate}
 
 \section{Métricas de evaluación del rendimiento}
 \label{sec:metricas_evaluacion}

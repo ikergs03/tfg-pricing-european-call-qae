@@ -1,7 +1,7 @@
 \chapter{Circuito cuántico propuesto como solución (ansatz)}
 \label{ap:estimacion_ansatz}
 
-En este apéndice se describe la justificación del ansatz cuántico empleado, cómo se calcula $\theta$ a partir de los datos y cómo se monta el circuito cuántico (ansatz) usado en QHRP.
+En este apéndice se describe la justificación del ansatz cuántico empleado, cómo se calcula el vector $\theta$, cuyos elementos son las rotaciones que se aplican a las puertas, a partir de los datos y cómo se monta el circuito cuántico (ansatz) usado en QHRP.
 
 \section{Justificación del ansatz cuántico}
 \label{sec:justificacion_ansatz}
@@ -70,11 +70,11 @@ La profundidad del circuito se elige buscando un compromiso entre expresividad (
 
 \subsubsection{Reproducibilidad y precisión terminológica}
 
-En el paper de referencia, las capas de entrelazamiento se presentan como una \textbf{familia de opciones} (CNOT, CZ, SWAP, iSWAP, etc.), y la figura ilustrativa del circuito muestra CNOT como ejemplo concreto. En consecuencia, la contribución metodológica central no depende de una puerta única, sino de la combinación entre: (i) codificación angular de características y (ii) mezcla entre qubits mediante capas de entrelazamiento intercaladas.
+En el artículo de referencia ~\cite{arian2025qhrp}, las capas de entrelazamiento se presentan como una \textbf{familia de opciones} (CNOT, CZ, SWAP, iSWAP, etc.), y la figura ilustrativa del circuito muestra CNOT como ejemplo concreto. En consecuencia, la contribución metodológica central no depende de una puerta única, sino de la combinación entre: (i) codificación angular de características y (ii) mezcla entre qubits mediante capas de entrelazamiento intercaladas.
 
 En esta implementación se adopta iSWAP en el proceso principal para mantener consistencia con el código reproducido del proyecto y con la construcción de matrices de densidad utilizadas en los experimentos. Esta elección preserva la lógica del método (mapa de características + densidad promedio + distancia de Frobenius + clustering \gls{HRP}), aunque induce una geometría de codificación distinta a la de una implementación estrictamente CNOT.
 
-El ansatz no se presenta como la arquitectura óptima universal, sino como una configuración metodológicamente consistente y reproducible para trasladar el problema financiero a un espacio cuántico de dimensión $2^P$ manteniendo interpretabilidad y trazabilidad. Desde el punto de vista de reproducibilidad, en este TFG se distinguen explícitamente dos niveles: (i) circuito de referencia del paper de referencia~\cite{arian2025qhrp} (con CNOT en la figura de ejemplo) y (ii) circuito efectivamente usado en el proceso base (con iSWAP). Esta separación evita ambigüedades al comparar resultados con la literatura y al justificar divergencias cuantitativas esperables.
+El ansatz no se presenta como la arquitectura óptima universal, sino como una configuración metodológicamente consistente y reproducible para trasladar el problema financiero a un espacio cuántico de dimensión $2^P$ manteniendo interpretabilidad y trazabilidad. Desde el punto de vista de reproducibilidad, en este TFG se distinguen explícitamente dos niveles: (i) circuito de referencia del artículo de referencia~\cite{arian2025qhrp} (con CNOT en la figura de ejemplo) y (ii) circuito efectivamente usado en el proceso base (con iSWAP). Esta separación evita ambigüedades al comparar resultados con la literatura y al justificar divergencias cuantitativas esperables.
 
 El desarrollo práctico del proceso, junto con la reproducción de circuitos y la trazabilidad de implementación, se presenta de forma separada en el Capítulo~\ref{cap:desarrollo}.
 
