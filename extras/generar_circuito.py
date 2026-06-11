@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 n = 6
 theta = [0.5 * math.pi] * n
 
-qc = QuantumCircuit(n)
+qc = QuantumCircuit(n, n)
 
 entanglement_pairs = [(0, 1), (0, 5), (2, 4), (0, 4), (2, 3), (1, 2)]
 
@@ -57,9 +57,13 @@ for i in range(n):
     qc.t(i)
     qc.h(i)
 
+# B8 - Medición
+qc.barrier(label='B8')
+qc.measure(range(n), range(n))
+
 fig = qc.draw(
     output='mpl',
-    fold=16,
+    fold=18,
     style={'fontsize': 11},
     plot_barriers=True,
 )
