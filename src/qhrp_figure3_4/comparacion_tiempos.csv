@@ -1,0 +1,4 @@
+escenario,secuencial_s,paralela_s,speedup
+6 qubits,502.7225,75.9266,6.62
+5 qubits,419.9759,65.6724,6.40
+Total simulacion,922.6985,141.5990,6.52

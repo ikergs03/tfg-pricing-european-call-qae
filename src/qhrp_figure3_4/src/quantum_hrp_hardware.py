@@ -27,8 +27,9 @@ from scipy.cluster.hierarchy import linkage, leaves_list
 from scipy.spatial.distance import squareform
 
 try:
-    from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
+    from qiskit_ibm_runtime import Batch, QiskitRuntimeService, SamplerV2 as Sampler
 except Exception:  # pragma: no cover - optional dependency in local dev
+    Batch = None
     QiskitRuntimeService = None
     Sampler = None
 
@@ -280,6 +281,81 @@ def compute_asset_distributions_hardware(
     return out
 
 
+def compute_asset_distributions_hardware_batched(
+    features_tensor: np.ndarray,
+    backend,
+    config: HardwareConfig = HardwareConfig(),
+    entanglement_pairs: Optional[Sequence[Tuple[int, int]]] = None,
+    max_circuits_per_job: int = 300,
+) -> List[np.ndarray]:
+    """Compute one average distribution per asset on real hardware, batched.
+
+    `compute_asset_distributions_hardware` submits one Runtime job per asset
+    (N jobs). On real hardware the bottleneck is not local CPU but the number
+    of times you re-enter the backend queue: each separate job pays its own
+    queue/init overhead, which in practice tends to dominate a tight time
+    budget. This version flattens every circuit from every asset into a
+    single list, splits it into as few jobs as `max_circuits_per_job` allows,
+    and submits them inside one `Batch` so later jobs in the batch don't pay
+    a fresh queue wait. Results are then regrouped back per asset.
+
+    features_tensor shape: (N, T, P)
+    `max_circuits_per_job` depends on the backend/plan; lower it if a job is
+    rejected for having too many circuits.
+    """
+    if Sampler is None or Batch is None:
+        raise ImportError(
+            "qiskit_ibm_runtime is required for real-hardware execution. "
+            "Install it with: pip install qiskit-ibm-runtime"
+        )
+
+    n_assets, t_steps, p_features = features_tensor.shape
+
+    all_circuits: List[QuantumCircuit] = []
+    owners: List[int] = []  # asset index per circuit, same order as all_circuits
+
+    for i in range(n_assets):
+        asset_data = features_tensor[i]
+        x_min = np.min(asset_data, axis=0)
+        x_max = np.max(asset_data, axis=0)
+        for t in range(t_steps):
+            all_circuits.append(
+                build_feature_map_circuit(
+                    asset_data[t],
+                    x_min=x_min,
+                    x_max=x_max,
+                    alpha=config.alpha,
+                    entanglement_pairs=entanglement_pairs,
+                    with_measurements=True,
+                )
+            )
+            owners.append(i)
+
+    circuits_t = transpile(all_circuits, backend=backend, optimization_level=config.optimization_level)
+
+    chunks = [
+        circuits_t[start : start + max_circuits_per_job]
+        for start in range(0, len(circuits_t), max_circuits_per_job)
+    ]
+
+    counts_list: List[Dict[str, int]] = []
+    with Batch(backend=backend) as batch:
+        sampler = Sampler(mode=batch)
+        jobs = [sampler.run(chunk, shots=config.shots) for chunk in chunks]
+        for job in jobs:
+            result = job.result()
+            for idx in range(len(result)):
+                counts_list.append(_extract_counts_from_sampler_result(result, idx))
+
+    probs_by_asset: List[List[np.ndarray]] = [[] for _ in range(n_assets)]
+    for asset_idx, counts in zip(owners, counts_list):
+        probs_by_asset[asset_idx].append(
+            counts_to_probability_vector(counts, n_qubits=p_features, shots=config.shots)
+        )
+
+    return [np.mean(np.stack(probs, axis=0), axis=0) for probs in probs_by_asset]
+
+
 def average_density_matrix(
     asset_data: np.ndarray,
     alpha: float = 2.0,
@@ -384,6 +460,7 @@ __all__ = [
     "compute_distribution_distance_matrix",
     "quantum_ordering_from_distance",
     "compute_asset_distributions_hardware",
+    "compute_asset_distributions_hardware_batched",
     "average_density_matrix",
     "compute_distance_matrix",
     "quantum_ordering",

@@ -1,0 +1,42 @@
+ANALISIS 6 VS 5 QUBITS (SIMULACION IDEAL) - TODOS LOS ACTIVOS
+Fecha UTC: 2026-07-07T17:06:02.633749+00:00
+
+Pipeline aplicado (igual al baseline Fig. 4)
+- Features: transformacion matematica antigua (6 features)
+- Distancia: Frobenius scale=1.0
+- Ordenamiento cuantico: Ward
+- Modo de orden de activos: sin shuffle
+
+Contexto del experimento
+- Universo: todos los activos tras limpieza (N=169)
+- Horizonte temporal: ultimos 756 dias (solicitado --days=756)
+- Regla 5 qubits: se elimina la feature indice 5 (sign_sqrt_abs_ret)
+
+Escenario 6 qubits
+- Features usadas: retorno, retorno_cuadrado, abs_ret_1p5, sign_log1p_abs_ret, tanh_ret, sign_sqrt_abs_ret
+- Tiempo simulacion: 75.93 s
+- Rango distancias (off-diagonal): [0.0033, 0.5649]
+- Contraste bloques sin ordenar: 0.0226
+- Contraste bloques ordenado: 0.1334
+- Mejora de estructura: +0.1107
+
+Escenario 5 qubits
+- Features usadas: retorno, retorno_cuadrado, abs_ret_1p5, sign_log1p_abs_ret, tanh_ret
+- Tiempo simulacion: 65.67 s
+- Rango distancias (off-diagonal): [0.0032, 0.6317]
+- Contraste bloques sin ordenar: 0.0243
+- Contraste bloques ordenado: 0.1460
+- Mejora de estructura: +0.1218
+
+Comparativa 6 vs 5
+- Correlacion Pearson entre distancias: 0.9980
+- Correlacion Spearman entre distancias: 0.9984
+- Spearman entre rankings (orden de activos): 0.9527
+- Kendall tau entre rankings: 0.8325
+- Distorsion relativa Frobenius: 0.0924
+
+- Fig 3 (correlaciones) guardada en: /home/iker/TFG/src/qhrp_figure3_4/results_6_vs_5_qubits_all_assets_parallel/fig3_corr_6_vs_5_all_assets_baseline_3x3.png
+- Fig 4 (distancias) guardada en: /home/iker/TFG/src/qhrp_figure3_4/results_6_vs_5_qubits_all_assets_parallel/fig4_distance_6_vs_5_all_assets_baseline.png
+
+Primeros 25 activos (de 169):
+- SPY, QQQ, DIA, IWM, IVV, VTI, VOO, EFA, EEM, VEA, VWO, ACWI, SPDW, SCHF, XLK, XLF, XLE, XLI, XLY, XLV, XLC, XLP, XLRE, XLU, XLB

@@ -22,8 +22,10 @@ import argparse
 import json
 import sys
 import time
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import List
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -31,9 +33,11 @@ import pandas as pd
 import seaborn as sns
 from scipy.cluster.hierarchy import leaves_list, linkage
 from scipy.spatial.distance import squareform
+from scipy.stats import kendalltau, spearmanr
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parents[1]
 
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.append(str(SCRIPT_DIR))
@@ -41,13 +45,72 @@ if str(SCRIPT_DIR) not in sys.path:
 if str(SCRIPT_DIR / "src") not in sys.path:
     sys.path.append(str(SCRIPT_DIR / "src"))
 
-from analyze_qubits_6_vs_5 import (  # noqa: E402
-    PROJECT_ROOT,
-    ScenarioResult,
-    average_density_matrix,
-    block_contrast,
-    compare_scenarios,
-)
+from quantum_hrp_hardware import average_density_matrix  # noqa: E402
+
+
+@dataclass
+class ScenarioResult:
+    name: str
+    n_qubits: int
+    used_features: List[str]
+    distance: np.ndarray
+    order: np.ndarray
+    corr_ordered: np.ndarray
+    elapsed_s: float
+    block_raw: float
+    block_ordered: float
+
+
+def block_contrast(distance_matrix: np.ndarray, band: int = 4) -> float:
+    """Valores altos indican estructura de bloques mas limpia cerca de diagonal."""
+    n = distance_matrix.shape[0]
+    ii, jj = np.indices((n, n))
+    off_diag = ii != jj
+    near = (np.abs(ii - jj) <= band) & off_diag
+    far = np.abs(ii - jj) > band
+    return float(np.mean(distance_matrix[far]) - np.mean(distance_matrix[near]))
+
+
+def _safe_corrcoef(x: np.ndarray, y: np.ndarray) -> float:
+    if np.std(x) < 1e-12 or np.std(y) < 1e-12:
+        return float("nan")
+    return float(np.corrcoef(x, y)[0, 1])
+
+
+def _float_or_nan(value: float) -> float:
+    if value is None:
+        return float("nan")
+    try:
+        val = float(value)
+    except (TypeError, ValueError):
+        return float("nan")
+    return val if np.isfinite(val) else float("nan")
+
+
+def compare_scenarios(base_6q: ScenarioResult, alt_5q: ScenarioResult) -> dict:
+    tri = np.triu_indices_from(base_6q.distance, 1)
+    d6 = base_6q.distance[tri]
+    d5 = alt_5q.distance[tri]
+
+    pos6 = np.empty(base_6q.order.shape[0], dtype=int)
+    pos5 = np.empty(alt_5q.order.shape[0], dtype=int)
+    pos6[base_6q.order] = np.arange(base_6q.order.shape[0])
+    pos5[alt_5q.order] = np.arange(alt_5q.order.shape[0])
+
+    frob_rel = np.linalg.norm(alt_5q.distance - base_6q.distance, ord="fro")
+    frob_rel /= max(np.linalg.norm(base_6q.distance, ord="fro"), 1e-12)
+
+    dist_spearman = _float_or_nan(spearmanr(d6, d5).correlation)
+    order_spearman = _float_or_nan(spearmanr(pos6, pos5).correlation)
+    order_kendall = _float_or_nan(kendalltau(pos6, pos5).correlation)
+
+    return {
+        "distance_pearson": _float_or_nan(_safe_corrcoef(d6, d5)),
+        "distance_spearman": dist_spearman,
+        "order_spearman": order_spearman,
+        "order_kendall": order_kendall,
+        "relative_frobenius_distortion": _float_or_nan(float(frob_rel)),
+    }
 
 
 LEGACY_FEATURE_NAMES = [
