@@ -1,0 +1,5 @@
+Orden QHRP dia a dia: ['materials', 'industrials', 'discretionary', 'financials', 'energy', 'staples', 'technology', 'utilities', 'health', 'telecom']
+  k=2: [materials | industrials | discretionary | financials]   [energy | staples | technology | utilities | health | telecom]
+  k=3: [materials | industrials | discretionary | financials]   [energy | staples]   [technology | utilities | health | telecom]
+  k=4: [materials | industrials | discretionary | financials]   [energy | staples]   [technology]   [utilities | health | telecom]
+  k=5: [materials | industrials | discretionary | financials]   [energy]   [staples]   [technology]   [utilities | health | telecom]

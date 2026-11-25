@@ -1,0 +1,19 @@
+desde,hasta,n_activos,sector,activos,metodo
+26,30,4,Consumer Cyclical,Urban Outfitters | Hasbro | Mattel | Mcdonalds,HRP clasico
+33,37,4,Healthcare,Vertex Pharms. | Amgen | Biogen | Gilead Sciences,HRP clasico
+51,55,4,Healthcare,Becton Dickinson | Cencora | Mckesson | Cardinal Health,HRP clasico
+82,86,4,Consumer Defensive,Hershey | The Campbell S Company | General Mills | Kellanova,HRP clasico
+96,102,6,Healthcare,Bristol Myers Squibb | Abbott Laboratories | Johnson & Johnson | Eli Lilly | Pfizer | Merck & Company,HRP clasico
+102,108,6,Consumer Defensive,Coca Cola | Pepsico | Kimberly-Clark | Clorox | Colgate-Palm. | Procter & Gamble,HRP clasico
+119,144,25,Utilities,Centerpoint En. | Pg&E | Edison Intl. | Cms Energy | Eversource Energy | Xcel Energy | Nisource | Sempra | Alliant Energy | Exelon | Wec Energy Group | Entergy | Firstenergy | Duke Energy | Ppl | Nextera Energy | Dominion Energy | Pinnacle West Cap. | Amer.Elec.Pwr. | Scana | Southern | Pub.Ser.Enter.Gp. | Consolidated Edison | Ameren | Dte Energy,HRP clasico
+146,150,4,Industrials,Robert Half | Fastenal | Cintas | Expeditors Intl.Of Wash. A,HRP clasico
+166,170,4,Healthcare,Humana | Cigna | Aetna | Unitedhealth Group,HRP clasico
+194,221,27,Energy,Oneok | Range Res. | Southwestern Energy | Andeavor | Valero Energy | Chesapeake Energy | Eqt | Coterra Energy | Newfield Exploration | Diamond Offs.Drl. | Transocean | Helmerich & Payne | Halliburton | Slb | Baker Hughes A | Eog Res. | Devon Energy | Anadarko Petroleum | Noble Energy | Apa | Murphy Oil | Marathon Oil | Conocophillips | Chevron | Exxonmobil Holdings | Occidental Ptl. | Hess,HRP clasico
+237,241,4,Industrials,Kansas City Southern | Union Pacific | Norfolk Southern | Csx,HRP clasico
+244,249,5,Financial Services,Jefferies Financial Group | American Intl.Gp. | Chubb | Travelers Cos. | Cincinnati Finl.,HRP clasico
+251,266,15,Real Estate,Host Hotels & Resorts Reit | Welltower | Realty Income | Macerich | Healthpeak Properties | Public Storage | Apartment Inv.& Man.'A' | Federal Realty Inv.Tst. | Udr | Essex Property Tst. | Avalonbay Commns. | Vivmark Residential | Vornado Realty Trust | Simon Property Group | Kimco Realty,HRP clasico
+266,271,5,Financial Services,Progressive Ohio | Charles Schwab | Allstate Ord Shs | Loews | Unum Group,HRP clasico
+272,300,28,Financial Services,Legg Mason | T Rowe Price Group | Franklin Templeton | Capital One Finl. | Morgan Stanley | American Express | State Street | Bank Of New York Mellon | Northern Trust | Zions Bancorp. | M&T Bank | Huntington Bcsh. | Fifth Third Bancorp | Us Bancorp | Jp Morgan Chase & Co. | Regions Finl.New | Truist Financial | Comerica | Keycorp | Suntrust Banks | Citigroup | Pnc Finl.Svs.Gp. | Wells Fargo & Co | Bank Of America | Aflac | Globe Life | Hartford Insurance Group | Lincoln National,HRP clasico
+323,329,6,Basic Materials,Praxair | Air Prds.& Chems. | Eastman Chemical | Dow Chemical | Ppg Industries | E I Du Pont De Nemours,HRP clasico
+329,336,7,Industrials,Illinois Tool Works | Eaton | Cummins | Caterpillar | Deere | Parker-Hannifin | Trane Technologies,HRP clasico
+336,357,21,Technology,Corning | Adobe | Qualcomm | Hp | Motorola Solutions | International Bus.Mchs. | Netapp | Oracle | Micron Technology | Microsoft | Emc | Microchip Tech. | Cisco Systems | Intel | Lam Research | Applied Mats. | Kla | Xilinx | Linear Technology | Texas Instruments | Analog Devices,HRP clasico

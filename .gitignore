@@ -33,3 +33,9 @@ latex/*.out
 latex/*.toc
 latex/*.xdy
 
+
+# Entorno de Python de la replica de Raffinot (src/qhrp_sp500)
+raffinot-env/
+
+# Datos de LSEG de la reconstruccion de Raffinot: solo para destinatarios autorizados, no se suben
+data/datos_raffinot/

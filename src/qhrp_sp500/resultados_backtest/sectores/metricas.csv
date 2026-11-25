@@ -1,0 +1,6 @@
+metodo,sharpe_medio_ventana,sharpe_desv_ventana,psr_medio,sharpe_oos_acumulado,rentabilidad_anual,volatilidad_anual,max_drawdown
+HRP clasico,0.8627,3.2491,0.5659,0.3374,0.0541,0.1687,-0.4867
+QHRP original,0.8589,3.209,0.568,0.3294,0.0527,0.1689,-0.4972
+QHRP dia a dia,0.8999,3.2457,0.5696,0.3448,0.0558,0.1705,-0.5019
+Markowitz,0.8768,3.2261,0.5685,0.3397,0.0547,0.1696,-0.4939
+Pesos iguales,0.8754,3.2315,0.5688,0.3319,0.0563,0.1884,-0.5419

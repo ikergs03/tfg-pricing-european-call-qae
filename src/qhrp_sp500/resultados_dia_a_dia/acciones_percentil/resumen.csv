@@ -1,0 +1,5 @@
+metodo,vecinos_mismo_sector,rachas_>=4,empresas_en_rachas
+HRP clasico,0.61,18.0,179.0
+QHRP original,0.169,2.0,8.0
+QHRP dia a dia (percentil),0.787,25.0,278.0
+azar,0.103,,

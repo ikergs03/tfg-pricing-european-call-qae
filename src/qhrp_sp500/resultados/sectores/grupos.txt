@@ -1,0 +1,12 @@
+== HRP clasico
+Orden: ['utilities', 'telecom', 'staples', 'health', 'energy', 'technology', 'financials', 'materials', 'industrials', 'discretionary']
+  k=2: [utilities]   [telecom | staples | health | energy | technology | financials | materials | industrials | discretionary]
+  k=3: [utilities]   [telecom]   [staples | health | energy | technology | financials | materials | industrials | discretionary]
+  k=4: [utilities]   [telecom]   [staples | health]   [energy | technology | financials | materials | industrials | discretionary]
+  k=5: [utilities]   [telecom]   [staples | health]   [energy]   [technology | financials | materials | industrials | discretionary]
+== QHRP
+Orden: ['technology', 'utilities', 'health', 'telecom', 'discretionary', 'financials', 'staples', 'energy', 'materials', 'industrials']
+  k=2: [technology | utilities | health | telecom]   [discretionary | financials | staples | energy | materials | industrials]
+  k=3: [technology | utilities | health | telecom]   [discretionary | financials]   [staples | energy | materials | industrials]
+  k=4: [technology]   [utilities | health | telecom]   [discretionary | financials]   [staples | energy | materials | industrials]
+  k=5: [technology]   [utilities | health | telecom]   [discretionary | financials]   [staples]   [energy | materials | industrials]

@@ -1,0 +1,358 @@
+ticker,ric,name,yahoo_ticker,sector,industry,yahoo_name,fuente
+916328,ABT,ABBOTT LABORATORIES,ABT,Healthcare,Medical Devices,Abbott Laboratories,yahoo
+545101,AES,AES,AES,Utilities,Utilities - Diversified,The AES Corporation,yahoo
+906187,IBM,INTERNATIONAL BUS.MCHS.,IBM,Technology,Information Technology Services,International Business Machines Corporation,yahoo
+749382,ADBE.O,ADOBE,ADBE,Technology,Software - Application,Adobe Inc.,yahoo
+905271,APD,AIR PRDS.& CHEMS.,APD,Basic Materials,Specialty Chemicals,"Air Products and Chemicals, Inc.",yahoo
+921794,ALK,ALASKA AIR GROUP,ALK,Industrials,Airlines,"Alaska Air Group, Inc.",yahoo
+902199,DD^I17,E I DU PONT DE NEMOURS DEAD - DELIST.01/09/17,DD,Basic Materials,unknown,,manual
+322677,ALL,ALLSTATE ORD SHS,ALL,Financial Services,Insurance - Property & Casualty,The Allstate Corporation,yahoo
+906191,HON.O,HONEYWELL INTL.,HON,Industrials,Conglomerates,Honeywell International Inc.,yahoo
+905113,HWM,HOWMET AEROSPACE,HWM,Industrials,Aerospace & Defense,Howmet Aerospace Inc.,yahoo
+938692,AMGN.O,AMGEN,AMGN,Healthcare,Drug Manufacturers - General,Amgen Inc.,yahoo
+905802,HES^G25,HESS DEAD - DELIST.18/07/25,HES,Energy,unknown,,manual
+906156,AXP,AMERICAN EXPRESS,AXP,Financial Services,Credit Services,American Express Company,yahoo
+905425,AEP.O,AMER.ELEC.PWR.,AEP,Utilities,Utilities - Regulated Electric,"American Electric Power Company, Inc.",yahoo
+933185,AFL,AFLAC,AFL,Financial Services,Insurance - Life,Aflac Incorporated,yahoo
+916305,AIG,AMERICAN INTL.GP.,AIG,Financial Services,Insurance - Diversified,"American International Group, Inc.",yahoo
+905276,ADI.O,ANALOG DEVICES,ADI,Technology,Semiconductors,"Analog Devices, Inc.",yahoo
+741076,APC^H19,ANADARKO PETROLEUM DEAD - DELIST.09/08/19,APC,Energy,unknown,,manual
+982852,VLO,VALERO ENERGY,VLO,Energy,Oil & Gas Refining & Marketing,Valero Energy Corporation,yahoo
+921983,APA.O,APA,APA,Energy,Oil & Gas E&P,APA Corporation,yahoo
+981550,CMCSA.O,COMCAST A,CMCSA,Communication Services,Telecom Services,Comcast Corporation,yahoo
+992816,AAPL.O,APPLE,AAPL,Technology,Consumer Electronics,Apple Inc.,yahoo
+905296,AMAT.O,APPLIED MATS.,AMAT,Technology,Semiconductor Equipment & Materials,"Applied Materials, Inc.",yahoo
+130298,ALB,ALBEMARLE,ALB,Basic Materials,Specialty Chemicals,Albemarle Corporation,yahoo
+921093,ADM,ARCHER DANIELS MIDLAND,ADM,Consumer Defensive,Farm Products,Archer-Daniels-Midland Company,yahoo
+902607,PNW,PINNACLE WEST CAP.,PNW,Utilities,Utilities - Regulated Electric,Pinnacle West Capital Corporation,yahoo
+670942,AEE,AMEREN,AEE,Utilities,Utilities - Regulated Electric,Ameren Corporation,yahoo
+132808,AIV,APARTMENT INV.& MAN.'A',AIV,Real Estate,REIT - Residential,Apartment Investment and Management Company,yahoo
+702259,ADSK.O,AUTODESK,ADSK,Technology,Software - Application,"Autodesk, Inc.",yahoo
+912669,ADP.O,AUTOMATIC DATA PROC.,ADP,Technology,Software - Application,"Automatic Data Processing, Inc.",yahoo
+544616,AZO,AUTOZONE,AZO,Consumer Cyclical,Auto Parts,"AutoZone, Inc.",yahoo
+921161,AVY,AVERY DENNISON,AVY,Consumer Cyclical,Packaging & Containers,Avery Dennison Corporation,yahoo
+921431,BKR.O,BAKER HUGHES A,BKR,Energy,Oil & Gas Equipment & Services,Baker Hughes Company,yahoo
+932060,BALL.K,BALL,BALL,Consumer Cyclical,Packaging & Containers,Ball Corporation,yahoo
+905592,BCR^L17,C R BARD DEAD - DELIST.29/12/17,BCR,Healthcare,unknown,,manual
+916365,BAX,BAXTER INTL.,BAX,Healthcare,Medical Instruments & Supplies,Baxter International Inc.,yahoo
+325972,BBBYQ.PK^J23,BED BATH & BEYOND DEAD - DELIST.02/10/23,BBBYQ,Consumer Cyclical,unknown,,manual
+905876,BDX,BECTON DICKINSON,BDX,Healthcare,Medical Instruments & Supplies,"Becton, Dickinson and Company",yahoo
+921725,AME,AMETEK,AME,Industrials,Specialty Industrial Machinery,"AMETEK, Inc.",yahoo
+945384,VZ,VERIZON COMMUNICATIONS,VZ,Communication Services,Telecom Services,Verizon Communications Inc.,yahoo
+929302,BBY,BEST BUY,BBY,Consumer Cyclical,Specialty Retail,"Best Buy Co., Inc.",yahoo
+905159,FE,FIRSTENERGY,FE,Utilities,Utilities - Regulated Electric,FirstEnergy Corp.,yahoo
+905596,HRB,H&R BLOCK,HRB,Consumer Cyclical,Personal Services,"H&R Block, Inc.",yahoo
+904818,BA,BOEING,BA,Industrials,Aerospace & Defense,The Boeing Company,yahoo
+923649,RHI,ROBERT HALF,RHI,Industrials,Staffing & Employment Services,Robert Half Inc.,yahoo
+329709,BWA,BORGWARNER,BWA,Consumer Cyclical,Auto Parts,BorgWarner Inc.,yahoo
+325824,BSX,BOSTON SCIENTIFIC,BSX,Healthcare,Medical Devices,Boston Scientific Corporation,yahoo
+905080,BMY,BRISTOL MYERS SQUIBB,BMY,Healthcare,Drug Manufacturers - General,Bristol-Myers Squibb Company,yahoo
+904480,OKE,ONEOK,OKE,Energy,Oil & Gas Midstream,"ONEOK, Inc.",yahoo
+130502,AVB^H26,AVALONBAY COMMNS. DEAD - DELIST.17/08/26,AVB,Real Estate,unknown,,manual
+902103,SRE,SEMPRA,SRE,Utilities,Utilities - Diversified,Sempra,yahoo
+951849,FDX,FEDEX,FDX,Industrials,Integrated Freight & Logistics,FedEx Corporation,yahoo
+546075,APH,AMPHENOL 'A',APH,Technology,Electronic Components,Amphenol Corporation,yahoo
+912216,BFb,BROWN-FORMAN 'B',BFb,Consumer Defensive,unknown,,manual
+993189,CSX.O,CSX,CSX,Industrials,Railroads,CSX Corporation,yahoo
+542823,CTRA.K^E26,COTERRA ENERGY DEAD - DELIST.07/05/26,CTRA,Energy,unknown,,manual
+905075,CPB.O,THE CAMPBELL S COMPANY,CPB,Consumer Defensive,Packaged Foods,The Campbell's Company,yahoo
+937083,STZ,CONSTELLATION BRANDS 'A',STZ,Consumer Defensive,Beverages - Brewers,"Constellation Brands, Inc.",yahoo
+944704,CAH,CARDINAL HEALTH,CAH,Healthcare,Medical Distribution,"Cardinal Health, Inc.",yahoo
+902224,CAT,CATERPILLAR,CAT,Industrials,Farm & Heavy Construction Machinery,Caterpillar Inc.,yahoo
+755790,CELG.O^K19,CELGENE DEAD - DELIST.21/11/19,CELG,Healthcare,unknown,,manual
+867705,CTXS.O^J22,CITRIX SYS. DEAD - DELIST.03/10/22,CTXS,Technology,unknown,,manual
+327747,CHKAQ.PK^B21,CHESAPEAKE ENERGY DEAD - DELIST.10/02/21,CHKAQ,Energy,unknown,,manual
+906838,LUMN.O,LUMEN TECHNOLOGIES,LUMN,Communication Services,Telecom Services,"Lumen Technologies, Inc.",yahoo
+741643,CERN.O^F22,CERNER DEAD - DELIST.09/06/22,CERN,Healthcare,unknown,,manual
+902242,JPM,JP MORGAN CHASE & CO.,JPM,Financial Services,Banks - Diversified,JPMorgan Chase & Co.,yahoo
+982440,CHD,CHURCH & DWIGHT CO.,CHD,Consumer Defensive,Household & Personal Products,"Church & Dwight Co., Inc.",yahoo
+912278,CI,CIGNA,CI,Healthcare,Healthcare Plans,The Cigna Group,yahoo
+951545,CINF.O,CINCINNATI FINL.,CINF,Financial Services,Insurance - Property & Casualty,Cincinnati Financial Corporation,yahoo
+944777,CTAS.O,CINTAS,CTAS,Industrials,Specialty Business Services,Cintas Corporation,yahoo
+922301,FTRCQ.PK^E21,FRONTIER COMMUNICATIONS DEAD - DELIST.03/05/21,FTRCQ,Communication Services,unknown,,manual
+542868,CSCO.O,CISCO SYSTEMS,CSCO,Technology,Communication Equipment,"Cisco Systems, Inc.",yahoo
+916125,CLX,CLOROX,CLX,Consumer Defensive,Household & Personal Products,The Clorox Company,yahoo
+904282,KO,COCA COLA,KO,Consumer Defensive,Beverages - Non-Alcoholic,The Coca-Cola Company,yahoo
+906148,CL,COLGATE-PALM.,CL,Consumer Defensive,Household & Personal Products,Colgate-Palmolive Company,yahoo
+922964,CMA^B26,COMERICA DEAD - DELIST.02/02/26,CMA,Financial Services,unknown,,manual
+998326,CA.O^K18,CA DEAD - DELIST.06/11/18,CA,Technology,unknown,,manual
+929814,CAG,CONAGRA BRANDS,CAG,Consumer Defensive,Packaged Foods,"Conagra Brands, Inc.",yahoo
+902288,ED,CONSOLIDATED EDISON,ED,Utilities,Utilities - Regulated Electric,"Consolidated Edison, Inc.",yahoo
+901686,CMS,CMS ENERGY,CMS,Utilities,Utilities - Regulated Electric,CMS Energy Corporation,yahoo
+912273,GLW,CORNING,GLW,Technology,Electronic Components,Corning Incorporated,yahoo
+923036,SEE^D26,SEALED AIR DEAD - DELIST.09/04/26,SEE,Consumer Cyclical,unknown,,manual
+905966,CMI,CUMMINS,CMI,Industrials,Specialty Industrial Machinery,Cummins Inc.,yahoo
+325922,DHI,D R HORTON,DHI,Consumer Cyclical,Residential Construction,"D.R. Horton, Inc.",yahoo
+912941,DHR,DANAHER,DHR,Healthcare,Diagnostics & Research,Danaher Corporation,yahoo
+923425,TGT,TARGET,TGT,Consumer Defensive,Discount Stores,Target Corporation,yahoo
+311903,DOFSQ.PK^D21,DIAMOND OFFS.DRL. DEAD - DELIST.24/04/21,DOFSQ,Energy,unknown,,manual
+906189,DE,DEERE,DE,Industrials,Farm & Heavy Construction Machinery,Deere & Company,yahoo
+327998,MS,MORGAN STANLEY,MS,Financial Services,Capital Markets,Morgan Stanley,yahoo
+921964,DIS,WALT DISNEY,DIS,Communication Services,Entertainment,The Walt Disney Company,yahoo
+154259,DLTR.O,DOLLAR TREE,DLTR,Consumer Defensive,Discount Stores,"Dollar Tree, Inc.",yahoo
+904830,DOV,DOVER,DOV,Industrials,Specialty Industrial Machinery,Dover Corporation,yahoo
+905114,DOW^I17,DOW CHEMICAL DEAD - DELIST.01/09/17,DOW,Basic Materials,unknown,,manual
+932913,OMC,OMNICOM GROUP,OMC,Communication Services,Advertising Agencies,Omnicom Group Inc.,yahoo
+905214,DTE,DTE ENERGY,DTE,Utilities,Utilities - Regulated Electric,DTE Energy Company,yahoo
+905755,FLS,FLOWSERVE,FLS,Industrials,Specialty Industrial Machinery,Flowserve Corporation,yahoo
+152719,DRI,DARDEN RESTAURANTS,DRI,Consumer Cyclical,Restaurants,"Darden Restaurants, Inc.",yahoo
+719630,EMC^I16,EMC DEAD - DELIST.07/09/16,EMC,Technology,unknown,,manual
+923937,BAC,BANK OF AMERICA,BAC,Financial Services,Banks - Diversified,Bank of America Corporation,yahoo
+741344,C,CITIGROUP,C,Financial Services,Banks - Diversified,Citigroup Inc.,yahoo
+357922,EMN,EASTMAN CHEMICAL,EMN,Basic Materials,Specialty Chemicals,Eastman Chemical Company,yahoo
+921268,ECL,ECOLAB,ECL,Basic Materials,Specialty Chemicals,Ecolab Inc.,yahoo
+912157,RVTY.K,REVVITY,RVTY,Healthcare,Diagnostics & Research,"Revvity, Inc.",yahoo
+500320,EA.O^H26,ELECTRONIC ARTS DEAD - DELIST.05/08/26,EA,Communication Services,unknown,,manual
+905115,EMR,EMERSON ELECTRIC,EMR,Industrials,Specialty Industrial Machinery,Emerson Electric Co.,yahoo
+131844,ESS,ESSEX PROPERTY TST.,ESS,Real Estate,REIT - Residential,"Essex Property Trust, Inc.",yahoo
+902306,ETR,ENTERGY,ETR,Utilities,Utilities - Regulated Electric,Entergy Corporation,yahoo
+500373,EOG,EOG RES.,EOG,Energy,Oil & Gas E&P,"EOG Resources, Inc.",yahoo
+906194,EFX,EQUIFAX,EFX,Industrials,Consulting Services,Equifax Inc.,yahoo
+329534,VMRK.K,VIVMARK RESIDENTIAL,VMRK,Real Estate,REIT - Residential,Vivmark Residential,yahoo
+904390,EQT,EQT,EQT,Energy,Oil & Gas E&P,EQT Corporation,yahoo
+867375,EL,ESTEE LAUDER COS.'A',EL,Consumer Defensive,Household & Personal Products,The Estée Lauder Companies Inc.,yahoo
+910722,EXPD.K,EXPEDITORS INTL.OF WASH. A,EXPD,Industrials,Integrated Freight & Logistics,"Expeditors International of Washington, Inc.",yahoo
+905039,XOM,EXXONMOBIL HOLDINGS,XOM,Energy,Oil & Gas Integrated,ExxonMobil Holdings Corporation,yahoo
+905082,FMC,FMC,FMC,Basic Materials,Agricultural Inputs,FMC Corporation,yahoo
+905016,NEE,NEXTERA ENERGY,NEE,Utilities,Utilities - Regulated Electric,"NextEra Energy, Inc.",yahoo
+755980,FAST.O,FASTENAL,FAST,Industrials,Industrial Distribution,Fastenal Company,yahoo
+905994,FRT,FEDERAL REALTY INV.TST.,FRT,Real Estate,REIT - Retail,Federal Realty Investment Trust,yahoo
+997198,FITB.K,FIFTH THIRD BANCORP,FITB,Financial Services,Banks - Regional,Fifth Third Bancorp,yahoo
+951503,MTB,M&T BANK,MTB,Financial Services,Banks - Regional,M&T Bank Corporation,yahoo
+741123,FISV.O,FISERV,FISV,Technology,unknown,"Fiserv, Inc.",manual
+329097,FLIR.O^E21,FLIR SYSTEMS DEAD - DELIST.17/05/21,FLIR,Technology,unknown,,manual
+546814,M,MACY'S,M,Consumer Cyclical,Department Stores,"Macy's, Inc.",yahoo
+938076,BEN,FRANKLIN TEMPLETON,BEN,Financial Services,Asset Management,Franklin Templeton Inc.,yahoo
+152594,FCX,FREEPORT-MCMORAN,FCX,Basic Materials,Copper,Freeport-McMoRan Inc.,yahoo
+756957,AJG,ARTHUR J GALLAGHER,AJG,Financial Services,Insurance Brokers,Arthur J. Gallagher & Co.,yahoo
+951018,GAP,GAP,GAP,Consumer Cyclical,Apparel Retail,"The Gap, Inc.",yahoo
+907652,GD,GENERAL DYNAMICS,GD,Industrials,Aerospace & Defense,General Dynamics Corporation,yahoo
+905801,GIS,GENERAL MILLS,GIS,Consumer Defensive,Packaged Foods,"General Mills, Inc.",yahoo
+906511,GPC,GENUINE PARTS,GPC,Consumer Cyclical,Auto Parts,Genuine Parts Company,yahoo
+546697,GILD.O,GILEAD SCIENCES,GILD,Healthcare,Drug Manufacturers - General,"Gilead Sciences, Inc.",yahoo
+904837,GT.O,GOODYEAR TIRE & RUB.,GT,Consumer Cyclical,Auto Parts,The Goodyear Tire & Rubber Company,yahoo
+134784,MCK,MCKESSON,MCK,Healthcare,Medical Distribution,McKesson Corporation,yahoo
+906150,GE,GE AEROSPACE,GE,Industrials,Aerospace & Defense,GE Aerospace,yahoo
+905898,GWW,WW GRAINGER,GWW,Industrials,Industrial Distribution,"W.W. Grainger, Inc.",yahoo
+904678,HAL,HALLIBURTON,HAL,Energy,Oil & Gas Equipment & Services,Halliburton Company,yahoo
+729665,HOG,HARLEY-DAVIDSON,HOG,Consumer Cyclical,Recreational Vehicles,"Harley-Davidson, Inc.",yahoo
+741497,HAR^C17,HARMAN INTL.INDS. DEAD - DELIST.13/03/17,HAR,Consumer Cyclical,unknown,,manual
+905409,LHX,L3HARRIS TECHNOLOGIES,LHX,Industrials,Aerospace & Defense,"L3Harris Technologies, Inc.",yahoo
+912030,HAS.O,HASBRO,HAS,Consumer Cyclical,Leisure,"Hasbro, Inc.",yahoo
+867185,HSIC.O,HENRY SCHEIN,HSIC,Healthcare,Medical Distribution,"Henry Schein, Inc.",yahoo
+945589,DOC,HEALTHPEAK PROPERTIES,DOC,Real Estate,REIT - Healthcare Facilities,"Healthpeak Properties, Inc.",yahoo
+921049,HP,HELMERICH & PAYNE,HP,Energy,Oil & Gas Drilling,"Helmerich & Payne, Inc.",yahoo
+905077,HSY,HERSHEY,HSY,Consumer Defensive,Confectioners,The Hershey Company,yahoo
+542983,HOLX.O^D26,HOLOGIC DEAD - DELIST.08/04/26,HOLX,Healthcare,unknown,,manual
+741410,UNM,UNUM GROUP,UNM,Financial Services,Insurance - Life,Unum Group,yahoo
+998171,HD,HOME DEPOT,HD,Consumer Cyclical,Home Improvement Retail,"The Home Depot, Inc.",yahoo
+921051,HRL,HORMEL FOODS,HRL,Consumer Defensive,Packaged Foods,Hormel Foods Corporation,yahoo
+904842,CNP,CENTERPOINT EN.,CNP,Utilities,Utilities - Regulated Electric,"CenterPoint Energy, Inc.",yahoo
+916860,HUM,HUMANA,HUM,Healthcare,Healthcare Plans,Humana Inc.,yahoo
+945411,JBHT.O,HUNT JB TRANSPORT SVS.,JBHT,Industrials,Integrated Freight & Logistics,"J.B. Hunt Transport Services, Inc.",yahoo
+951068,HBAN.O,HUNTINGTON BCSH.,HBAN,Financial Services,Banks - Regional,Huntington Bancshares Incorporated,yahoo
+545725,BIIB.O,BIOGEN,BIIB,Healthcare,Drug Manufacturers - General,Biogen Inc.,yahoo
+905052,ITW,ILLINOIS TOOL WORKS,ITW,Industrials,Specialty Industrial Machinery,Illinois Tool Works Inc.,yahoo
+328184,INTU.O,INTUIT,INTU,Technology,Software - Application,Intuit Inc.,yahoo
+922726,INTC.O,INTEL,INTC,Technology,Semiconductors,Intel Corporation,yahoo
+905050,IFF,INTL.FLAVORS & FRAG.,IFF,Basic Materials,Specialty Chemicals,International Flavors & Fragrances Inc.,yahoo
+904069,IP,INTERNATIONAL PAPER,IP,Consumer Cyclical,Packaging & Containers,International Paper Company,yahoo
+923465,IPG^K25,INTERPUBLIC GROUP DEAD - DELIST.28/11/25,IPG,Communication Services,unknown,,manual
+912142,J,JACOBS SOLUTIONS,J,Industrials,Engineering & Construction,Jacobs Solutions Inc.,yahoo
+912212,JNJ,JOHNSON & JOHNSON,JNJ,Healthcare,Drug Manufacturers - General,Johnson & Johnson,yahoo
+867871,HIG,HARTFORD INSURANCE GROUP,HIG,Financial Services,Insurance - Diversified,"The Hartford Insurance Group, Inc.",yahoo
+907677,JCI^I16,JOHNSON CONTROLS DEAD - DELIST.06/09/16,JCI,Industrials,unknown,,manual
+993062,KLAC.O,KLA,KLAC,Technology,Semiconductor Equipment & Materials,KLA Corporation,yahoo
+271980,DVN,DEVON ENERGY,DVN,Energy,Oil & Gas E&P,Devon Energy Corporation,yahoo
+905922,K^L25,KELLANOVA DEAD - DELIST.11/12/25,K,Consumer Defensive,unknown,,manual
+916130,KEY,KEYCORP,KEY,Financial Services,Banks - Regional,KeyCorp,yahoo
+546169,KIM,KIMCO REALTY,KIM,Real Estate,REIT - Retail,Kimco Realty Corporation,yahoo
+902354,KMB.O,KIMBERLY-CLARK,KMB,Consumer Defensive,Household & Personal Products,Kimberly-Clark Corporation,yahoo
+325849,KSS,KOHL'S,KSS,Consumer Cyclical,Department Stores,Kohl's Corporation,yahoo
+912134,KR,KROGER,KR,Consumer Defensive,Grocery Stores,The Kroger Co.,yahoo
+946387,LRCX.O,LAM RESEARCH,LRCX,Technology,Semiconductor Equipment & Materials,Lam Research Corporation,yahoo
+702181,LM^H20,LEGG MASON DEAD - DELIST.03/08/20,LM,Financial Services,unknown,,manual
+906487,LEG^H26,LEGGETT&PLATT DEAD - DELIST.27/08/26,LEG,Consumer Cyclical,unknown,,manual
+912219,LEN,LENNAR A A,LEN,Consumer Cyclical,Residential Construction,Lennar Corporation,yahoo
+921925,JEF,JEFFERIES FINANCIAL GROUP,JEF,Financial Services,Capital Markets,Jefferies Financial Group Inc.,yahoo
+921290,LLY,ELI LILLY,LLY,Healthcare,Drug Manufacturers - General,Eli Lilly and Company,yahoo
+912402,LNC,LINCOLN NATIONAL,LNC,Financial Services,Insurance - Life,Lincoln National Corporation,yahoo
+944169,LLTC.O^C17,LINEAR TECHNOLOGY DEAD - DELIST.13/03/17,LLTC,Technology,unknown,,manual
+154423,LMT,LOCKHEED MARTIN,LMT,Industrials,Aerospace & Defense,Lockheed Martin Corporation,yahoo
+922418,L,LOEWS,L,Financial Services,Insurance - Property & Casualty,Loews Corporation,yahoo
+755695,CCL,CARNIVAL,CCL,Consumer Cyclical,Travel Services,Carnival Corporation Ltd.,yahoo
+543267,RRC,RANGE RES.,RRC,Energy,Oil & Gas E&P,Range Resources Corporation,yahoo
+905620,LOW,LOWE'S COMPANIES,LOW,Consumer Cyclical,Home Improvement Retail,"Lowe's Companies, Inc.",yahoo
+944314,D,DOMINION ENERGY,D,Utilities,Utilities - Regulated Electric,"Dominion Energy, Inc.",yahoo
+357366,MAC,MACERICH,MAC,Real Estate,REIT - Retail,The Macerich Company,yahoo
+904539,SCG^A19,SCANA DEAD - DELIST.02/01/19,SCG,Utilities,unknown,,manual
+510493,MKC,MCCORMICK & COMPANY NV.,MKC,Consumer Defensive,Packaged Foods,"McCormick & Company, Incorporated",yahoo
+921910,MCD,MCDONALDS,MCD,Consumer Cyclical,Restaurants,McDonald's Corporation,yahoo
+912588,HST.O,HOST HOTELS & RESORTS REIT,HST,Real Estate,REIT - Hotel & Motel,"Host Hotels & Resorts, Inc.",yahoo
+904780,MRSH.K,MARSH,MRSH,Financial Services,Insurance Brokers,"Marsh & McLennan Companies, Inc.",yahoo
+905624,MAS,MASCO,MAS,Industrials,Building Products & Equipment,Masco Corporation,yahoo
+130062,MLM,MARTIN MRTA.MATS.,MLM,Basic Materials,Building Materials,"Martin Marietta Materials, Inc.",yahoo
+912811,MAT.O,MATTEL,MAT,Consumer Cyclical,Leisure,"Mattel, Inc.",yahoo
+312367,ATVI.O^J23,ACTIVISION BLIZZARD DEAD - DELIST.16/10/23,ATVI,Communication Services,unknown,,manual
+912635,CVS,CVS HEALTH,CVS,Healthcare,Healthcare Plans,CVS Health Corporation,yahoo
+152533,LH,LABCORP HOLDINGS,LH,Healthcare,Diagnostics & Research,Labcorp Holdings Inc.,yahoo
+719643,MSFT.O,MICROSOFT,MSFT,Technology,Software - Infrastructure,Microsoft Corporation,yahoo
+999506,MU.O,MICRON TECHNOLOGY,MU,Technology,Semiconductors,"Micron Technology, Inc.",yahoo
+328228,MCHP.O,MICROCHIP TECH.,MCHP,Technology,Semiconductors,Microchip Technology Incorporated,yahoo
+902172,MMM,3M,MMM,Industrials,Conglomerates,3M Company,yahoo
+325475,MHK,MOHAWK INDUSTRIES,MHK,Consumer Cyclical,"Furnishings, Fixtures & Appliances","Mohawk Industries, Inc.",yahoo
+905900,KSU^L21,KANSAS CITY SOUTHERN DEAD - DELIST.14/12/21,KSU,Industrials,unknown,,manual
+906404,MUR,MURPHY OIL,MUR,Energy,Oil & Gas E&P,Murphy Oil Corporation,yahoo
+905010,XEL.O,XCEL ENERGY,XEL,Utilities,Utilities - Regulated Electric,Xcel Energy Inc.,yahoo
+902230,F,FORD MOTOR,F,Consumer Cyclical,Auto Manufacturers,Ford Motor Company,yahoo
+867422,NTAP.O,NETAPP,NTAP,Technology,Software - Infrastructure,"NetApp, Inc.",yahoo
+357241,NFX^B19,NEWFIELD EXPLORATION DEAD - DELIST.14/02/19,NFX,Energy,unknown,,manual
+906933,NWL.O,NEWELL BRANDS,NWL,Consumer Defensive,Household & Personal Products,Newell Brands Inc.,yahoo
+912160,NEM,NEWMONT,NEM,Basic Materials,Gold,Newmont Corporation,yahoo
+993249,NKE,NIKE 'B',NKE,Consumer Cyclical,Footwear & Accessories,"NIKE, Inc.",yahoo
+906557,NBL.O^J20,NOBLE ENERGY DEAD - DELIST.06/10/20,NBL,Energy,unknown,,manual
+906560,JWN^E25,NORDSTROM DEAD - DELIST.21/05/25,JWN,Consumer Cyclical,unknown,,manual
+901899,NSC,NORFOLK SOUTHERN,NSC,Industrials,Railroads,Norfolk Southern Corporation,yahoo
+906176,NI,NISOURCE,NI,Utilities,Utilities - Regulated Gas,NiSource Inc.,yahoo
+905861,NTRS.O,NORTHERN TRUST,NTRS,Financial Services,Asset Management,Northern Trust Corporation,yahoo
+905809,NOC,NORTHROP GRUMMAN,NOC,Industrials,Aerospace & Defense,Northrop Grumman Corporation,yahoo
+906195,WFC,WELLS FARGO & CO,WFC,Financial Services,Banks - Diversified,Wells Fargo & Company,yahoo
+921482,NUE,NUCOR,NUE,Basic Materials,Steel,Nucor Corporation,yahoo
+134843,COF,CAPITAL ONE FINL.,COF,Financial Services,Credit Services,Capital One Financial Corporation,yahoo
+905102,OXY,OCCIDENTAL PTL.,OXY,Energy,Oil & Gas E&P,Occidental Petroleum Corporation,yahoo
+719618,ORCL.K,ORACLE,ORCL,Technology,Software - Infrastructure,Oracle Corporation,yahoo
+546277,OI,O I GLASS,OI,Consumer Cyclical,Packaging & Containers,"O-I Glass, Inc.",yahoo
+921757,PCAR.O,PACCAR,PCAR,Industrials,Farm & Heavy Construction Machinery,PACCAR Inc,yahoo
+902317,EXC.O,EXELON,EXC,Utilities,Utilities - Regulated Electric,Exelon Corporation,yahoo
+905150,PH,PARKER-HANNIFIN,PH,Industrials,Specialty Industrial Machinery,Parker-Hannifin Corporation,yahoo
+326996,PDCO.O^D25,PATTERSON COMPANIES DEAD - DELIST.21/04/25,PDCO,Healthcare,unknown,,manual
+945297,PAYX.O,PAYCHEX,PAYX,Technology,Software - Application,"Paychex, Inc.",yahoo
+902107,PPL,PPL,PPL,Utilities,Utilities - Regulated Electric,PPL Corporation,yahoo
+905677,PEP.O,PEPSICO,PEP,Consumer Defensive,Beverages - Non-Alcoholic,"PepsiCo, Inc.",yahoo
+904030,PFE,PFIZER,PFE,Healthcare,Drug Manufacturers - General,Pfizer Inc.,yahoo
+901666,COP,CONOCOPHILLIPS,COP,Energy,Oil & Gas E&P,ConocoPhillips,yahoo
+902314,PCG,PG&E,PCG,Utilities,Utilities - Regulated Electric,PG&E Corporation,yahoo
+905118,PBI,PITNEY-BOWES,PBI,Industrials,Integrated Freight & Logistics,Pitney Bowes Inc.,yahoo
+904853,MO,ALTRIA GROUP,MO,Consumer Defensive,Tobacco,"Altria Group, Inc.",yahoo
+944175,PNC,PNC FINL.SVS.GP.,PNC,Financial Services,Banks - Regional,"The PNC Financial Services Group, Inc.",yahoo
+255956,AET^K18,AETNA DEAD - DELIST.29/11/18,AET,Healthcare,unknown,,manual
+901897,PPG,PPG INDUSTRIES,PPG,Basic Materials,Specialty Chemicals,"PPG Industries, Inc.",yahoo
+326105,PX^J18,PRAXAIR DEAD - DELIST.31/10/18,PX,Basic Materials,unknown,,manual
+312385,COST.O,COSTCO WHOLESALE,COST,Consumer Defensive,Discount Stores,Costco Wholesale Corporation,yahoo
+729104,TROW.O,T ROWE PRICE GROUP,TROW,Financial Services,Asset Management,"T. Rowe Price Group, Inc.",yahoo
+912228,PG,PROCTER & GAMBLE,PG,Consumer Defensive,Household & Personal Products,The Procter & Gamble Company,yahoo
+936324,PGR,PROGRESSIVE OHIO,PGR,Financial Services,Insurance - Property & Casualty,The Progressive Corporation,yahoo
+902321,PEG,PUB.SER.ENTER.GP.,PEG,Utilities,Utilities - Regulated Electric,Public Service Enterprise Group Incorporated,yahoo
+912518,PHM,PULTEGROUP,PHM,Consumer Cyclical,Residential Construction,"PulteGroup, Inc.",yahoo
+546370,QCOM.O,QUALCOMM,QCOM,Technology,Semiconductors,QUALCOMM Incorporated,yahoo
+134057,O,REALTY INCOME,O,Real Estate,REIT - Retail,Realty Income Corporation,yahoo
+992656,UDR,UDR,UDR,Real Estate,REIT - Residential,"UDR, Inc.",yahoo
+544623,REGN.O,REGENERON PHARMS.,REGN,Healthcare,Biotechnology,"Regeneron Pharmaceuticals, Inc.",yahoo
+543420,AN,AUTONATION,AN,Consumer Cyclical,Auto & Truck Dealerships,"AutoNation, Inc.",yahoo
+951046,USB,US BANCORP,USB,Financial Services,Banks - Regional,U.S. Bancorp,yahoo
+702365,ROST.O,ROSS STORES,ROST,Consumer Cyclical,Apparel Retail,"Ross Stores, Inc.",yahoo
+546965,ROP.O,ROPER TECHNOLOGIES,ROP,Technology,Software - Application,"Roper Technologies, Inc.",yahoo
+902233,ROK,ROCKWELL AUTOMATION,ROK,Industrials,Specialty Industrial Machinery,"Rockwell Automation, Inc.",yahoo
+322549,RCL,ROYAL CARIBBEAN GROUP,RCL,Consumer Cyclical,Travel Services,Royal Caribbean Cruises Ltd.,yahoo
+912633,RTN^D20,RAYTHEON 'B' DEAD - DELIST.03/04/20,RTN,Industrials,unknown,,manual
+906284,R,RYDER SYSTEM,R,Industrials,Rental & Leasing Services,"Ryder System, Inc.",yahoo
+981683,STJ^A17,ST.JUDE MEDICAL DEAD - DELIST.05/01/17,STJ,Healthcare,unknown,,manual
+933974,TRV,TRAVELERS COS.,TRV,Financial Services,Insurance - Property & Casualty,"The Travelers Companies, Inc.",yahoo
+905019,MRK,MERCK & COMPANY,MRK,Healthcare,Drug Manufacturers - General,"Merck & Co., Inc.",yahoo
+912090,SLB,SLB,SLB,Energy,Oil & Gas Equipment & Services,SLB N.V.,yahoo
+755741,SCHW.K,CHARLES SCHWAB,SCHW,Financial Services,Capital Markets,The Charles Schwab Corporation,yahoo
+154680,COR,CENCORA,COR,Healthcare,Medical Distribution,"Cencora, Inc.",yahoo
+905361,SHW,SHERWIN-WILLIAMS,SHW,Basic Materials,Specialty Chemicals,The Sherwin-Williams Company,yahoo
+357834,SPG,SIMON PROPERTY GROUP,SPG,Real Estate,REIT - Retail,"Simon Property Group, Inc.",yahoo
+906400,SNA,SNAP-ON,SNA,Industrials,Tools & Accessories,Snap-on Incorporated,yahoo
+930551,SWN^J24,SOUTHWESTERN ENERGY DEAD - DELIST.01/10/24,SWN,Energy,unknown,,manual
+902324,EIX,EDISON INTL.,EIX,Utilities,Utilities - Regulated Electric,Edison International,yahoo
+902325,SO,SOUTHERN,SO,Utilities,Utilities - Regulated Electric,The Southern Company,yahoo
+992305,TFC,TRUIST FINANCIAL,TFC,Financial Services,Banks - Regional,Truist Financial Corporation,yahoo
+905647,LUV,SOUTHWEST AIRLINES,LUV,Industrials,Airlines,Southwest Airlines Co.,yahoo
+945388,T,AT&T,T,Communication Services,Telecom Services,AT&T Inc.,yahoo
+905024,CVX,CHEVRON,CVX,Energy,Oil & Gas Integrated,Chevron Corporation,yahoo
+500157,SPLS.O^I17,STAPLES DEAD - DELIST.13/09/17,SPLS,Consumer Cyclical,unknown,,manual
+951052,STT,STATE STREET,STT,Financial Services,Asset Management,State Street Corporation,yahoo
+326143,SBUX.O,STARBUCKS,SBUX,Consumer Cyclical,Restaurants,Starbucks Corporation,yahoo
+905792,PSA,PUBLIC STORAGE,PSA,Real Estate,REIT - Industrial,Public Storage,yahoo
+981722,SYK,STRYKER,SYK,Healthcare,Medical Devices,Stryker Corporation,yahoo
+922725,STI^L19,SUNTRUST BANKS DEAD - DELIST.09/12/19,STI,Financial Services,unknown,,manual
+541900,GEN.O,GEN DIGITAL,GEN,Technology,Software - Infrastructure,Gen Digital Inc.,yahoo
+916079,SYY,SYSCO,SYY,Consumer Defensive,Food Distribution,Sysco Corporation,yahoo
+912052,ANDV.K^J18,ANDEAVOR DEAD - DELIST.01/10/18,ANDV,Energy,unknown,,manual
+905061,TXN.O,TEXAS INSTRUMENTS,TXN,Technology,Semiconductors,Texas Instruments Incorporated,yahoo
+921649,TXT,TEXTRON,TXT,Industrials,Aerospace & Defense,Textron Inc.,yahoo
+906394,TMO,THERMO FISHER SCIENTIFIC,TMO,Healthcare,Diagnostics & Research,Thermo Fisher Scientific Inc.,yahoo
+745110,TIF^A21,TIFFANY & CO DEAD - DELIST.07/01/21,TIF,Consumer Cyclical,unknown,,manual
+993394,GL,GLOBE LIFE,GL,Financial Services,Insurance - Life,Globe Life Inc.,yahoo
+944738,TSS^I19,TOTAL SYSTEM SERVICES DEAD - DELIST.18/09/19,TSS,Technology,unknown,,manual
+867138,DVA,DAVITA,DVA,Healthcare,Medical Care Facilities,DaVita Inc.,yahoo
+130088,TSCO.O,TRACTOR SUPPLY,TSCO,Consumer Cyclical,Specialty Retail,Tractor Supply Company,yahoo
+906643,TSN,TYSON FOODS 'A',TSN,Consumer Defensive,Farm Products,"Tyson Foods, Inc.",yahoo
+544682,MRO^K24,MARATHON OIL DEAD - DELIST.22/11/24,MRO,Energy,unknown,,manual
+905105,UNP,UNION PACIFIC,UNP,Industrials,Railroads,Union Pacific Corporation,yahoo
+905122,RTX,RTX,RTX,Industrials,Aerospace & Defense,RTX Corporation,yahoo
+702635,UNH,UNITEDHEALTH GROUP,UNH,Healthcare,Healthcare Plans,UnitedHealth Group Incorporated,yahoo
+992953,UHS,UNIVERSAL HEALTH SVS.'B',UHS,Healthcare,Medical Care Facilities,"Universal Health Services, Inc.",yahoo
+906220,VAR^D21,VARIAN MEDICAL SYSTEMS DEAD - DELIST.15/04/21,VAR,Healthcare,unknown,,manual
+500344,VTR,VENTAS,VTR,Real Estate,REIT - Healthcare Facilities,"Ventas, Inc.",yahoo
+901892,VFC,V F,VFC,Consumer Cyclical,Apparel Manufacturing,V.F. Corporation,yahoo
+545310,VRTX.O,VERTEX PHARMS.,VRTX,Healthcare,Biotechnology,Vertex Pharmaceuticals Incorporated,yahoo
+905816,VMC,VULCAN MATERIALS,VMC,Basic Materials,Building Materials,Vulcan Materials Company,yahoo
+357142,URBN.O,URBAN OUTFITTERS,URBN,Consumer Cyclical,Apparel Retail,"Urban Outfitters, Inc.",yahoo
+912146,VNO,VORNADO REALTY TRUST,VNO,Real Estate,REIT - Office,Vornado Realty Trust,yahoo
+916548,WMT.O,WALMART,WMT,Consumer Defensive,Discount Stores,Walmart Inc.,yahoo
+519514,WM,WASTE MANAGEMENT,WM,Industrials,Waste Management,"Waste Management, Inc.",yahoo
+867390,WAT,WATERS,WAT,Healthcare,Diagnostics & Research,Waters Corporation,yahoo
+912441,SJM,J M SMUCKER,SJM,Consumer Defensive,Packaged Foods,The J. M. Smucker Company,yahoo
+906785,WDC.O,WESTERN DIGITAL,WDC,Technology,Computer Hardware,Western Digital Corporation,yahoo
+905818,WY,WEYERHAEUSER,WY,Real Estate,REIT - Specialty,Weyerhaeuser Company,yahoo
+904869,WHR,WHIRLPOOL,WHR,Consumer Cyclical,"Furnishings, Fixtures & Appliances",Whirlpool Corporation,yahoo
+923602,SWKS.O,SKYWORKS SOLUTIONS,SWKS,Technology,Semiconductors,"Skyworks Solutions, Inc.",yahoo
+546689,WFM.O^H17,WHOLE FOODS MARKET DEAD - DELIST.29/08/17,WFM,Consumer Defensive,unknown,,manual
+922407,WMB,WILLIAMS,WMB,Energy,Oil & Gas Midstream,"The Williams Companies, Inc.",yahoo
+906979,LNT.O,ALLIANT ENERGY,LNT,Utilities,Utilities - Regulated Electric,Alliant Energy Corporation,yahoo
+902272,FL^I25,FOOT LOCKER DEAD - DELIST.08/09/25,FL,Consumer Cyclical,unknown,,manual
+905284,XRX.O,XEROX HOLDINGS,XRX,Industrials,Business Equipment & Supplies,Xerox Holdings Corporation,yahoo
+543542,XLNX.O^B22,XILINX DEAD - DELIST.15/02/22,XLNX,Technology,unknown,,manual
+921855,TJX,TJX,TJX,Consumer Cyclical,Apparel Retail,"The TJX Companies, Inc.",yahoo
+951584,ZION.O,ZIONS BANCORP.,ZION,Financial Services,Banks - Regional,"Zions Bancorporation, National Association",yahoo
+951051,RF,REGIONS FINL.NEW,RF,Financial Services,Banks - Regional,Regions Financial Corporation,yahoo
+905997,TAP,MOLSON COORS BEVERAGE COMPANY B,TAP,Consumer Defensive,Beverages - Brewers,Molson Coors Beverage Company,yahoo
+543487,VIAB.O^L19,VIACOM 'B' DEAD - DELIST.05/12/19,VIAB,Communication Services,unknown,,manual
+32480Q,SKYD.K,SKYDANCE B,SKYD,Communication Services,Entertainment,Skydance Corporation,yahoo
+514950,HOT^I16,STARWOOD H&R.WORLDWIDE DEAD - DELIST.23/09/16,HOT,Consumer Cyclical,unknown,,manual
+517465,PBCT.O^D22,PEOPLES UNITED FINANCIAL DEAD - DELIST.05/04/22,PBCT,Financial Services,unknown,,manual
+905840,BNY,BANK OF NEW YORK MELLON,BNY,Financial Services,Banks - Diversified,The Bank of New York Mellon Corporation,yahoo
+328314,CB,CHUBB,CB,Financial Services,Insurance - Property & Casualty,Chubb Limited,yahoo
+54060C,SIG,SIGNET JEWELERS,SIG,Consumer Cyclical,Luxury Goods,Signet Jewelers Limited,yahoo
+322668,RIG,TRANSOCEAN,RIG,Energy,Oil & Gas Drilling,Transocean Ltd.,yahoo
+771767,MOS,MOSAIC,MOS,Basic Materials,Agricultural Inputs,The Mosaic Company,yahoo
+921503,SWK,STANLEY BLACK & DECKER,SWK,Industrials,Tools & Accessories,"Stanley Black & Decker, Inc.",yahoo
+921218,PVH,PVH,PVH,Consumer Cyclical,Apparel Manufacturing,PVH Corp.,yahoo
+916170,GGP^H18,GGP DEAD - DELIST.29/08/18,GGP,Real Estate,unknown,,manual
+904878,MSI,MOTOROLA SOLUTIONS,MSI,Technology,Communication Equipment,"Motorola Solutions, Inc.",yahoo
+922817,AON,AON CLASS A,AON,Financial Services,Insurance Brokers,Aon plc,yahoo
+905446,TT,TRANE TECHNOLOGIES,TT,Industrials,Building Products & Equipment,Trane Technologies plc,yahoo
+325364,TWX^F18,TIME WARNER DEAD - DELIST.16/06/18,TWX,Communication Services,unknown,,manual
+328595,ORLY.O,O REILLY AUTOMOTIVE,ORLY,Consumer Cyclical,Auto Parts,"O'Reilly Automotive, Inc.",yahoo
+326038,ESRX.O^L18,EXPRESS SCRIPTS HOLDING DEAD - DELIST.21/12/18,ESRX,Healthcare,unknown,,manual
+904383,DUK,DUKE ENERGY,DUK,Utilities,Utilities - Regulated Electric,Duke Energy Corporation,yahoo
+903749,ETN,EATON,ETN,Industrials,Specialty Industrial Machinery,Eaton Corporation plc,yahoo
+937343,BBWI.K,BATH AND BODY WORKS,BBWI,Consumer Cyclical,Specialty Retail,"Bath & Body Works, Inc.",yahoo
+546487,PRGO.K,PERRIGO,PRGO,Healthcare,Drug Manufacturers - Specialty & Generic,Perrigo Company plc,yahoo
+906585,PNR,PENTAIR,PNR,Industrials,Specialty Industrial Machinery,Pentair plc,yahoo
+545615,JCI,JOHNSON CONTROLS INTL.,JCI,Industrials,Building Products & Equipment,Johnson Controls International plc,yahoo
+906496,MDT,MEDTRONIC,MDT,Healthcare,Medical Devices,Medtronic plc,yahoo
+904866,WBA.O^H25,WALGREENS BOOTS ALLIANCE DEAD - DELIST.29/08/25,WBA,Healthcare,unknown,,manual
+906931,VTRS.O,VIATRIS,VTRS,Healthcare,Drug Manufacturers - Specialty & Generic,Viatris Inc.,yahoo
+921999,ES,EVERSOURCE ENERGY,ES,Utilities,Utilities - Regulated Electric,Eversource Energy,yahoo
+325596,AGN^E20,ALLERGAN DEAD - DELIST.11/05/20,AGN,Healthcare,unknown,,manual
+510209,XRAY.O,DENTSPLY SIRONA,XRAY,Healthcare,Medical Instruments & Supplies,DENTSPLY SIRONA Inc.,yahoo
+905414,SPGI.K,S&P GLOBAL,SPGI,Financial Services,Financial Data & Stock Exchanges,S&P Global Inc.,yahoo
+982579,WELL.K,WELLTOWER,WELL,Real Estate,REIT - Healthcare Facilities,Welltower Inc.,yahoo
+905277,HPQ,HP,HPQ,Technology,Computer Hardware,HP Inc.,yahoo
+902335,WEC,WEC ENERGY GROUP,WEC,Utilities,Utilities - Regulated Electric,"WEC Energy Group, Inc.",yahoo
+512785,MNST.O,MONSTER BEVERAGE,MNST,Consumer Defensive,Beverages - Non-Alcoholic,Monster Beverage Corporation,yahoo
+923449,TGNA.K^C26,TEGNA DEAD - DELIST.20/03/26,TGNA,Communication Services,unknown,,manual

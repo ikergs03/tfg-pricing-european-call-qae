@@ -1,0 +1,12 @@
+# Entorno para src/qhrp_sp500 (Python 3.11). Versiones con las que se generaron los resultados.
+numpy==2.4.6
+pandas==3.1.1
+scipy==1.17.1
+matplotlib==3.11.2
+seaborn==0.13.2
+riskfolio-lib==7.4.1   # DBHT en raffinot_tablas.py y probar_k_raffinot.py
+reportlab==5.1.1       # explicacion_pdf.py
+
+# Opcionales:
+# yfinance             # solo obtener_sectores.py (volver a descargar los sectores de las acciones)
+# qiskit               # solo qhrp_core.verificar_contra_qiskit (comprobar la simulacion contra Qiskit)

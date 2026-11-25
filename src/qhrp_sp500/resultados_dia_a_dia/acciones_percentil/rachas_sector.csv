@@ -1,0 +1,46 @@
+desde,hasta,n_activos,sector,activos,metodo
+26,30,4,Consumer Cyclical,Urban Outfitters | Hasbro | Mattel | Mcdonalds,HRP clasico
+33,37,4,Healthcare,Vertex Pharms. | Amgen | Biogen | Gilead Sciences,HRP clasico
+51,55,4,Healthcare,Becton Dickinson | Cencora | Mckesson | Cardinal Health,HRP clasico
+82,86,4,Consumer Defensive,Hershey | The Campbell S Company | General Mills | Kellanova,HRP clasico
+96,102,6,Healthcare,Bristol Myers Squibb | Abbott Laboratories | Johnson & Johnson | Eli Lilly | Pfizer | Merck & Company,HRP clasico
+102,108,6,Consumer Defensive,Coca Cola | Pepsico | Kimberly-Clark | Clorox | Colgate-Palm. | Procter & Gamble,HRP clasico
+119,144,25,Utilities,Centerpoint En. | Pg&E | Edison Intl. | Cms Energy | Eversource Energy | Xcel Energy | Nisource | Sempra | Alliant Energy | Exelon | Wec Energy Group | Entergy | Firstenergy | Duke Energy | Ppl | Nextera Energy | Dominion Energy | Pinnacle West Cap. | Amer.Elec.Pwr. | Scana | Southern | Pub.Ser.Enter.Gp. | Consolidated Edison | Ameren | Dte Energy,HRP clasico
+146,150,4,Industrials,Robert Half | Fastenal | Cintas | Expeditors Intl.Of Wash. A,HRP clasico
+166,170,4,Healthcare,Humana | Cigna | Aetna | Unitedhealth Group,HRP clasico
+194,221,27,Energy,Oneok | Range Res. | Southwestern Energy | Andeavor | Valero Energy | Chesapeake Energy | Eqt | Coterra Energy | Newfield Exploration | Diamond Offs.Drl. | Transocean | Helmerich & Payne | Halliburton | Slb | Baker Hughes A | Eog Res. | Devon Energy | Anadarko Petroleum | Noble Energy | Apa | Murphy Oil | Marathon Oil | Conocophillips | Chevron | Exxonmobil Holdings | Occidental Ptl. | Hess,HRP clasico
+237,241,4,Industrials,Kansas City Southern | Union Pacific | Norfolk Southern | Csx,HRP clasico
+244,249,5,Financial Services,Jefferies Financial Group | American Intl.Gp. | Chubb | Travelers Cos. | Cincinnati Finl.,HRP clasico
+251,266,15,Real Estate,Host Hotels & Resorts Reit | Welltower | Realty Income | Macerich | Healthpeak Properties | Public Storage | Apartment Inv.& Man.'A' | Federal Realty Inv.Tst. | Udr | Essex Property Tst. | Avalonbay Commns. | Vivmark Residential | Vornado Realty Trust | Simon Property Group | Kimco Realty,HRP clasico
+266,271,5,Financial Services,Progressive Ohio | Charles Schwab | Allstate Ord Shs | Loews | Unum Group,HRP clasico
+272,300,28,Financial Services,Legg Mason | T Rowe Price Group | Franklin Templeton | Capital One Finl. | Morgan Stanley | American Express | State Street | Bank Of New York Mellon | Northern Trust | Zions Bancorp. | M&T Bank | Huntington Bcsh. | Fifth Third Bancorp | Us Bancorp | Jp Morgan Chase & Co. | Regions Finl.New | Truist Financial | Comerica | Keycorp | Suntrust Banks | Citigroup | Pnc Finl.Svs.Gp. | Wells Fargo & Co | Bank Of America | Aflac | Globe Life | Hartford Insurance Group | Lincoln National,HRP clasico
+323,329,6,Basic Materials,Praxair | Air Prds.& Chems. | Eastman Chemical | Dow Chemical | Ppg Industries | E I Du Pont De Nemours,HRP clasico
+329,336,7,Industrials,Illinois Tool Works | Eaton | Cummins | Caterpillar | Deere | Parker-Hannifin | Trane Technologies,HRP clasico
+336,357,21,Technology,Corning | Adobe | Qualcomm | Hp | Motorola Solutions | International Bus.Mchs. | Netapp | Oracle | Micron Technology | Microsoft | Emc | Microchip Tech. | Cisco Systems | Intel | Lam Research | Applied Mats. | Kla | Xilinx | Linear Technology | Texas Instruments | Analog Devices,HRP clasico
+238,242,4,Financial Services,Legg Mason | Jp Morgan Chase & Co. | Us Bancorp | Globe Life,QHRP original
+269,273,4,Real Estate,Vivmark Residential | Realty Income | Public Storage | Avalonbay Commns.,QHRP original
+2,23,21,Utilities,Pinnacle West Cap. | Amer.Elec.Pwr. | Ameren | Wec Energy Group | Scana | Xcel Energy | Eversource Energy | Alliant Energy | Cms Energy | Dte Energy | Nextera Energy | Dominion Energy | Duke Energy | Consolidated Edison | Southern | Exelon | Pub.Ser.Enter.Gp. | Firstenergy | Ppl | Entergy | Aes,QHRP dia a dia (percentil)
+24,29,5,Utilities,Pg&E | Edison Intl. | Nisource | Sempra | Centerpoint En.,QHRP dia a dia (percentil)
+29,45,16,Real Estate,Ventas | Healthpeak Properties | Welltower | Apartment Inv.& Man.'A' | Essex Property Tst. | Udr | Avalonbay Commns. | Vivmark Residential | Macerich | Ggp | Realty Income | Public Storage | Federal Realty Inv.Tst. | Kimco Realty | Simon Property Group | Vornado Realty Trust,QHRP dia a dia (percentil)
+45,85,40,Financial Services,Us Bancorp | Wells Fargo & Co | Pnc Finl.Svs.Gp. | M&T Bank | Comerica | Zions Bancorp. | Regions Finl.New | Keycorp | Suntrust Banks | Truist Financial | Huntington Bcsh. | Fifth Third Bancorp | Morgan Stanley | Jp Morgan Chase & Co. | Citigroup | Bank Of America | State Street | Bank Of New York Mellon | Northern Trust | Legg Mason | T Rowe Price Group | Franklin Templeton | Peoples United Financial | Charles Schwab | Capital One Finl. | American Express | Unum Group | Globe Life | Aflac | Hartford Insurance Group | Lincoln National | Chubb | Travelers Cos. | Loews | Cincinnati Finl. | Allstate Ord Shs | Progressive Ohio | Arthur J Gallagher | Marsh | Aon Class A,QHRP dia a dia (percentil)
+85,110,25,Energy,Diamond Offs.Drl. | Transocean | Helmerich & Payne | Slb | Halliburton | Baker Hughes A | Chevron | Exxonmobil Holdings | Marathon Oil | Conocophillips | Murphy Oil | Occidental Ptl. | Hess | Devon Energy | Apa | Eog Res. | Anadarko Petroleum | Noble Energy | Eqt | Newfield Exploration | Coterra Energy | Range Res. | Southwestern Energy | Chesapeake Energy | Williams,QHRP dia a dia (percentil)
+113,117,4,Industrials,Ge Aerospace | Rtx | Honeywell Intl. | 3M,QHRP dia a dia (percentil)
+118,133,15,Industrials,Rockwell Automation | Emerson Electric | Eaton | Parker-Hannifin | Dover | Illinois Tool Works | Deere | Trane Technologies | Paccar | Caterpillar | Cummins | Kansas City Southern | Union Pacific | Norfolk Southern | Csx,QHRP dia a dia (percentil)
+133,140,7,Basic Materials,Praxair | Air Prds.& Chems. | Fmc | Eastman Chemical | Ppg Industries | E I Du Pont De Nemours | Dow Chemical,QHRP dia a dia (percentil)
+148,152,4,Industrials,Pentair | Snap-On | Stanley Black & Decker | Ryder System,QHRP dia a dia (percentil)
+152,156,4,Consumer Cyclical,Avery Dennison | Sealed Air | O I Glass | Ball,QHRP dia a dia (percentil)
+161,165,4,Consumer Cyclical,Ford Motor | Goodyear Tire & Rub. | Harman Intl.Inds. | Borgwarner,QHRP dia a dia (percentil)
+182,187,5,Basic Materials,Martin Mrta.Mats. | Vulcan Materials | Newmont | Nucor | Freeport-Mcmoran,QHRP dia a dia (percentil)
+188,196,8,Technology,Lam Research | Applied Mats. | Kla | Microchip Tech. | Texas Instruments | Xilinx | Analog Devices | Linear Technology,QHRP dia a dia (percentil)
+200,206,6,Consumer Cyclical,Best Buy | Bed Bath & Beyond | Staples | Macy'S | Nordstrom | Kohl'S,QHRP dia a dia (percentil)
+207,212,5,Consumer Cyclical,Ross Stores | Tjx | Foot Locker | Bath And Body Works | Gap,QHRP dia a dia (percentil)
+214,230,16,Consumer Defensive,General Mills | Kellanova | The Campbell S Company | Conagra Brands | Mccormick & Company Nv. | Hormel Foods | Hershey | J M Smucker | Altria Group | Coca Cola | Pepsico | Church & Dwight Co. | Clorox | Kimberly-Clark | Colgate-Palm. | Procter & Gamble,QHRP dia a dia (percentil)
+230,248,18,Technology,Hp | Microsoft | International Bus.Mchs. | Oracle | Emc | Ca | Cisco Systems | Intel | Netapp | Citrix Sys. | Gen Digital | Qualcomm | Intuit | Adobe | Western Digital | Skyworks Solutions | Motorola Solutions | Micron Technology,QHRP dia a dia (percentil)
+248,279,31,Healthcare,Aetna | Cigna | Unitedhealth Group | Humana | Cencora | Mckesson | Cardinal Health | Varian Medical Systems | Thermo Fisher Scientific | Waters | Revvity | Boston Scientific | St.Jude Medical | C R Bard | Becton Dickinson | Stryker | Medtronic | Baxter Intl. | Dentsply Sirona | Patterson Companies | Henry Schein | Universal Health Svs.'B' | Davita | Labcorp Holdings | Express Scripts Holding | Amgen | Celgene | Biogen | Gilead Sciences | Regeneron Pharms. | Vertex Pharms.,QHRP dia a dia (percentil)
+281,287,6,Healthcare,Abbott Laboratories | Johnson & Johnson | Pfizer | Eli Lilly | Merck & Company | Bristol Myers Squibb,QHRP dia a dia (percentil)
+287,292,5,Industrials,Raytheon 'B' | Lockheed Martin | Northrop Grumman | Boeing | General Dynamics,QHRP dia a dia (percentil)
+298,303,5,Communication Services,Interpublic Group | Omnicom Group | Comcast A | Time Warner | Walt Disney,QHRP dia a dia (percentil)
+306,311,5,Industrials,Ametek | Waste Management | Pitney-Bowes | Johnson Controls Intl. | L3Harris Technologies,QHRP dia a dia (percentil)
+315,320,5,Industrials,Southwest Airlines | Alaska Air Group | Hunt Jb Transport Svs. | Expeditors Intl.Of Wash. A | Fedex,QHRP dia a dia (percentil)
+320,334,14,Consumer Cyclical,O Reilly Automotive | Autozone | Mcdonalds | Darden Restaurants | Tractor Supply | Starbucks | V F | Nike 'B' | Tiffany & Co | Pvh | Hasbro | Mattel | Signet Jewelers | Autonation,QHRP dia a dia (percentil)
+337,341,4,Consumer Defensive,Tyson Foods 'A' | Archer Daniels Midland | Molson Coors Beverage Company B | Brown-Forman 'B',QHRP dia a dia (percentil)
